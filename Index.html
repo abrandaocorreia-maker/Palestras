@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+<title>Palestras</title>
+<style>
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+/* Ajustado para rolagem natural e tamanho de tela ideal no celular com fontes maiores */
+html, body { 
+  margin: 0 !important; 
+  padding: 0 !important; 
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+  background: #f4f6f8; 
+  color: #222; 
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden; 
+  font-size: 16px;
+}
+
+/* Container principal esticado de ponta a ponta no celular */
+.app-wrapper {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+}
+
+/* Cada página ocupa o espaço e se esconde/mostra corretamente */
+.page { display: none; flex: 1; flex-direction: column; width: 100%; }
+.page.active { display: flex; }
+
+/* Cabeçalho */
+header { 
+  background: #1f4e78; 
+  color: white; 
+  padding: 18px 20px; 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  border-radius: 10px;
+  margin-bottom: 12px;
+  width: 100%;
+  font-size: 24px;
+  font-weight: bold;
+}
+.header-titulo { 
+  display: flex; 
+  align-items: center; 
+  gap: 12px; 
+}
+.header-menu-icon { 
+  font-size: 26px; 
+  cursor: pointer; 
+}
+
+.card { 
+  background: white; 
+  border-radius: 10px; 
+  padding: 18px; 
+  margin-bottom: 12px; 
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08); 
+  width: 100%;
+}
+
+.cards-resumo { 
+  display: flex; 
+  flex-direction: column;
+  gap: 12px; 
+  margin-bottom: 12px;
+  width: 100%;
+}
+.resumo { text-align: center; margin-bottom: 0 !important; }
+.resumo-numero { font-size: 48px; font-weight: bold; color: #1f4e78; line-height: 1.1; }
+.resumo-label { font-size: 17px; margin-top: 6px; color: #444; font-weight: 500; }
+
+.menu-botoes { 
+  display: flex; 
+  flex-direction: column;
+  gap: 12px; 
+  width: 100%;
+}
+.btn-principal, .btn-secundario, .btn-sucesso, .btn-perigo { 
+  border: none; 
+  border-radius: 10px; 
+  padding: 18px; 
+  font-size: 18px; 
+  font-weight: bold; 
+  cursor: pointer; 
+  width: 100%;
+}
+.btn-principal { background: #1f4e78; color: white; min-height: 65px; text-align: left; display: flex; align-items: center; }
+.btn-secundario { background: #6c757d; color: white; }
+.btn-sucesso { background: #2e7d32; color: white; }
+.btn-perigo { background: #b3261e; color: white; }
+.btn-link { background: #e0e0e0; color: #333; padding: 8px 14px; font-size: 15px; text-decoration: none; border-radius: 6px; display: inline-block; }
+button:active { transform: scale(0.98); }
+
+h2, h3 { color: #1f4e78; margin-top: 0; font-size: 20px; }
+input, select, textarea { 
+  width: 100%; 
+  padding: 14px; 
+  font-size: 17px !important; 
+  border: 1px solid #ccc; 
+  border-radius: 10px; 
+  background: white; 
+}
+
+.campo-pesquisa { display: flex; gap: 10px; flex-wrap: wrap; width: 100%; }
+.campo-pesquisa input, .campo-pesquisa select { flex: 1; min-width: 100%; }
+
+.form-grid { display: grid; grid-template-columns: 1fr; gap: 12px; width: 100%; }
+.form-campo { display: flex; flex-direction: column; gap: 6px; }
+.form-campo-completo { grid-column: 1 / -1; }
+.form-campo label { font-weight: bold; color: #333; font-size: 16px; }
+.acoes-formulario { display: flex; justify-content: flex-end; gap: 10px; margin-top: 12px; }
+
+.tabela-container { overflow-x: auto; width: 100%; }
+table { width: 100%; border-collapse: collapse; background: white; }
+th, td { padding: 14px 12px; border-bottom: 1px solid #ddd; text-align: left; vertical-align: middle; font-size: 16px; }
+th { background: #eef2f5; font-weight: bold; color: #1f4e78; }
+.mensagem, .loading { text-align: center; color: #666; padding: 25px 10px; font-size: 17px; }
+.chip { display: inline-block; background: #e8f0f7; color: #1f4e78; padding: 6px 12px; border-radius: 18px; margin: 4px; font-size: 14px; font-weight: bold; }
+
+
+/* Troca de Temas e Temas Locais (Compartilham o mesmo padrão visual) */
+.troca-orador {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 14px;
+  margin-top: 12px;
+}
+.troca-orador-titulo {
+  font-size: 18px;
+  font-weight: bold;
+  color: #1f4e78;
+  margin-bottom: 10px;
+}
+.troca-tema-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 8px;
+}
+.troca-tema-item input[type="checkbox"] {
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+.troca-tema-info { flex: 1; min-width: 0; }
+.troca-tema-nome { font-weight: bold; font-size: 17px; }
+.troca-tema-data { color: #555; font-size: 15px; margin-top: 4px; }
+.troca-acoes {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+
+/* ==========================================================
+   ADAPTAÇÃO PARA COMPUTADOR (Telas maiores que 768px)
+   ========================================================== */
+@media (min-width: 768px) {
+  .app-wrapper {
+    max-width: 950px !important;
+    margin: 25px auto !important;
+    padding: 25px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  
+  .cards-resumo {
+    flex-direction: row;
+  }
+  .cards-resumo .card {
+    flex: 1;
+  }
+
+  .menu-botoes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .campo-pesquisa input, .campo-pesquisa select {
+    min-width: 220px;
+  }
+}
+</style>
+</head>
+
+<body onload="carregarResumo()">
+
+<div class="app-wrapper">
+  
+  <!-- =========================================
+       INÍCIO
+       ========================================= -->
+  <section id="paginaInicio" class="page active">
+    <header>
+      <div class="header-titulo">
+        <span>📚</span>
+        <span>Palestras</span>
+      </div>
+      <div class="header-menu-icon" onclick="carregarResumo()">🔄</div>
+    </header>
+
+    <div class="cards-resumo">
+      <div class="card resumo" style="margin-bottom:0;">
+        <div id="totalTemas" class="resumo-numero">-</div>
+        <div class="resumo-label">Temas cadastrados</div>
+      </div>
+      <div class="card resumo" style="margin-bottom:0;">
+        <div id="totalMeses" class="resumo-numero">-</div>
+        <div class="resumo-label">Meses disponíveis</div>
+      </div>
+    </div>
+
+    <div class="card menu-botoes" style="margin-top: 12px;">
+      <button class="btn-principal" onclick="abrirTemas()">📖 Consultar Temas</button>
+      <button class="btn-principal" onclick="abrirTemasDoMes()">📅 Temas do Mês</button>
+      <button class="btn-principal" onclick="abrirTrocaTemas()">🔄 Troca de Temas</button>
+      <button class="btn-principal" onclick="abrirTemasLocais()">📍 Temas Locais</button>
+    </div>
+    
+    <div style="margin-bottom: 15px; flex-shrink: 0;">
+      <button class="btn-principal" style="width: 100%; min-height: 65px; text-align: left;" onclick="abrirCongregacoes()">🏛️ Gerenciar Congregações</button>
+    </div>
+  </section>
+
+
+  <!-- =========================================
+       CONSULTAR TEMAS
+       ========================================= -->
+  <section id="paginaTemas" class="page">
+    <header>
+      <div class="header-titulo">
+        <span>📖</span>
+        <span>Consultar Temas</span>
+      </div>
+      <div class="header-menu-icon" onclick="voltarInicio()">🏠</div>
+    </header>
+    <div class="card">
+      <div class="campo-pesquisa">
+        <input id="campoTema" type="text" placeholder="Número, tema ou assunto" onkeydown="if(event.key==='Enter') consultarTemas();">
+        <button class="btn-principal" onclick="consultarTemas()">Consultar</button>
+        <button class="btn-secundario" onclick="voltarInicio()">Voltar</button>
+      </div>
+    </div>
+    <div id="resultadoTemas"></div>
+  </section>
+
+
+  <!-- =========================================
+       CONGREGAÇÕES
+       ========================================= -->
+  <section id="paginaCongregacoes" class="page">
+    <header>
+      <div class="header-titulo">
+        <span>🏛️</span>
+        <span>Congregações</span>
+      </div>
+      <div class="header-menu-icon" onclick="voltarInicio()">🏠</div>
+    </header>
+    <div class="card">
+      <div class="campo-pesquisa" style="margin-bottom: 10px;">
+        <input id="campoPesquisaCongregacao" type="text" placeholder="Pesquisar congregação..." onkeydown="if(event.key==='Enter') consultarCongregacoesTela();">
+        <button class="btn-principal" onclick="consultarCongregacoesTela()">Pesquisar</button>
+        <button class="btn-sucesso" onclick="abrirFormularioNovaCongregacao()">＋ Nova</button>
+        <button class="btn-secundario" onclick="voltarInicio()">Voltar</button>
+      </div>
+    </div>
+
+    <div id="resultadoCongregacoes"></div>
+
+    <div id="formularioCongregacao" style="display:none;" class="card">
+      <h3 class="form-titulo" id="tituloFormCongregacao">Adicionar Congregação</h3>
+      <input type="hidden" id="congLinha">
+
+      <div class="form-grid">
+        <div class="form-campo form-campo-completo">
+          <label for="congNome">Nome da congregação</label>
+          <input id="congNome" type="text" placeholder="Ex.: Congregação Central">
+        </div>
+        <div class="form-campo form-campo-completo">
+          <label for="congEndereco">Endereço</label>
+          <input id="congEndereco" type="text" placeholder="Endereço completo">
+        </div>
+        <div class="form-campo form-campo-completo">
+          <label for="congLocalizacao">Localização (Link do Google Maps)</label>
+          <input id="congLocalizacao" type="url" placeholder="Cole o link do Google Maps">
+        </div>
+        <div class="form-campo">
+          <label for="congDia">Dia da reunião</label>
+          <input id="congDia" type="text" placeholder="Ex.: Sábado às 19:30">
+        </div>
+        <div class="form-campo">
+          <label for="congAgenda">Agenda (Mês da troca)</label>
+          <input id="congAgenda" type="text" placeholder="Ex.: Novembro de 2026">
+        </div>
+      </div>
+
+      <div style="margin-top: 15px;">
+        <h3>Oradores e Números dos Discursos</h3>
+        <div id="listaOradoresForm" style="margin-bottom: 10px;"></div>
+        <button type="button" class="btn-secundario" onclick="adicionarCampoOradorTema()">＋ Adicionar Orador</button>
+      </div>
+
+      <div class="acoes-formulario" style="margin-top: 15px;">
+        <button class="btn-secundario" onclick="fecharFormularioCongregacao()">Cancelar</button>
+        <button class="btn-sucesso" onclick="salvarCongregacaoTela()">Salvar</button>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =========================================
+       TROCA DE TEMAS
+       ========================================= -->
+  <section id="paginaTrocaTemas" class="page">
+    <header>
+      <div class="header-titulo">
+        <span>🔄</span>
+        <span>Troca de Temas</span>
+      </div>
+      <div class="header-menu-icon" onclick="voltarInicio()">🏠</div>
+    </header>
+
+    <div class="card">
+      <div class="form-grid">
+        <div class="form-campo form-campo-completo">
+          <label for="trocaMes">Mês da troca</label>
+          <select id="trocaMes" onchange="consultarTrocaTemasTela()">
+            <option value="">Selecione o mês</option>
+          </select>
+        </div>
+      </div>
+      <div class="acoes-formulario">
+        <button class="btn-secundario" onclick="voltarInicio()">Voltar</button>
+      </div>
+    </div>
+
+    <div id="resultadoTrocaTemas"></div>
+  </section>
+
+  <!-- =========================================
+       TEMAS LOCAIS (Atualizado idêntico à Troca de Temas)
+       ========================================= -->
+  <section id="paginaTemasLocais" class="page">
+    <header>
+      <div class="header-titulo">
+        <span>📍</span>
+        <span>Temas Locais</span>
+      </div>
+      <div class="header-menu-icon" onclick="voltarInicio()">🏠</div>
+    </header>
+
+    <div class="card">
+      <div class="form-grid">
+        <div class="form-campo form-campo-completo">
+          <label for="localMes">Mês da agenda</label>
+          <select id="localMes" onchange="consultarTemasLocaisTela()">
+            <option value="">Selecione o mês</option>
+          </select>
+        </div>
+      </div>
+      <div class="acoes-formulario">
+        <button class="btn-secundario" onclick="voltarInicio()">Voltar</button>
+      </div>
+    </div>
+
+    <div id="resultadoTemasLocais"></div>
+  </section>
+
+
+  <!-- =========================================
+       TEMA DO MÊS
+       ========================================= -->
+  <section id="paginaTemasDoMes" class="page">
+    <header>
+      <div class="header-titulo">
+        <span>📅</span>
+        <span>Tema do Mês</span>
+      </div>
+      <div class="header-menu-icon" onclick="voltarInicio()">🏠</div>
+    </header>
+    <div class="card">
+      <div class="campo-pesquisa">
+        <select id="selectMesTemasDoMes">
+          <option value="">Selecione o mês</option>
+        </select>
+        <button class="btn-principal" onclick="consultarTemasDoMes()">Consultar</button>
+        <button class="btn-secundario" onclick="voltarInicio()">Voltar</button>
+      </div>
+    </div>
+    <div id="resultadoTemasDoMes"></div>
+    <div id="formularioTemasDoMes" style="display:none;"></div>
+  </section>
+
+</div>
+
+<script>
+/*************************************************
+ * NAVEGAÇÃO
+ *************************************************/
+function mostrarPagina(id) {
+  document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+  const p = document.getElementById(id);
+  if (p) p.classList.add('active');
+}
+
+function voltarInicio() { mostrarPagina('paginaInicio'); carregarResumo(); }
+function abrirTemas() { mostrarPagina('paginaTemas'); document.getElementById('campoTema').focus(); }
+function abrirTemasDoMes() { mostrarPagina('paginaTemasDoMes'); carregarMesesTemasDoMes(); }
+function abrirTrocaTemas() {
+  mostrarPagina('paginaTrocaTemas');
+  carregarMesesTrocaTemas();
+}
+function abrirTemasLocais() { 
+  mostrarPagina('paginaTemasLocais'); 
+  carregarMesesTemasLocais(); 
+}
+function abrirCongregacoes() { mostrarPagina('paginaCongregacoes'); consultarCongregacoesTela(); }
+
+function escapar(texto) {
+  if (!texto) return '';
+  return String(texto).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/*************************************************
+ * RESUMO
+ *************************************************/
+function carregarResumo() {
+  google.script.run
+    .withSuccessHandler(function(dados) {
+      if(dados) {
+        document.getElementById('totalTemas').textContent = dados.totalTemas || 0;
+        document.getElementById('totalMeses').textContent = dados.totalMeses || 0;
+      }
+    })
+    .withFailureHandler(function(erro) { console.error(erro); })
+    .obterResumoInicial();
+}
+
+/*************************************************
+ * CONSULTAR TEMAS
+ *************************************************/
+function consultarTemas() {
+  const termo = document.getElementById('campoTema').value.trim();
+  const resultado = document.getElementById('resultadoTemas');
+  resultado.innerHTML = '<div class="card loading">Consultando...</div>';
+
+  google.script.run
+    .withSuccessHandler(function(dados) {
+      if (!dados || dados.length === 0) {
+        resultado.innerHTML = '<div class="card mensagem">Nenhum tema encontrado.</div>';
+        return;
+      }
+      let html = '';
+      dados.forEach(function(item) {
+        html += '<div class="card"><div style="color: #1f4e78; font-weight: bold;">Tema nº ' + escapar(item.numero) + '</div>' +
+          '<div style="font-size: 18px; font-weight: bold; margin: 6px 0;">' + escapar(item.tema) + '</div>';
+        if (item.assunto) html += '<div style="color: #555;"><strong>Assunto:</strong> ' + escapar(item.assunto) + '</div>';
+        if (item.apresentacoes && item.apresentacoes.length) {
+          html += '<div style="margin-top: 10px;"><strong>Últimas apresentações:</strong><br>';
+          item.apresentacoes.forEach(ap => { html += '<span class="chip">' + ap.ano + ' — ' + ap.data + '</span>'; });
+          html += '</div>';
+        }
+        html += '</div>';
+      });
+      resultado.innerHTML = html;
+    })
+    .withFailureHandler(function(erro) {
+      resultado.innerHTML = '<div class="card mensagem">Erro ao consultar os temas.<br>' + escapar(erro.message || erro) + '</div>';
+    })
+    .consultarTemas(termo);
+}
+
+/*************************************************
+ * CONGREGAÇÕES
+ *************************************************/
+let congregaçõesCache = [];
+
+function consultarCongregacoesTela() {
+  const termo = document.getElementById('campoPesquisaCongregacao').value.trim();
+  const resultado = document.getElementById('resultadoCongregacoes');
+  resultado.innerHTML = '<div class="card loading">Carregando congregações...</div>';
+
+  google.script.run
+    .withSuccessHandler(function(dados) {
+      congregaçõesCache = dados || [];
+      if (!dados || dados.length === 0) {
+        resultado.innerHTML = '<div class="card mensagem">Nenhuma congregação encontrada.</div>';
+        return;
+      }
+
+      let html = '';
+      dados.forEach(function(item) {
+        let linkMapa = item.localizacao ? '<a href="' + escapar(item.localizacao) + '" target="_blank" class="btn-link">🗺️ Mapa</a>' : '';
+        let htmlOradores = '';
+        if (item.oradoresTemas && item.oradoresTemas.length > 0) {
+          htmlOradores = '<div style="margin-top: 10px; font-size: 14px; background: #f8f9fa; padding: 10px; border-radius: 6px;"><strong>Oradores e Discursos:</strong><ul style="margin: 6px 0 0 18px; padding: 0;">';
+          item.oradoresTemas.forEach(ot => {
+            htmlOradores += '<li style="margin-bottom: 4px;"><strong>' + escapar(ot.orador) + '</strong> — Nrs: ' + escapar(ot.numeros) + '</li>';
+          });
+          htmlOradores += '</ul></div>';
+        }
+
+        html += '<div class="card" style="margin-bottom: 12px;">' +
+          '<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">' +
+          '<div style="flex: 1; word-break: break-word;">' +
+          '<h3 style="margin: 0 0 6px 0; color: #1f4e78;">' + escapar(item.nome) + '</h3>' +
+          '<div style="font-size: 14px;"><strong>Endereço:</strong> ' + escapar(item.endereco) + ' ' + linkMapa + '</div>' +
+          '<div style="font-size: 14px; margin-top: 4px;"><strong>Reunião:</strong> ' + escapar(item.diaReuniao) + ' | <strong>Agenda:</strong> ' + escapar(item.agenda) + '</div>' +
+          htmlOradores +
+          '</div>' +
+          '<div style="display: flex; gap: 4px; flex-shrink: 0;">' +
+          '<button class="btn-principal" style="padding: 8px 10px; font-size: 13px;" onclick="abrirFormularioEditarCongregacao(' + item.linha + ')">✏️</button>' +
+          '<button class="btn-perigo" style="padding: 8px 10px; font-size: 13px;" onclick="excluirCongregacaoTela(' + item.linha + ')">🗑️</button>' +
+          '</div>' +
+          '</div>' +
+          '</div>';
+      });
+      resultado.innerHTML = html;
+    })
+    .withFailureHandler(function(erro) {
+      resultado.innerHTML = '<div class="card mensagem">Erro ao carregar congregações.<br>' + escapar(erro.message || erro) + '</div>';
+    })
+    .consultarCongregacoes(termo);
+}
+
+function abrirFormularioNovaCongregacao() {
+  document.getElementById('congLinha').value = '';
+  document.getElementById('tituloFormCongregacao').textContent = 'Adicionar Congregação';
+  document.getElementById('congNome').value = '';
+  document.getElementById('congEndereco').value = '';
+  document.getElementById('congLocalizacao').value = '';
+  document.getElementById('congDia').value = '';
+  document.getElementById('congAgenda').value = '';
+  document.getElementById('listaOradoresForm').innerHTML = '';
+  adicionarCampoOradorTema();
+
+  const form = document.getElementById('formularioCongregacao');
+  form.style.display = 'block';
+  form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function abrirFormularioEditarCongregacao(linha) {
+  const item = congregaçõesCache.find(c => Number(c.linha) === Number(linha));
+  if (!item) { alert('Congregação não encontrada.'); return; }
+
+  document.getElementById('congLinha').value = item.linha;
+  document.getElementById('tituloFormCongregacao').textContent = 'Editar Congregação';
+  document.getElementById('congNome').value = item.nome || '';
+  document.getElementById('congEndereco').value = item.endereco || '';
+  document.getElementById('congLocalizacao').value = item.localizacao || '';
+  document.getElementById('congDia').value = item.diaReuniao || '';
+  document.getElementById('congAgenda').value = item.agenda || '';
+  
+  const containerOradores = document.getElementById('listaOradoresForm');
+  containerOradores.innerHTML = '';
+
+  if (item.oradoresTemas && item.oradoresTemas.length > 0) {
+    item.oradoresTemas.forEach(ot => { adicionarCampoOradorTema(ot.orador, ot.numeros); });
+  } else {
+    adicionarCampoOradorTema();
+  }
+
+  const form = document.getElementById('formularioCongregacao');
+  form.style.display = 'block';
+  form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function adicionarCampoOradorTema(orador = '', numeros = '') {
+  const container = document.getElementById('listaOradoresForm');
+  const div = document.createElement('div');
+  div.className = 'form-grid';
+  div.style.marginBottom = '8px';
+  div.style.background = '#f9f9f9';
+  div.style.padding = '10px';
+  div.style.borderRadius = '8px';
+  div.innerHTML = `
+    <div class="form-campo">
+      <input type="text" class="input-orador" value="${escapar(orador)}" placeholder="Nome do orador">
+    </div>
+    <div class="form-campo" style="display: flex; gap: 6px;">
+      <input type="text" class="input-numeros" value="${escapar(numeros)}" placeholder="Números (ex: 12, 45, 78)" style="flex: 1;">
+      <button type="button" class="btn-perigo" style="padding: 0 12px;" onclick="this.parentElement.parentElement.remove()">🗑</button>
+    </div>
+  `;
+  container.appendChild(div);
+}
+
+function fecharFormularioCongregacao() {
+  document.getElementById('formularioCongregacao').style.display = 'none';
+}
+
+function salvarCongregacaoTela() {
+  const dados = {
+    linha: document.getElementById('congLinha').value,
+    nome: document.getElementById('congNome').value.trim(),
+    endereco: document.getElementById('congEndereco').value.trim(),
+    localizacao: document.getElementById('congLocalizacao').value.trim(),
+    diaReuniao: document.getElementById('congDia').value.trim(),
+    agenda: document.getElementById('congAgenda').value.trim(),
+    oradoresTemas: []
+  };
+
+  if (!dados.nome) {
+    alert('Informe o nome da congregação.');
+    document.getElementById('congNome').focus();
+    return;
+  }
+
+  document.querySelectorAll('#listaOradoresForm > div').forEach(bloco => {
+    const orador = bloco.querySelector('.input-orador').value.trim();
+    const numeros = bloco.querySelector('.input-numeros').value.trim();
+    if (orador || numeros) {
+      dados.oradoresTemas.push({ orador: orador, numeros: numeros });
+    }
+  });
+
+  google.script.run
+    .withSuccessHandler(function() {
+      fecharFormularioCongregacao();
+      consultarCongregacoesTela();
+      carregarResumo();
+    })
+    .withFailureHandler(function(erro) {
+      alert('Erro ao salvar: ' + (erro.message || erro));
+    })
+    .salvarCongregacao(dados);
+}
+
+function excluirCongregacaoTela(linha) {
+  if (!confirm('Deseja realmente excluir esta congregação?')) return;
+  google.script.run
+    .withSuccessHandler(function() {
+      consultarCongregacoesTela();
+      carregarResumo();
+    })
+    .withFailureHandler(function(erro) {
+      alert('Erro ao excluir: ' + (erro.message || erro));
+    })
+    .excluirCongregacao(linha);
+}
+
+/*************************************************
+ * TROCA DE TEMAS
+ *************************************************/
+function carregarMesesTrocaTemas() {
+  const select = document.getElementById('trocaMes');
+  if (!select) return;
+
+  select.innerHTML = '<option value="">Carregando meses...</option>';
+
+  google.script.run
+    .withSuccessHandler(function(meses) {
+      select.innerHTML = '<option value="">Selecione o mês</option>';
+      (meses || []).forEach(function(item) {
+        const option = document.createElement('option');
+        option.value = item.valor;
+        option.textContent = item.texto;
+        select.appendChild(option);
+      });
+    })
+    .withFailureHandler(function(erro) {
+      select.innerHTML = '<option value="">Erro ao carregar meses</option>';
+      document.getElementById('resultadoTrocaTemas').innerHTML =
+        '<div class="card mensagem">Erro ao carregar os meses.<br>' + escapar(erro.message || erro) + '</div>';
+    })
+    .obterMeses();
+}
+
+function consultarTrocaTemasTela() {
+  const valorMes = document.getElementById('trocaMes').value;
+  const resultado = document.getElementById('resultadoTrocaTemas');
+
+  if (!valorMes) {
+    resultado.innerHTML = '';
+    return;
+  }
+
+  resultado.innerHTML = '<div class="card loading">Buscando a congregação agendada e os temas...</div>';
+
+  google.script.run
+    .withSuccessHandler(function(dados) {
+      if (!dados || !dados.length) {
+        resultado.innerHTML = '<div class="card mensagem">Nenhuma congregação foi encontrada com este mês na coluna Agenda da página Congregações.</div>';
+        return;
+      }
+
+      let html = '';
+
+      dados.forEach(function(cong, indiceCong) {
+        html += '<div class="card troca-congregacao" data-congregacao-index="' + indiceCong + '">' +
+          '<h3 style="margin-bottom:6px;">🏛️ ' + escapar(cong.congregacao) + '</h3>' +
+          (cong.endereco ? '<div style="font-size:14px;color:#555;"><strong>Endereço:</strong> ' + escapar(cong.endereco) + '</div>' : '') +
+          '<div style="margin-top:12px;"><strong>Selecione os temas para a troca:</strong></div>';
+
+        if (!cong.oradores || !cong.oradores.length) {
+          html += '<div class="mensagem">Nenhum orador foi cadastrado para esta agenda.</div>';
+        } else {
+          cong.oradores.forEach(function(orador, indiceOrador) {
+            html += '<div class="troca-orador">' +
+              '<div class="troca-orador-titulo">🎤 ' + escapar(orador.nome || 'Orador') + '</div>';
+
+            if (!orador.temas || !orador.temas.length) {
+              html += '<div style="color:#666;">Nenhum tema cadastrado para este orador.</div>';
+            } else {
+              orador.temas.forEach(function(tema, indiceTema) {
+                const id = 'trocaTema_' + indiceCong + '_' + indiceOrador + '_' + indiceTema;
+                html += '<label class="troca-tema-item" for="' + id + '">' +
+                  '<input type="checkbox" id="' + id + '" class="troca-checkbox" ' +
+                  'data-congregacao="' + indiceCong + '" data-orador="' + indiceOrador + '" data-tema="' + indiceTema + '">' +
+                  '<div class="troca-tema-info">' +
+                  '<div class="troca-tema-nome">' + escapar(tema.numero) + ' — ' + escapar(tema.tema) + '</div>' +
+                  '<div class="troca-tema-data">Última realização: ' + escapar(tema.ultimaData || 'não encontrada') + '</div>' +
+                  '</div>' +
+                  '</label>';
+              });
+            }
+
+            html += '</div>';
+          });
+        }
+
+        html += '<div class="troca-acoes">' +
+          '<button class="btn-principal" onclick="enviarTrocaTemasWhatsApp(' + indiceCong + ')">📲 Enviar por WhatsApp</button>' +
+          '<button class="btn-secundario" onclick="marcarNenhumTemaTroca(' + indiceCong + ')">Limpar seleção</button>' +
+          '</div>' +
+          '</div>';
+      });
+
+      resultado.innerHTML = html;
+      window.dadosTrocaTemasAtual = dados;
+    })
+    .withFailureHandler(function(erro) {
+      resultado.innerHTML = '<div class="card mensagem">Erro ao buscar a troca de temas.<br>' + escapar(erro.message || erro) + '</div>';
+    })
+    .consultarTrocaTemasPorMes(valorMes);
+}
+
+function marcarNenhumTemaTroca(indiceCong) {
+  document.querySelectorAll('.troca-checkbox[data-congregacao="' + indiceCong + '"]').forEach(function(cb) {
+    cb.checked = false;
+  });
+}
+
+function enviarTrocaTemasWhatsApp(indiceCong) {
+  const dados = window.dadosTrocaTemasAtual || [];
+  const congregacao = dados[indiceCong];
+  if (!congregacao) return;
+
+  const checkboxes = document.querySelectorAll('.troca-checkbox[data-congregacao="' + indiceCong + '"]:checked');
+  if (!checkboxes.length) {
+    alert('Selecione pelo menos um tema para enviar.');
+    return;
+  }
+
+  const selecionados = {};
+
+  checkboxes.forEach(function(cb) {
+    const indiceOrador = Number(cb.dataset.orador);
+    const indiceTema = Number(cb.dataset.tema);
+    const orador = congregacao.oradores[indiceOrador];
+    const tema = orador && orador.temas ? orador.temas[indiceTema] : null;
+    if (!orador || !tema) return;
+
+    if (!selecionados[indiceOrador]) {
+      selecionados[indiceOrador] = { nome: orador.nome, temas: [] };
+    }
+    selecionados[indiceOrador].temas.push(tema);
+  });
+
+  const select = document.getElementById('trocaMes');
+  const mesTexto = select && select.selectedOptions.length ? select.selectedOptions[0].textContent : '';
+
+  let mensagem = 'Troca de Temas — ' + mesTexto + '\n';
+  mensagem += 'Congregação: ' + congregacao.congregacao + '\n\n';
+
+  Object.keys(selecionados).forEach(function(chave) {
+    const item = selecionados[chave];
+    mensagem += item.nome + '\n';
+    item.temas.forEach(function(tema) {
+      mensagem += '• ' + tema.numero + ' — ' + tema.tema + '\n';
+    });
+    mensagem += '\n';
+  });
+
+  const url = 'https://wa.me/?text=' + encodeURIComponent(mensagem.trim());
+  window.open(url, '_blank');
+}
+
+/*************************************************
+ * TEMAS LOCAIS (Espelhado na lógica de Troca de Temas)
+ *************************************************/
+function carregarMesesTemasLocais() {
+  const select = document.getElementById('localMes');
+  if (!select) return;
+
+  select.innerHTML = '<option value="">Carregando meses...</option>';
+
+  google.script.run
+    .withSuccessHandler(function(meses) {
+      select.innerHTML = '<option value="">Selecione o mês</option>';
+      (meses || []).forEach(function(item) {
+        const option = document.createElement('option');
+        option.value = item.valor;
+        option.textContent = item.texto;
+        select.appendChild(option);
+      });
+    })
+    .withFailureHandler(function(erro) {
+      select.innerHTML = '<option value="">Erro ao carregar meses</option>';
+      document.getElementById('resultadoTemasLocais').innerHTML =
+        '<div class="card mensagem">Erro ao carregar os meses.<br>' + escapar(erro.message || erro) + '</div>';
+    })
+    .obterMeses();
+}
+
+function consultarTemasLocaisTela() {
+  const valorMes = document.getElementById('localMes').value;
+  const resultado = document.getElementById('resultadoTemasLocais');
+
+  if (!valorMes) {
+    resultado.innerHTML = '';
+    return;
+  }
+
+  resultado.innerHTML = '<div class="card loading">Buscando os temas locais...</div>';
+
+  google.script.run
+    .withSuccessHandler(function(dados) {
+      if (!dados || !dados.length) {
+        resultado.innerHTML = '<div class="card mensagem">Nenhum registro encontrado na aba Temas Locais para este mês.</div>';
+        return;
+      }
+
+      let html = '';
+
+      dados.forEach(function(cong, indiceCong) {
+        html += '<div class="card troca-congregacao" data-local-index="' + indiceCong + '">' +
+          '<h3 style="margin-bottom:6px;">📍 ' + escapar(cong.congregacao) + '</h3>' +
+          (cong.endereco ? '<div style="font-size:14px;color:#555;"><strong>Endereço:</strong> ' + escapar(cong.endereco) + '</div>' : '') +
+          '<div style="margin-top:12px;"><strong>Selecione os temas locais:</strong></div>';
+
+        if (!cong.oradores || !cong.oradores.length) {
+          html += '<div class="mensagem">Nenhum orador cadastrado.</div>';
+        } else {
+          cong.oradores.forEach(function(orador, indiceOrador) {
+            html += '<div class="troca-orador">' +
+              '<div class="troca-orador-titulo">🎤 ' + escapar(orador.nome || 'Orador') + '</div>';
+
+            if (!orador.temas || !orador.temas.length) {
+              html += '<div style="color:#666;">Nenhum tema cadastrado.</div>';
+            } else {
+              orador.temas.forEach(function(tema, indiceTema) {
+                const id = 'localTema_' + indiceCong + '_' + indiceOrador + '_' + indiceTema;
+                html += '<label class="troca-tema-item" for="' + id + '">' +
+                  '<input type="checkbox" id="' + id + '" class="local-checkbox" ' +
+                  'data-congregacao="' + indiceCong + '" data-orador="' + indiceOrador + '" data-tema="' + indiceTema + '">' +
+                  '<div class="troca-tema-info">' +
+                  '<div class="troca-tema-nome">' + escapar(tema.numero) + ' — ' + escapar(tema.tema) + '</div>' +
+                  '<div class="troca-tema-data">Última realização: ' + escapar(tema.ultimaData || 'não encontrada') + '</div>' +
+                  '</div>' +
+                  '</label>';
+              });
+            }
+
+            html += '</div>';
+          });
+        }
+
+        html += '<div class="troca-acoes">' +
+          '<button class="btn-principal" onclick="enviarTemasLocaisWhatsApp(' + indiceCong + ')">📲 Enviar por WhatsApp</button>' +
+          '<button class="btn-secundario" onclick="marcarNenhumTemaLocal(' + indiceCong + ')">Limpar seleção</button>' +
+          '</div>' +
+          '</div>';
+      });
+
+      resultado.innerHTML = html;
+      window.dadosTemasLocaisAtual = dados;
+    })
+    .withFailureHandler(function(erro) {
+      resultado.innerHTML = '<div class="card mensagem">Erro ao buscar os temas locais.<br>' + escapar(erro.message || erro) + '</div>';
+    })
+    .consultarTemasLocaisPorMes(valorMes);
+}
+
+function marcarNenhumTemaLocal(indiceCong) {
+  document.querySelectorAll('.local-checkbox[data-congregacao="' + indiceCong + '"]').forEach(function(cb) {
+    cb.checked = false;
+  });
+}
+
+function enviarTemasLocaisWhatsApp(indiceCong) {
+  const dados = window.dadosTemasLocaisAtual || [];
+  const congregacao = dados[indiceCong];
+  if (!congregacao) return;
+
+  const checkboxes = document.querySelectorAll('.local-checkbox[data-congregacao="' + indiceCong + '"]:checked');
+  if (!checkboxes.length) {
+    alert('Selecione pelo menos um tema para enviar.');
+    return;
+  }
+
+  const selecionados = {};
+
+  checkboxes.forEach(function(cb) {
+    const indiceOrador = Number(cb.dataset.orador);
+    const indiceTema = Number(cb.dataset.tema);
+    const orador = congregacao.oradores[indiceOrador];
+    const tema = orador && orador.temas ? orador.temas[indiceTema] : null;
+    if (!orador || !tema) return;
+
+    if (!selecionados[indiceOrador]) {
+      selecionados[indiceOrador] = { nome: orador.nome, temas: [] };
+    }
+    selecionados[indiceOrador].temas.push(tema);
+  });
+
+  const select = document.getElementById('localMes');
+  const mesTexto = select && select.selectedOptions.length ? select.selectedOptions[0].textContent : '';
+
+  let mensagem = 'Temas Locais — ' + mesTexto + '\n';
+  mensagem += 'Congregação: ' + congregacao.congregacao + '\n\n';
+
+  Object.keys(selecionados).forEach(function(chave) {
+    const item = selecionados[chave];
+    mensagem += item.nome + '\n';
+    item.temas.forEach(function(tema) {
+      mensagem += '• ' + tema.numero + ' — ' + tema.tema + '\n';
+    });
+    mensagem += '\n';
+  });
+
+  const url = 'https://wa.me/?text=' + encodeURIComponent(mensagem.trim());
+  window.open(url, '_blank');
+}
+
+/********************************-----------------
+ * OUTRAS TELAS PLACEHOLDERS
+ *************************************************/
+function carregarMesesTemasDoMes() {}
+function consultarTemasDoMes() {}
+</script>
+</body>
+</html>
+
