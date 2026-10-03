@@ -1,0 +1,10 @@
+{
+  "name": "Palestras",
+  "short_name": "Palestras",
+  "description": "Aplicativo de consulta de palestras",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f4f6f8",
+  "theme_color": "#1f4e78",
+  "orientation": "portrait"
+}
