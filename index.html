@@ -1,2562 +1,1851 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#07934f">
-<meta name="background-color" content="#f4f7f6">
-<meta name="description" content="Portaria - Controle de Encomendas">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Portaria">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="manifest" href="./manifest.webmanifest">
-<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
-<link rel="apple-touch-icon" href="./icon-192.png">
-<title>Controle de Encomendas</title>
-<!-- Biblioteca do Leitor de Código de Barras -->
-<script src="https://unpkg.com/html5-qrcode"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+<title>Palestras</title>
 <style>
-*{box-sizing:border-box;}
-html,body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background:#f3f7fc;color:#17345f;min-height:100vh;overflow-x:hidden;}
-button,input,select{font-family:inherit;}
-.header{background:linear-gradient(135deg,#0878ed,#1769d8);color:white;padding:21px 22px 19px;box-shadow:0 4px 14px rgba(0,0,0,.18);}
-.header-inner{max-width:1100px;margin:auto;display:flex;align-items:center;gap:17px;}
-.header-info{flex:1;min-width:0;}
-.header-refresh{border:2px solid rgba(255,255,255,.9);background:rgba(255,255,255,.12);color:white;border-radius:11px;padding:10px 13px;font-size:15px;font-weight:900;cursor:pointer;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.12);}
-.header-refresh:active{transform:scale(.98);}
-.header-refresh:disabled{opacity:.6;cursor:not-allowed;}
-.header-icon{width:62px;height:62px;border:3px solid white;border-radius:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;background:#0b4da2;}
-.header-icon img{width:100%;height:100%;object-fit:cover;display:block;}
-.header-title{font-size:32px;font-weight:900;line-height:1.05;}
-.header-subtitle{margin-top:7px;font-size:18px;font-weight:500;opacity:.98;}
-.container{width:min(calc(100% - 24px),1100px);margin:15px auto 32px;}
-.card{background:#fff;border-radius:19px;box-shadow:0 5px 18px rgba(34,73,120,.10);border:1px solid #e9f0f8;}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-/* SISTEMA DE ABAS AJUSTADO PARA ROLAGEM HORIZONTAL */
-.nav-tabs{
-    display:flex;
-    flex-wrap:nowrap;
-    overflow-x:auto;
-    overflow-y:hidden;
-    -webkit-overflow-scrolling:touch;
-    gap:8px;
-    margin-bottom:15px;
-    width:100%;
-}
-.nav-tabs::-webkit-scrollbar{
-    display:none;
-}
-.tab-btn{
-    flex:0 0 auto;
-    white-space:nowrap;
-    padding:12px 16px;
-    background:#e2eaf4;
-    border:none;
-    border-radius:13px;
-    font-size:15px;
-    font-weight:900;
-    color:#174987;
-    cursor:pointer;
-    transition:all 0.2s;
-    box-shadow:0 2px 5px rgba(0,0,0,0.05);
-    text-align:center;
-}
-.tab-btn.active{background:linear-gradient(135deg,#0878ed,#1769dc);color:white;box-shadow:0 4px 10px rgba(0,105,220,.22);}
-.tab-content{display:none;}
-.tab-content.active{display:block;}
-
-.registration{padding:18px;margin-bottom:15px;}
-.section-title{display:flex;align-items:center;gap:12px;font-size:27px;font-weight:900;color:#10458d;margin:0 0 14px;}
-.section-icon{width:45px;height:45px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:27px;}
-.section-icon.orange{color:#ed6800;background:#fff0df;}
-.form-grid{display:grid;grid-template-columns:1fr;gap:11px;}
-.field{border:2px solid #c7ddf7;border-radius:13px;min-height:80px;padding:10px 15px;background:#fff;}
-.field-label{display:flex;align-items:center;gap:9px;color:#174987;font-size:16px;font-weight:800;margin-bottom:6px;}
-.field-icon{font-size:23px;}
-.field input, .field select{width:100%;border:0;outline:0;background:transparent;color:#17345f;font-size:19px;font-weight:500;padding:0;}
-.field input::placeholder{color:#6883aa;}
-.photo-field{border:2px solid #ff8500;background:linear-gradient(135deg,#fffaf3,#fff3e2);}
-.photo-field .field-label{color:#e86700;}
-.photo-input-wrapper{position:relative;min-height:43px;border:2px dashed #ff8b00;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#e86700;font-size:16px;font-weight:800;cursor:pointer;overflow:hidden;}
-.photo-input-wrapper input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;}
-.photo-preview{display:none;margin-top:8px;width:100%;max-height:140px;object-fit:cover;border-radius:9px;border:1px solid #ffb15a;}
-.save-button{width:100%;margin-top:13px;border:0;border-radius:13px;background:linear-gradient(135deg,#0878ed,#1769dc);color:white;font-size:21px;font-weight:900;padding:15px 12px;cursor:pointer;box-shadow:0 4px 10px rgba(0,105,220,.22);}
-.save-button:active{transform:scale(.985);}
-.save-button:disabled{opacity:.55;}
-
-.pending-summary{background:linear-gradient(135deg,#ff9700,#ff8100);color:white;border-radius:19px;padding:17px 18px 18px;margin-bottom:15px;text-align:center;box-shadow:0 5px 16px rgba(255,126,0,.20);}
-.pending-title{display:flex;align-items:center;justify-content:center;gap:11px;font-size:23px;font-weight:900;margin-bottom:11px;}
-.pending-number{width:260px;max-width:80%;margin:auto;border-radius:27px;background:rgba(205,86,0,.38);padding:6px 20px 9px;}
-.pending-number strong{display:block;font-size:58px;line-height:1;font-weight:900;}
-.pending-number span{display:block;font-size:20px;font-weight:800;margin-top:3px;}
-
-/* CARTÕES DE RESUMO */
-.summary-highlight{background:linear-gradient(135deg,#0878ed,#1769dc);color:white;border-radius:19px;padding:18px;margin-bottom:15px;text-align:center;box-shadow:0 5px 16px rgba(0,105,220,.22);}
-.summary-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:15px;}
-.summary-card{background:#fff;border-radius:17px;padding:16px;border:1px solid #e9f0f8;box-shadow:0 4px 14px rgba(34,73,120,.08);}
-.summary-card-title{font-size:15px;font-weight:800;color:#58708f;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
-.summary-card-value{font-size:28px;font-weight:900;color:#10458d;}
-.summary-table{width:100%;border-collapse:collapse;margin-top:8px;}
-.summary-table th, .summary-table td{padding:9px 12px;text-align:left;font-size:15px;border-bottom:1px solid #eef3f9;}
-.summary-table th{color:#174987;font-weight:800;background:#f5f8fc;}
-.summary-table td{color:#31527d;font-weight:600;}
-
-.filter-card{padding:15px 18px;margin-bottom:15px;}
-.filter-title{display:flex;align-items:center;gap:10px;font-size:25px;font-weight:900;color:#10458d;margin-bottom:11px;}
-.filter-box{border:2px solid #c7ddf7;border-radius:12px;min-height:53px;display:flex;align-items:center;padding:0 14px;gap:10px;color:#10458d;font-size:21px;}
-.filter-box select, .filter-box input{width:100%;border:0;outline:0;background:transparent;font-size:18px;color:#17345f;}
-.list-card{padding:13px;margin-bottom:15px;}
-.list-title{display:flex;align-items:center;gap:11px;color:#10458d;font-size:25px;font-weight:900;margin:3px 5px 12px;}
-.apartment-group{border:2px solid #c7def8;border-radius:13px;overflow:hidden;margin-bottom:11px;background:#fff;}
-.apartment-header{min-height:47px;background:#e6f2ff;display:flex;align-items:center;justify-content:space-between;padding:7px 14px;color:#10458d;font-weight:900;}
-.apartment-name{display:flex;align-items:center;gap:9px;font-size:20px;}
-.apartment-date{display:flex;align-items:center;gap:7px;font-size:15px;color:#31547f;font-weight:700;}
-.recipient-row{position:relative;padding:11px 13px 10px;min-height:106px;border-bottom:1px solid #dce8f5;}
-.recipient-row:last-child{border-bottom:0;}
-.recipient-main{padding-right:125px;}
-.recipient-name{display:flex;align-items:center;gap:9px;color:#10458d;font-size:20px;font-weight:900;margin-bottom:6px;}
-.recipient-icon{font-size:24px;}
-.senders{display:flex;align-items:flex-start;gap:8px;color:#496486;font-size:16px;line-height:1.35;padding-right:5px;}
-.senders-icon{flex-shrink:0;font-size:19px;}
-.senders strong{color:#31527d;}
-.volume-badge{position:absolute;right:12px;top:10px;min-width:57px;height:43px;padding:2px 9px;border-radius:10px;background:#0878ed;color:white;display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:900;box-shadow:0 3px 7px rgba(0,100,220,.17);}
-.actions{position:absolute;right:10px;bottom:8px;display:flex;gap:5px;}
-.whatsapp-button{border:0;border-radius:9px;background:#08a66a;color:white;font-size:15px;font-weight:900;padding:9px 15px;min-width:130px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 3px 7px rgba(0,130,80,.16);}
-.retire-button{border:0;border-radius:8px;background:#dc3545;color:#fff;font-size:12px;font-weight:800;padding:8px 9px;cursor:pointer;}
-.retire-all-btn{border:0;border-radius:8px;background:#dc3545;color:#fff;font-size:12px;font-weight:800;padding:6px 10px;cursor:pointer;}
-.photo-button{border:2px solid #ff9700;border-radius:8px;background:#fff8ed;color:#e66a00;font-size:13px;font-weight:900;padding:8px 9px;cursor:pointer;}
-.report-card{background:#fff;border-radius:19px;padding:16px 18px;box-shadow:0 5px 18px rgba(34,73,120,.10);display:flex;align-items:center;gap:15px;margin-top:15px;}
-.report-icon{font-size:49px;color:#0878ed;flex-shrink:0;}
-.report-content{flex:1;}
-.report-title{color:#10458d;font-size:20px;font-weight:900;margin-bottom:5px;}
-.report-description{color:#58708f;font-size:14px;line-height:1.35;}
-.report-button{border:0;border-radius:8px;background:#08a66a;color:white;font-size:13px;font-weight:900;padding:8px 12px;white-space:nowrap;cursor:pointer;}
-.empty{text-align:center;color:#70849f;padding:32px 15px;font-size:18px;}
-.loading{text-align:center;color:#55708f;padding:28px;font-size:18px;}
-.modal-overlay{position:fixed;inset:0;background:rgba(8,35,67,.48);display:none;align-items:center;justify-content:center;padding:20px;z-index:1000;}
-.modal-overlay.show{display:flex;}
-.modal{width:min(100%,480px);max-height:90vh;overflow:auto;background:#fff;border-radius:19px;padding:21px;box-shadow:0 12px 35px rgba(0,0,0,.25);}
-.modal-title{font-size:23px;font-weight:900;color:#123f80;margin-bottom:16px;}
-.modal-field{margin-bottom:12px;}
-.modal-field label{display:block;color:#426181;font-size:15px;font-weight:800;margin-bottom:6px;}
-.modal-field input{width:100%;border:2px solid #cad9ea;border-radius:9px;padding:12px;font-size:17px;outline:0;}
-.modal-buttons{display:flex;gap:8px;margin-top:16px;}
-.modal-buttons button{flex:1;border:0;border-radius:9px;padding:13px;font-size:15px;font-weight:900;cursor:pointer;}
-.cancel-button{background:#edf2f7;color:#4c6179;}
-.confirm-button{background:#08a66a;color:white;}
-.confirm-button:disabled{opacity:.55;cursor:not-allowed;}
-.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#17345f;color:#fff;border-radius:10px;padding:13px 18px;font-size:15px;font-weight:800;z-index:3000;transition:.25s;max-width:calc(100% - 30px);text-align:center;}
-.toast.show{opacity:1;transform:translate(-50%,0);}
-/* LAYOUT RESPONSIVO PARA TELAS GRANDES
-   Mantém o layout atual no celular e apenas aproveita a largura
-   disponível em tablets e computadores. */
-@media (min-width:901px){
-  .header{padding:18px 28px 17px;}
-  .header-inner{max-width:1400px;}
-  .header-title{font-size:32px;}
-  .header-subtitle{font-size:18px;}
-
-  .container{width:calc(100% - 40px);max-width:1400px;margin:14px auto 28px;}
-
-  .nav-tabs{gap:8px;margin-bottom:14px;overflow:visible;}
-  .tab-btn{flex:1 1 0;min-width:0;padding:12px 14px;font-size:15px;}
-
-  .registration{padding:18px;margin-bottom:14px;}
-  .section-title{font-size:27px;margin-bottom:13px;}
-  .form-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px;}
-  .field{min-height:76px;padding:9px 14px;}
-  .field-label{font-size:16px;margin-bottom:5px;}
-  .field input,.field select{font-size:18px;}
-  .photo-input-wrapper{min-height:40px;}
-
-  .photo-code-field{min-height:76px;}
-  .photo-code-row{display:flex;align-items:center;gap:10px;min-width:0;}
-  .photo-code-row > input{flex:1;min-width:0;}
-  .photo-code-button{
-    width:56px;height:56px;flex:0 0 56px;border:0;border-radius:12px;
-    background:linear-gradient(135deg,#08a45b,#07934f);color:#fff;
-    display:flex;align-items:center;justify-content:center;font-size:27px;
-    cursor:pointer;box-shadow:0 3px 8px rgba(5,137,75,.16);
-    position:relative;overflow:hidden;
-  }
-  .photo-code-status{margin-top:5px;font-size:12px;color:#718394;line-height:1.2;}
-  .save-button{margin-top:11px;padding:13px 12px;font-size:20px;}
-
-  .pending-summary{padding:14px 18px 15px;margin-bottom:14px;}
-  .pending-title{font-size:22px;margin-bottom:8px;}
-  .pending-number{padding:5px 20px 8px;}
-  .pending-number strong{font-size:52px;}
-
-  /* Pendentes */
-  .filter-card{padding:13px 16px;margin-bottom:13px;}
-  .filter-title{font-size:23px;margin-bottom:9px;}
-  .filter-box{min-height:49px;font-size:19px;}
-  .list-card{padding:12px;margin-bottom:13px;}
-  .list-title{font-size:23px;margin:2px 5px 10px;}
-  .recipient-row{min-height:88px;padding:9px 13px;}
-  .recipient-main{padding-right:145px;}
-  .recipient-name{font-size:18px;margin-bottom:4px;}
-  .senders{font-size:15px;}
-
-  /* Pesquisa */
-  #aba-pesquisa .filter-card > div:nth-child(2){
-    display:grid !important;
-    grid-template-columns:minmax(0,2fr) minmax(190px,1fr) auto;
-    align-items:center;
-  }
-  #aba-pesquisa .filter-box{min-width:0;}
-  #aba-pesquisa .filter-box input{font-size:17px;}
-  #aba-pesquisa .filter-card button{height:49px;white-space:nowrap;}
-
-  /* Entregadores */
-  #aba-entregadores .form-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
-
-  /* Resumo */
-  .summary-highlight{padding:15px 18px;margin-bottom:13px;}
-  .summary-highlight #resumoTotalDia{font-size:52px !important;}
-  .summary-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:13px;}
-  .summary-card{padding:13px;}
-  .summary-card-title{font-size:14px;}
-  .summary-card-value{font-size:26px;}
-
-  #aba-resumo > section.card{padding:15px !important;margin-bottom:13px !important;}
-  #aba-resumo .section-title{font-size:20px !important;margin-bottom:8px !important;}
-  .summary-table th,.summary-table td{padding:8px 10px;font-size:14px;}
+html, body { 
+  margin: 0 !important; 
+  padding: 0 !important; 
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+  background: #f4f6f8; 
+  color: #222; 
+  width: 100vw;
+  height: 100dvh;
+  overflow: hidden; 
 }
 
-@media (min-width:1200px){
-  .header{padding-left:30px;padding-right:30px;}
-  .header-inner{gap:17px;}
-  .header-icon{width:62px;height:62px;}
-  .container{width:calc(100% - 56px);}
-  .form-grid{gap:11px 14px;}
-  .field{min-height:78px;}
-  .field-label{font-size:16px;}
-  .field input,.field select{font-size:19px;}
-  .pending-summary{display:flex;align-items:center;justify-content:center;gap:24px;text-align:left;padding:12px 22px;}
-  .pending-title{margin-bottom:0;}
-  .pending-number{margin:0;width:260px;max-width:none;text-align:center;}
+.app-wrapper {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100%;
+  margin: 0 !important;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  overflow-y: auto; 
 }
 
-@media (max-width:600px){
-  .header-inner{gap:10px;}
-  .header-icon{width:50px;height:50px;border-radius:12px;}
-  .header-title{font-size:23px;}
-  .header-subtitle{font-size:14px;}
-  .header-refresh{padding:9px 10px;font-size:13px;}
+.page { display: none; flex: 1; flex-direction: column; }
+.page.active { display: flex; }
+
+header { 
+  background: #1f4e78; 
+  color: white; 
+  padding: 16px 20px; 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+  width: 100%;
+  font-size: 22px;
+  font-weight: bold;
+}
+.header-titulo { display: flex; align-items: center; gap: 12px; }
+.header-menu-icon { font-size: 24px; cursor: pointer; }
+
+.card { 
+  background: white; 
+  border-radius: 10px; 
+  padding: 18px; 
+  margin-bottom: 12px; 
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08); 
+  flex-shrink: 0;
+  width: 100%;
 }
 
-/* ===== NOVO VISUAL — APENAS APARÊNCIA ===== */
-html,body{
-  background:#f4f7f6;
-  color:#263b52;
+.cards-resumo { 
+  display: grid; 
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 12px; 
+  margin-bottom: 12px;
+  flex-shrink: 0;
 }
-body{
-  padding-bottom:88px;
-}
-.header{
-  background:linear-gradient(135deg,#07934f,#087c49);
-  padding:18px 20px 17px;
-  box-shadow:0 3px 12px rgba(22,75,52,.18);
-}
-.header-inner{max-width:1400px;gap:14px;}
-.header-icon{
-  width:58px;height:58px;border:2px solid rgba(255,255,255,.92);
-  border-radius:16px;background:rgba(255,255,255,.10);
-}
-.header-title{font-size:28px;letter-spacing:-.3px;}
-.header-subtitle{font-size:16px;margin-top:5px;}
-.header-refresh{
-  border:2px solid rgba(255,255,255,.72);
-  background:rgba(255,255,255,.10);
-  border-radius:12px;padding:9px 12px;font-size:14px;
-  box-shadow:none;
-}
-.container{
-  width:min(calc(100% - 20px),1400px);
-  margin:14px auto 22px;
-}
-/* Menu inferior fixo com as 5 abas originais */
-.nav-tabs{
-  position:fixed;
-  left:0;right:0;bottom:0;
-  z-index:900;
-  width:100%;height:78px;
-  margin:0;
-  padding:7px 4px calc(7px + env(safe-area-inset-bottom));
-  display:flex;align-items:stretch;justify-content:space-around;
-  gap:2px;overflow:visible;
-  background:rgba(255,255,255,.98);
-  border-top:1px solid #dfe8e3;
-  box-shadow:0 -4px 16px rgba(31,65,51,.10);
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
-}
-.nav-tabs::-webkit-scrollbar{display:none;}
-.tab-btn{
-  flex:1 1 0;
-  min-width:0;
-  height:64px;
-  padding:5px 2px 4px;
-  background:transparent;
-  border:0;
-  border-radius:10px;
-  box-shadow:none;
-  color:#68788b;
-  font-size:11px;
-  font-weight:800;
-  white-space:normal;
-  line-height:1.15;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:4px;
-}
-.tab-btn.active{
-  background:transparent;
-  color:#079653;
-  box-shadow:none;
-}
-.tab-btn:active{transform:scale(.96);}
-.card,
-.registration,
-.filter-card,
-.list-card,
-.report-card,
-.summary-card{
-  border-color:#e3ebe7;
-  box-shadow:0 4px 16px rgba(36,72,55,.07);
-}
-.registration{padding:17px;margin-bottom:13px;}
-.section-title,
-.filter-title,
-.list-title{color:#0b7750;}
-.section-icon.orange{color:#0b9655;background:#e5f6ed;}
-.field{border-color:#d3e2dc;background:#fff;border-radius:12px;}
-.field-label{color:#38556e;}
-.field input,.field select{color:#263b52;}
-.field input::placeholder{color:#8191a0;}
-.photo-field{border-color:#b9ddcb;background:#f7fcf9;}
-.photo-field .field-label{color:#0b8750;}
-.photo-input-wrapper{border-color:#69bb91;color:#0b8750;background:#f9fdfb;}
-.save-button{
-  background:linear-gradient(135deg,#08a45b,#07934f);
-  box-shadow:0 4px 10px rgba(5,137,75,.18);
-}
-.pending-summary{
-  background:linear-gradient(135deg,#f3fbf7,#e5f6ed);
-  color:#0b6847;
-  border:1px solid #cfe9db;
-  box-shadow:0 4px 14px rgba(36,100,70,.07);
-}
-.pending-number{background:#d9f1e4;}
-.summary-highlight{background:linear-gradient(135deg,#079653,#087d4a);box-shadow:0 4px 14px rgba(5,137,75,.17);}
-.summary-card-value{color:#0b7750;}
-.summary-table th{color:#0b7750;background:#f1f8f4;}
-.filter-box{border-color:#d3e2dc;background:#fff;}
-.filter-box select,.filter-box input{color:#263b52;}
-.apartment-group{border-color:#d5e5de;}
-.apartment-header{background:#edf8f2;color:#0b7750;}
-.recipient-name{color:#17496a;}
-.volume-badge{background:#0b9655;box-shadow:0 3px 7px rgba(5,137,75,.15);}
-.report-icon{color:#0b9655;}
-.report-title{color:#0b7750;}
-.whatsapp-button,.report-button,.confirm-button{background:#08a45b;}
-.modal-title{color:#0b7750;}
-.modal-field input{border-color:#cbded5;}
-.toast{background:#174c3a;}
-.empty,.loading{color:#718394;}
+.resumo { text-align: center; margin-bottom: 0 !important; }
+.resumo-numero { font-size: 38px; font-weight: bold; color: #1f4e78; line-height: 1.1; }
+.resumo-label { font-size: 15px; margin-top: 5px; color: #555; }
 
-@media (min-width:901px){
-  body{padding-bottom:96px;}
-  .header{padding:18px 28px 17px;}
-  .header-title{font-size:30px;}
-  .header-subtitle{font-size:17px;}
-  .container{width:calc(100% - 40px);max-width:1400px;margin:14px auto 26px;}
-  .nav-tabs{height:82px;padding:8px 12px 9px;}
-  .tab-btn{height:64px;font-size:12px;}
+.menu-botoes { 
+  display: grid; 
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 10px; 
+  flex-shrink: 0;
+  width: 100%;
 }
-@media (max-width:600px){
-  .header{padding:15px 13px 14px;}
-  .header-inner{gap:9px;}
-  .header-icon{width:52px;height:52px;border-radius:14px;}
-  .header-title{font-size:22px;line-height:1.05;}
-  .header-subtitle{font-size:13px;margin-top:4px;}
-  .header-refresh{padding:8px 9px;font-size:12px;border-radius:10px;}
-  .container{width:calc(100% - 14px);margin:10px auto 18px;}
-  .section-title{font-size:22px;}
-  .filter-title{font-size:21px;}
-  .list-title{font-size:21px;}
-  .field{min-height:72px;}
-  .field input,.field select{font-size:17px;}
-  .photo-code-button{width:50px;height:50px;flex-basis:50px;font-size:25px;}
-  .photo-code-status{font-size:11px;}
-  .save-button{font-size:18px;padding:14px 10px;}
-  .nav-tabs{height:76px;padding-left:2px;padding-right:2px;}
-  .tab-btn{height:62px;font-size:10.5px;gap:3px;}
+.btn-principal, .btn-secundario, .btn-sucesso, .btn-perigo { 
+  border: none; 
+  border-radius: 8px; 
+  padding: 14px 16px; 
+  font-size: 15px; 
+  font-weight: bold; 
+  cursor: pointer; 
+}
+.btn-principal { background: #1f4e78; color: white; }
+.btn-secundario { background: #6c757d; color: white; }
+.btn-sucesso { background: #2e7d32; color: white; }
+.btn-perigo { background: #b3261e; color: white; }
+.btn-link { background: #e0e0e0; color: #333; padding: 6px 12px; font-size: 13px; text-decoration: none; border-radius: 6px; display: inline-block; }
+button:active { transform: scale(0.97); }
+
+h2, h3 { color: #1f4e78; margin-top: 0; }
+input, select, textarea { 
+  width: 100%; 
+  padding: 12px; 
+  font-size: 16px !important; 
+  border: 1px solid #ccc; 
+  border-radius: 8px; 
+  background: white; 
 }
 
+.campo-pesquisa { display: flex; gap: 10px; flex-wrap: wrap; }
+.campo-pesquisa input, .campo-pesquisa select { flex: 1; min-width: 180px; }
 
-/* ===== AJUSTES DO NOVO MODELO - HOME / NAVEGAÇÃO ===== */
-.home-summary-grid{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:10px;
-  margin:0 0 14px;
-}
-.summary-home-grid{
-  grid-template-columns:repeat(5,minmax(0,1fr));
-}
-.summary-home-grid .home-summary-card{
-  min-height:148px;
-}
-.summary-provider-value{
-  font-size:20px;
-  line-height:1.08;
-  overflow-wrap:anywhere;
-}
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.form-campo { display: flex; flex-direction: column; gap: 6px; }
+.form-campo-completo { grid-column: 1 / -1; }
+.form-campo label { font-weight: bold; color: #444; font-size: 14px; }
+.acoes-formulario { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; }
 
-.home-summary-card{
-  min-height:132px;
-  border:1px solid #dce9e3;
-  border-radius:18px;
-  background:#fff;
-  box-shadow:0 5px 16px rgba(36,72,55,.08);
-  padding:13px 12px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  overflow:hidden;
-}
-.home-summary-card.pending{
-  background:linear-gradient(145deg,#08a45b,#078b4d);
-  border-color:#078b4d;
-  color:#fff;
-}
-.home-summary-card.day{
-  background:linear-gradient(145deg,#eef9f4,#ffffff);
-}
-.home-summary-icon{
-  width:34px;height:34px;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:22px;
-  background:#e7f7ee;color:#07934f;
-}
-.home-summary-card.pending .home-summary-icon{
-  background:rgba(255,255,255,.18);color:#fff;
-}
-.home-summary-title{
-  margin-top:7px;
-  font-size:13px;
-  line-height:1.12;
-  font-weight:900;
-}
-.home-summary-value{
-  margin-top:3px;
-  font-size:34px;
-  line-height:1;
-  font-weight:900;
-  letter-spacing:-.5px;
-}
-.home-summary-card.photo{
-  padding:10px;
-  justify-content:center;
-  align-items:stretch;
-  background:linear-gradient(145deg,#fffaf0,#fff);
-  border-color:#eadfbf;
-}
-.photo-card-button{
-  position:relative;
-  flex:1;
-  min-height:108px;
-  border:2px solid #e7b72f;
-  border-radius:15px;
-  background:linear-gradient(145deg,#fff5c9,#ffed9c);
-  color:#735700;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:5px;
-  cursor:pointer;
-  text-align:center;
-  font-size:16px;
-  font-weight:900;
-  line-height:1.05;
-  box-shadow:0 3px 8px rgba(173,128,0,.10);
-}
-.photo-card-button .camera-icon{font-size:32px;line-height:1;}
-.photo-card-button input{
-  position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;
-}
-.photo-card-status{
-  max-height:64px;
-  overflow:auto;
-  margin-top:6px;
-  font-size:11px;
-}
-.home-photo-list{width:100%;}
-.home-photo-list > div{font-size:12px !important;}
+.mensagem, .loading { text-align: center; color: #666; padding: 25px 10px; }
+.chip { display: inline-block; background: #e8f0f7; color: #1f4e78; padding: 6px 10px; border-radius: 20px; margin: 4px 4px 4px 0; font-size: 13px; font-weight: bold; }
 
-/* Barra inferior com as 5 páginas: ícones e textos maiores */
-.nav-tabs{
-  height:94px;
-  padding:8px 5px calc(8px + env(safe-area-inset-bottom));
+.badge-situacao {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: bold;
+  color: white;
 }
-.tab-btn{
-  height:78px;
-  border-radius:13px;
-  font-size:15px;
-  font-weight:900;
-  line-height:1.05;
-  gap:5px;
-}
-.tab-btn::first-letter{font-size:27px;}
-.tab-btn.active{
-  color:#079653;
-}
-.tab-btn.active::after{
-  content:'';
-  width:34px;
-  height:4px;
-  border-radius:99px;
-  background:#079653;
-  margin-top:1px;
-}
-body{padding-bottom:100px;}
+.badge-atualizado { background-color: #2e7d32; }
+.badge-descontinuado { background-color: #b3261e; }
 
-@media (max-width:600px){
-  .home-summary-grid{gap:8px;margin-bottom:12px;}
-  .summary-home-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
-  .summary-home-grid .home-summary-card{min-height:132px;}
-  .home-summary-card{min-height:124px;padding:10px 8px;border-radius:15px;}
-  .home-summary-card.photo{padding:7px;}
-  .home-summary-icon{width:30px;height:30px;border-radius:9px;font-size:19px;}
-  .home-summary-title{font-size:12px;}
-  .home-summary-value{font-size:31px;}
-  .photo-card-button{min-height:108px;border-radius:13px;font-size:13px;}
-  .photo-card-button .camera-icon{font-size:29px;}
-  .nav-tabs{height:88px;padding-left:1px;padding-right:1px;}
-  .tab-btn{height:78px;font-size:14px;gap:4px;padding-left:1px;padding-right:1px;}
-  .tab-btn::first-letter{font-size:26px;}
-  body{padding-bottom:106px;}
-}
+/* Troca de Temas */
+.troca-orador { background: #f8f9fa; border-radius: 8px; padding: 12px; margin-top: 10px; }
+.troca-orador-titulo { font-size: 17px; font-weight: bold; color: #1f4e78; margin-bottom: 8px; }
+.troca-tema-item { display: flex; align-items: flex-start; gap: 10px; background: white; border: 1px solid #ddd; border-radius: 8px; padding: 10px; margin-top: 7px; }
+.troca-tema-item input[type="checkbox"] { width: 22px; height: 22px; flex: 0 0 auto; margin-top: 2px; }
+.troca-tema-info { flex: 1; min-width: 0; }
+.troca-tema-nome { font-weight: bold; font-size: 16px; }
+.troca-tema-data { color: #666; font-size: 13px; margin-top: 4px; }
+.troca-acoes { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.local-orador-slot { display: grid; grid-template-columns: minmax(180px, 1fr) minmax(110px, 150px) minmax(180px, 2fr) auto; gap: 10px; align-items: end; }
 
-
-@media (min-width:901px){
-  .summary-home-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;}
-  .summary-home-grid .home-summary-card{min-height:152px;padding:13px 12px;}
-  .summary-provider-value{font-size:20px;}
+/* Estilo para Modais de Diálogo Personalizados */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 15px;
 }
-@media (max-width:430px){
-  .summary-home-grid .home-summary-card{min-height:126px;}
-  .summary-provider-value{font-size:18px;}
-  .home-summary-title{font-size:12px;}
-  .home-summary-value{font-size:30px;}
+.modal-caixa {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+.modal-titulo { font-size: 18px; font-weight: bold; color: #1f4e78; margin-bottom: 10px; }
+.modal-mensagem { font-size: 15px; color: #444; margin-bottom: 20px; line-height: 1.4; }
+.modal-acoes { display: flex; justify-content: flex-end; gap: 10px; }
+
+@media (max-width: 600px) { 
+  .menu-botoes { grid-template-columns: 1fr; } 
+  .cards-resumo { grid-template-columns: 1fr; }
+  .campo-pesquisa { flex-direction: column; } 
+  .form-grid { grid-template-columns: 1fr; } 
+  .local-orador-slot { grid-template-columns: 1fr; }
 }
 </style>
 </head>
-<body>
-<header class="header">
-  <div class="header-inner">
-    <div class="header-icon"><img src="./logo-header.png" alt="Portaria"></div>
-    <div>
-      <div class="header-title">Controle de Encomendas</div>
-      <div class="header-subtitle">Registro e aviso de encomendas</div>
+
+<body onload="carregarResumo(); carregarCongregacaoLocal();">
+
+<div class="app-wrapper">
+  
+  <!-- INÍCIO -->
+  <section id="paginaInicio" class="page active">
+    <header>
+      <div class="header-titulo">
+        <span>📚</span>
+        <span>Palestras</span>
+      </div>
+      <div class="header-menu-icon" onclick="carregarResumo(); carregarCongregacaoLocal();">🔄</div>
+    </header>
+
+    <div class="cards-resumo">
+      <div class="card resumo" style="margin-bottom:0;">
+        <div id="totalTemas" class="resumo-numero">-</div>
+        <div class="resumo-label">Temas cadastrados</div>
+      </div>
+      <div class="card resumo" style="margin-bottom:0;">
+        <div id="totalMeses" class="resumo-numero">-</div>
+        <div class="resumo-label">Meses disponíveis</div>
+      </div>
     </div>
-    <button class="header-refresh" type="button" onclick="atualizarPagina()">🔄 Atualizar</button>
-  </div>
-</header>
-<main class="container">
-  <!-- 5 ABAS DE NAVEGAÇÃO -->
-  <div class="nav-tabs">
-    <button class="tab-btn active" onclick="mudarAba('cadastro', this)">📥 Registrar</button>
-    <button class="tab-btn" onclick="mudarAba('listagem', this)">📋 Pendentes</button>
-    <button class="tab-btn" onclick="mudarAba('pesquisa', this)">🔍 Pesquisa</button>
-    <button class="tab-btn" onclick="mudarAba('entregadores', this)">🚚 Entregadores</button>
-    <button class="tab-btn" onclick="mudarAba('resumo', this)">📊 Resumo</button>
-  </div>
 
-  <!-- ABA 1: REGISTRO -->
-  <div id="aba-cadastro" class="tab-content active">
-
-    <!-- Indicadores principais da tela Registrar -->
-    <section class="home-summary-grid" aria-label="Resumo do dia">
-      <div class="home-summary-card day">
-        <div class="home-summary-icon">📊</div>
-        <div class="home-summary-title">Total de entregas do dia</div>
-        <div class="home-summary-value" id="resumoTotalDiaCadastro">0</div>
+    <!-- Bloco Congregação Local -->
+    <div class="card" style="margin-top: 12px; margin-bottom: 12px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h3 style="margin: 0; color: #1f4e78;">🏛️ Congregação Local</h3>
+        <button id="btnEditarCongregacaoLocal" class="btn-principal" style="padding: 6px 12px; font-size: 13px;" onclick="alternarEdicaoCongregacaoLocal()">✏️ Editar</button>
       </div>
 
-      <div class="home-summary-card pending">
-        <div class="home-summary-icon">📦</div>
-        <div class="home-summary-title">Encomendas pendentes</div>
-        <div class="home-summary-value" id="totalPendente">0</div>
+      <div id="visualizacaoCongregacaoLocal">
+        <div style="font-size: 16px; font-weight: bold; color: #333;" id="dispNomeLocal">Carregando...</div>
+        <div style="font-size: 14px; color: #555; margin-top: 4px;" id="dispDiaHorarioLocal">-</div>
+        <div style="font-size: 14px; color: #555; margin-top: 2px;" id="dispEnderecoLocal">-</div>
       </div>
 
-      <div class="home-summary-card day">
-        <div class="home-summary-icon">🚚</div>
-        <div class="home-summary-title">Total de entregadores</div>
-        <div class="home-summary-value" id="resumoEntregadoresDiaCadastro">0</div>
-      </div>
-    </section>
-
-    <section class="card registration">
-      <div class="section-title">
-        <div class="section-icon orange">📦</div>
-        <span>Registrar encomenda</span>
-      </div>
-      <div class="form-grid">
-        <div class="field">
-          <div class="field-label"><span class="field-icon">👤</span>Porteiro</div>
-          <input type="text" id="porteiro" placeholder="Nome do porteiro">
-        </div>
-
-        <div class="field photo-code-field">
-          <div class="field-label"><span class="field-icon">📷</span>Foto da Encomenda / Código lido</div>
-          <div class="photo-code-row" style="display:flex !important;align-items:center !important;gap:10px !important;width:100% !important;min-width:0 !important;">
-            <input type="text" id="codigoBarrasVisual" placeholder="Tire uma foto ou leia o código" readonly style="flex:1 1 auto !important;width:auto !important;min-width:0 !important;">
-            <button type="button" class="photo-code-button" title="Tirar foto da encomenda" aria-label="Tirar foto da encomenda" onclick="document.getElementById('foto').click()" style="width:56px !important;height:56px !important;min-width:56px !important;max-width:56px !important;flex:0 0 56px !important;padding:0 !important;margin:0 !important;border:0 !important;border-radius:12px !important;background:#08a45b !important;color:#fff !important;display:flex !important;align-items:center !important;justify-content:center !important;font-size:27px !important;line-height:1 !important;cursor:pointer !important;box-shadow:0 3px 8px rgba(5,137,75,.16) !important;appearance:none !important;-webkit-appearance:none !important;">
-              <span style="display:block !important;line-height:1 !important;">📷</span>
-            </button>
-            <input type="file" id="foto" accept="image/*" capture="environment" style="display:none !important;width:0 !important;height:0 !important;">
+      <div id="formularioCongregacaoLocal" style="display: none; margin-top: 10px;">
+        <div class="form-grid">
+          <div class="form-campo form-campo-completo">
+            <label for="inputNomeLocal">Nome da Congregação</label>
+            <input type="text" id="inputNomeLocal" placeholder="Ex.: Congregação Central">
           </div>
-          <div id="fotoTexto" class="photo-code-status">Tire uma foto da encomenda para ler o código.</div>
-          <div id="fotosAdicionadas" class="home-photo-list photo-card-status"></div>
-          <img id="fotoPreview" class="photo-preview" style="display:none;">
+          <div class="form-campo">
+            <label for="inputDiaLocal">Dia da Reunião</label>
+            <input type="text" id="inputDiaLocal" placeholder="Ex.: Domingo">
+          </div>
+          <div class="form-campo">
+            <label for="inputHorarioLocal">Horário</label>
+            <input type="text" id="inputHorarioLocal" placeholder="Ex.: 18:00">
+          </div>
+          <div class="form-campo form-campo-completo">
+            <label for="inputEnderecoLocal">Endereço</label>
+            <input type="text" id="inputEnderecoLocal" placeholder="Rua, número, bairro">
+          </div>
         </div>
-
-        <div class="field">
-          <div class="field-label"><span class="field-icon">👤</span>Destinatário / Apartamento</div>
-          <input type="text" id="destinatario" placeholder="Ex.: João Silva - Apto 203" list="sugestoesDestinatarios">
-          <datalist id="sugestoesDestinatarios"></datalist>
-        </div>
-        <div class="field">
-          <div class="field-label"><span class="field-icon">📦</span>Remetente</div>
-          <input type="text" id="remetente" placeholder="Digite ou escolha um remetente" list="sugestoesRemetentesRegistrar" autocomplete="off">
-          <datalist id="sugestoesRemetentesRegistrar"></datalist>
-          <button type="button" onclick="adicionarRemetenteRegistrar()" style="margin-top:8px;border:0;border-radius:9px;background:#edf2f7;color:#31527d;font-size:14px;font-weight:800;padding:9px 11px;cursor:pointer;">＋ Adicionar novo remetente</button>
-        </div>
-        <div class="field">
-          <div class="field-label"><span class="field-icon">📦</span>Quantidade de volumes</div>
-          <select id="quantidade">
-            <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
-            <option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
-            <option value="9">9</option><option value="10">10</option>
-          </select>
-        </div>
-        <div class="field">
-          <div class="field-label"><span class="field-icon">📅</span>Data de recebimento</div>
-          <input type="date" id="dataRecebimento">
+        <div class="acoes-formulario" style="margin-top: 12px;">
+          <button class="btn-secundario" onclick="alternarEdicaoCongregacaoLocal()">Cancelar</button>
+          <button class="btn-sucesso" onclick="salvarCongregacaoLocalTela()">💾 Salvar</button>
         </div>
       </div>
-      <button class="save-button" id="btnSalvar" onclick="salvar()">💾 &nbsp; SALVAR ENCOMENDA</button>
-      <button type="button" onclick="abrirCadastroEmLote()" style="width:100%;margin-top:9px;border:2px solid #08a45b;border-radius:13px;background:#fff;color:#078b50;font-size:18px;font-weight:900;padding:13px 12px;cursor:pointer;">➕ &nbsp; CADASTRAR VÁRIAS ENCOMENDAS</button>
-    </section>
+    </div>
 
-  </div>
+    <div class="card menu-botoes" style="margin-top: 12px;">
+      <button class="btn-principal" style="min-height: 75px; text-align: left;" onclick="abrirTemas()">📖 Consultar Temas</button>
+      <button class="btn-principal" style="min-height: 75px; text-align: left;" onclick="abrirTemasDoMes()">📅 Temas do Mês</button>
+      <button class="btn-principal" style="min-height: 75px; text-align: left;" onclick="abrirTrocaTemas()">🔄 Troca de Temas</button>
+      <button class="btn-principal" style="min-height: 75px; text-align: left;" onclick="abrirTemasLocais()">📍 Temas Locais</button>
+    </div>
+    
+    <div style="margin-bottom: 15px; flex-shrink: 0;">
+      <button class="btn-principal" style="width: 100%; min-height: 60px; text-align: left;" onclick="abrirCongregacoes()">🏛️ Gerenciar Congregações</button>
+    </div>
+  </section>
 
-  <!-- ABA 2: LISTAGEM DE PENDENTES -->
-  <div id="aba-listagem" class="tab-content">
-    <section class="card filter-card">
-      <div class="filter-title"><span>🔍</span><span>Filtrar encomendas</span></div>
-      <div class="filter-box">
-        <span>☰</span>
-        <select id="filtroApartamento" onchange="aplicarFiltro()">
-          <option value="">Apartamento</option>
-        </select>
+  <!-- CONSULTAR TEMAS -->
+  <section id="paginaTemas" class="page">
+    <header>
+      <div class="header-titulo">
+        <span>📖</span>
+        <span>Consultar Temas</span>
       </div>
-    </section>
+      <div class="header-menu-icon" onclick="voltarInicio()">🏠</div>
+    </header>
 
-    <section class="card" style="padding:14px 15px;margin-bottom:13px;">
-      <button type="button" onclick="abrirSelecaoPendentes()" style="width:100%;border:0;border-radius:11px;background:#08a45b;color:#fff;font-size:16px;font-weight:900;padding:13px 12px;cursor:pointer;box-shadow:0 3px 8px rgba(5,137,75,.14);">📦 SELECIONAR ENCOMENDAS PARA DAR BAIXA</button>
-    </section>
-
-    <section class="report-card">
-      <div class="report-icon">➤</div>
-      <div class="report-content">
-        <div class="report-title">Enviar Relatório de Encomendas</div>
-        <div class="report-description">Envia pelo WhatsApp um resumo das encomendas que continuam pendentes para o próximo porteiro.</div>
+    <div class="card">
+      <div class="campo-pesquisa">
+        <input
+          id="campoTema"
+          type="text"
+          placeholder="Pesquisar por número, tema ou assunto..."
+          onkeydown="if(event.key==='Enter') consultarTemas();">
+        <button class="btn-principal" onclick="consultarTemas()">Pesquisar</button>
+        <button class="btn-sucesso" onclick="abrirFormularioNovoTema()">＋ Novo tema</button>
+        <button class="btn-secundario" onclick="voltarInicio()">Voltar</button>
       </div>
-      <button class="report-button" onclick="enviarRelatorio()">Enviar</button>
-    </section>
+    </div>
 
-    <section class="card list-card">
-      <div class="list-title"><span>☷</span><span>Encomendas pendentes</span></div>
-      <div id="lista">
-        <div class="loading">Carregando encomendas...</div>
-      </div>
-    </section>
+    <div id="resultadoTemas"></div>
 
-  </div>
+    <div id="formularioTema" class="card" style="display:none;">
+      <h3 class="form-titulo" id="tituloFormTema">Adicionar Tema</h3>
+      <input type="hidden" id="temaLinha">
 
-  <!-- ABA 3: PESQUISA GERAL (PENDENTES, RETIRADAS E ENTREGADORES) -->
-  <div id="aba-pesquisa" class="tab-content">
-    <section class="card filter-card">
-      <div class="filter-title"><span>🔍</span><span>Pesquisar Encomendas e Entregas</span></div>
-      <div style="display: flex; flex-direction: column; gap: 10px;">
-        <div class="filter-box">
-          <span>👤</span>
-          <input type="text" id="filtroNomePesquisa" placeholder="Pesquisar por nome, apto, remetente, código ou entregador..." oninput="executarPesquisa()">
-        </div>
-        <div class="filter-box">
-          <span>📅</span>
-          <input type="date" id="filtroDataPesquisa" onchange="executarPesquisa()" style="width: 100%; border: 0; outline: 0; background: transparent; font-size: 18px; color: #17345f;">
-        </div>
-        <button onclick="limparFiltroPesquisa()" style="border:0; border-radius:8px; background:#edf2f7; color:#4c6179; font-size:14px; font-weight:800; padding:10px; cursor:pointer;">Limpar Filtros</button>
-      </div>
-    </section>
-
-    <section class="card list-card">
-      <div class="list-title"><span>📋</span><span>Resultados da Pesquisa</span></div>
-      <div id="listaPesquisa">
-        <div class="loading">Use os filtros acima para pesquisar...</div>
-      </div>
-    </section>
-  </div>
-
-  <!-- ABA 4: ENTREGADORES -->
-  <div id="aba-entregadores" class="tab-content">
-    <section class="card registration">
-      <div class="section-title">
-        <div class="section-icon orange">🚚</div>
-        <span>Registrar entrega</span>
-      </div>
       <div class="form-grid">
-        <div class="field">
-          <div class="field-label"><span class="field-icon">👤</span>Entregador</div>
-          <input type="text" id="entregador" placeholder="Nome do entregador" list="sugestoesEntregadores" oninput="preencherTelefoneEntregador()" autocomplete="off">
-          <datalist id="sugestoesEntregadores"></datalist>
+        <div class="form-campo">
+          <label for="formTemaNumero">Número do tema</label>
+          <input id="formTemaNumero" type="text" placeholder="Ex.: 1">
         </div>
-        <div class="field">
-          <div class="field-label"><span class="field-icon">📞</span>Telefone</div>
-          <input type="tel" id="telefoneEntregador" placeholder="Telefone do entregador" inputmode="tel">
+        <div class="form-campo form-campo-completo">
+          <label for="formTemaTitulo">Título do tema</label>
+          <input id="formTemaTitulo" type="text" placeholder="Digite o título do tema">
         </div>
-        <div class="field">
-          <div class="field-label"><span class="field-icon">📦</span>Remetente</div>
-          <input type="text" id="remetenteEntregador" placeholder="Digite ou escolha um remetente" list="sugestoesRemetentesEntregador" autocomplete="off">
-          <datalist id="sugestoesRemetentesEntregador"></datalist>
-          <button type="button" onclick="adicionarRemetenteEntregador()" style="margin-top:8px;border:0;border-radius:9px;background:#edf2f7;color:#31527d;font-size:14px;font-weight:800;padding:9px 11px;cursor:pointer;">＋ Adicionar novo remetente</button>
+        <div class="form-campo form-campo-completo">
+          <label for="formTemaAssunto">Assunto</label>
+          <textarea id="formTemaAssunto" rows="3" placeholder="Digite o assunto (opcional)"></textarea>
         </div>
-        <div class="field">
-          <div class="field-label"><span class="field-icon">📦</span>Quantidade</div>
-          <select id="quantidadeEntregador">
-            <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
-            <option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
-            <option value="9">9</option><option value="10">10</option>
+        <div class="form-campo">
+          <label for="formTemaSituacao">Situação</label>
+          <select id="formTemaSituacao">
+            <option value="">Sem situação definida</option>
+            <option value="Atualizado">Atualizado</option>
+            <option value="Descontinuado">Descontinuado</option>
           </select>
         </div>
-        <div class="field">
-          <div class="field-label"><span class="field-icon">🏠</span>Destinatários / Apartamentos</div>
-          <input type="text" id="destinatariosEntregador" placeholder="Ex.: Apto 101, 202, 303">
+      </div>
+
+      <div class="acoes-formulario">
+        <button class="btn-secundario" onclick="fecharFormularioTema()">Cancelar</button>
+        <button class="btn-sucesso" onclick="salvarTemaTela()">💾 Salvar tema</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONGREGAÇÕES -->
+  <section id="paginaCongregacoes" class="page">
+    <header>
+      <div class="header-titulo">
+        <span>🏛️</span>
+        <span>Congregações</span>
+      </div>
+      <div class="header-menu-icon" onclick="voltarInicio()">🏠</div>
+    </header>
+    <div class="card">
+      <div class="campo-pesquisa" style="margin-bottom: 10px;">
+        <input id="campoPesquisaCongregacao" type="text" placeholder="Pesquisar congregação..." onkeydown="if(event.key==='Enter') consultarCongregacoesTela();">
+        <button class="btn-principal" onclick="consultarCongregacoesTela()">Pesquisar</button>
+        <button class="btn-sucesso" onclick="abrirFormularioNovaCongregacao()">＋ Nova</button>
+        <button class="btn-secundario" onclick="voltarInicio()">Voltar</button>
+      </div>
+    </div>
+
+    <div id="resultadoCongregacoes"></div>
+
+    <div id="formularioCongregacao" style="display:none;" class="card">
+      <h3 class="form-titulo" id="tituloFormCongregacao">Adicionar Congregação</h3>
+      <input type="hidden" id="congLinha">
+
+      <div class="form-grid">
+        <div class="form-campo form-campo-completo">
+          <label for="congNome">Nome da congregação</label>
+          <input id="congNome" type="text" placeholder="Ex.: Congregação Central">
         </div>
-        <div class="field">
-          <div class="field-label"><span class="field-icon">📅</span>Data</div>
-          <input type="date" id="dataEntregador">
+        <div class="form-campo form-campo-completo">
+          <label for="congEndereco">Endereço</label>
+          <input id="congEndereco" type="text" placeholder="Endereço completo">
+        </div>
+        <div class="form-campo form-campo-completo">
+          <label for="congLocalizacao">Localização (Link do Google Maps)</label>
+          <input id="congLocalizacao" type="url" placeholder="Cole o link do Google Maps">
+        </div>
+        <div class="form-campo">
+          <label for="congDia">Dia da reunião</label>
+          <input id="congDia" type="text" placeholder="Ex.: Sábado às 19:30">
+        </div>
+        <div class="form-campo">
+          <label for="congAgenda">Agenda (Mês da troca)</label>
+          <input id="congAgenda" type="text" placeholder="Ex.: Novembro de 2026">
         </div>
       </div>
-      <button class="save-button" id="btnSalvarEntregador" onclick="salvarEntregador()">💾 &nbsp; REGISTRAR ENTREGA</button>
-    </section>
-  </div>
 
-  <!-- ABA 5: RESUMO E ESTATÍSTICAS -->
-  <div id="aba-resumo" class="tab-content">
-    <!-- 5 indicadores principais, no mesmo padrão visual da tela Registrar -->
-    <section class="home-summary-grid summary-home-grid" aria-label="Resumo e estatísticas">
-      <div class="home-summary-card pending">
-        <div class="home-summary-icon">📦</div>
-        <div class="home-summary-title">Total de entregas do dia</div>
-        <div class="home-summary-value" id="resumoTotalDia">0</div>
+      <div style="margin-top: 15px;">
+        <h3>Oradores e Números dos Discursos</h3>
+        <div id="listaOradoresForm" style="margin-bottom: 10px;"></div>
+        <button type="button" class="btn-secundario" onclick="adicionarCampoOradorTema()">＋ Adicionar Orador</button>
       </div>
 
-      <div class="home-summary-card day">
-        <div class="home-summary-icon">🚚</div>
-        <div class="home-summary-title">Total de entregadores</div>
-        <div class="home-summary-value" id="resumoEntregadoresDia">0</div>
+      <div class="acoes-formulario" style="margin-top: 15px;">
+        <button class="btn-secundario" onclick="fecharFormularioCongregacao()">Cancelar</button>
+        <button class="btn-sucesso" onclick="salvarCongregacaoTela()">Salvar</button>
       </div>
-
-      <div class="home-summary-card day summary-provider-card">
-        <div class="home-summary-icon">🏆</div>
-        <div class="home-summary-title">Fornecedor que mais entregou</div>
-        <div class="home-summary-value summary-provider-value" id="resumoFornecedorTop">Carregando...</div>
-      </div>
-
-      <div class="home-summary-card day">
-        <div class="home-summary-icon">📅</div>
-        <div class="home-summary-title">Total do mês</div>
-        <div class="home-summary-value" id="resumoTotalMes">0</div>
-      </div>
-
-      <div class="home-summary-card day">
-        <div class="home-summary-icon">⏳</div>
-        <div class="home-summary-title">Encomendas pendentes</div>
-        <div class="home-summary-value" id="resumoPendentes">0</div>
-      </div>
-    </section>
-
-    <section class="card" style="padding: 18px; margin-bottom: 15px;">
-      <div class="section-title" style="font-size: 21px; margin-bottom: 10px;">
-        <div class="section-icon orange">📊</div>
-        <span>Resumo por Dia</span>
-      </div>
-      <div style="overflow-x: auto;">
-        <table class="summary-table">
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th style="text-align: right;">Total de Volumes</th>
-            </tr>
-          </thead>
-          <tbody id="tabelaResumoDias">
-            <tr><td colspan="2" style="text-align: center; color: #70849f;">Carregando dados...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="card" style="padding: 18px; margin-bottom: 15px;">
-      <div class="section-title" style="font-size: 21px; margin-bottom: 10px;">
-        <div class="section-icon orange">📈</div>
-        <span>Resumo por Mês</span>
-      </div>
-      <div style="overflow-x: auto;">
-        <table class="summary-table">
-          <thead>
-            <tr>
-              <th>Mês/Ano</th>
-              <th style="text-align: right;">Total de Volumes</th>
-            </tr>
-          </thead>
-          <tbody id="tabelaResumoMeses">
-            <tr><td colspan="2" style="text-align: center; color: #70849f;">Carregando dados...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-  </div>
-</main>
-
-<!-- MODAL DE CADASTRO EM LOTE -->
-<div class="modal-overlay" id="modalCadastroLote">
-  <div class="modal" style="width:min(100%,760px);">
-    <div class="modal-title">📦 Cadastrar várias encomendas</div>
-    <div class="modal-field">
-      <label>Porteiro (será usado em todas as encomendas)</label>
-      <input type="text" id="lotePorteiro" placeholder="Nome do porteiro" style="font-size:19px;min-height:49px;padding:12px 14px;box-sizing:border-box;">
     </div>
-    <datalist id="sugestoesLoteDestinatarios"></datalist>
-    <datalist id="sugestoesLoteRemetentes"></datalist>
-    <div id="linhasCadastroLote"></div>
-    <button type="button" onclick="adicionarLinhaCadastroLote()" style="width:100%;border:2px dashed #7bc7a2;border-radius:10px;background:#f7fcf9;color:#078b50;font-size:15px;font-weight:900;padding:11px;cursor:pointer;margin-top:8px;">➕ Adicionar outra encomenda</button>
-    <div id="contadorCadastroLote" style="text-align:center;color:#718394;font-size:13px;font-weight:800;margin-top:9px;">1 encomenda</div>
-    <div class="modal-buttons">
-      <button class="cancel-button" type="button" onclick="fecharCadastroEmLote()">Cancelar</button>
-      <button class="confirm-button" type="button" id="btnSalvarLote" onclick="salvarCadastroEmLote()">💾 CADASTRAR TODAS</button>
+  </section>
+
+  <!-- TROCA DE TEMAS -->
+  <section id="paginaTrocaTemas" class="page">
+    <header>
+      <div class="header-titulo">
+        <span>🔄</span>
+        <span>Troca de Temas</span>
+      </div>
+      <div class="header-menu-icon" onclick="voltarInicio()">🏠</div>
+    </header>
+
+    <div class="card">
+      <div class="form-grid">
+        <div class="form-campo form-campo-completo">
+          <label for="trocaMes">Mês da troca</label>
+          <select id="trocaMes" onchange="consultarTrocaTemasTela()">
+            <option value="">Selecione o mês</option>
+          </select>
+        </div>
+      </div>
+      <div class="acoes-formulario">
+        <button class="btn-secundario" onclick="voltarInicio()">Voltar</button>
+      </div>
+    </div>
+
+    <div id="resultadoTrocaTemas"></div>
+  </section>
+
+  <!-- TEMAS LOCAIS -->
+  <section id="paginaTemasLocais" class="page">
+    <header>
+      <div class="header-titulo"><span>📍</span><span>Temas Locais</span></div>
+      <div class="header-menu-icon" onclick="voltarInicio()">🏠</div>
+    </header>
+    <div class="card">
+      <div class="form-grid">
+        <div class="form-campo form-campo-completo">
+          <label for="selectMesTemasLocais">Mês</label>
+          <select id="selectMesTemasLocais" onchange="carregarTemasLocaisTela()">
+            <option value="">Selecione o mês</option>
+          </select>
+        </div>
+      </div>
+      <div class="acoes-formulario">
+        <button class="btn-sucesso" onclick="abrirFormularioOradorLocal()">＋ Cadastrar orador local</button>
+        <button class="btn-principal" onclick="abrirEscolhaOradoresWhatsApp()">Escolher Oradores</button>
+        <button class="btn-secundario" onclick="voltarInicio()">Voltar</button>
+      </div>
+    </div>
+    <div id="formularioOradorLocal" class="card" style="display:none;">
+      <h3 class="form-titulo" id="tituloFormularioOradorLocal">Cadastrar orador local</h3>
+      <input type="hidden" id="oradorLocalLinha">
+      <div class="form-grid">
+        <div class="form-campo form-campo-completo">
+          <label for="oradorLocalNome">Nome do orador</label>
+          <input id="oradorLocalNome" type="text" placeholder="Nome completo">
+        </div>
+        <div class="form-campo">
+          <label for="oradorLocalTelefone">Telefone (opcional)</label>
+          <input id="oradorLocalTelefone" type="tel" placeholder="DDD + telefone">
+        </div>
+        <div class="form-campo form-campo-completo">
+          <label for="oradorLocalObservacao">Observação (opcional)</label>
+          <input id="oradorLocalObservacao" type="text" placeholder="Observação sobre o orador">
+        </div>
+      </div>
+      <div class="acoes-formulario">
+        <button class="btn-secundario" onclick="fecharFormularioOradorLocal()">Cancelar</button>
+        <button class="btn-sucesso" onclick="salvarOradorLocalTela()">💾 Salvar cadastro</button>
+      </div>
+    </div>
+    <div id="painelArranjoMes" class="card" style="display:none; background:#e8f4f8; border-left:5px solid #1f4e78;">
+      <h3 style="margin-top:0; color:#1f4e78;">🤝 Congregação programada</h3>
+      <p style="margin:4px 0;"><strong>Congregação:</strong> <span id="lblCongregacaoArranjo">-</span></p>
+      <p style="margin:4px 0;"><strong>Endereço:</strong> <span id="lblEnderecoArranjo">-</span></p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0; color:#1f4e78;">🎤 Oradores locais</h3>
+      <div class="local-orador-slot">
+        <div class="form-campo">
+          <label for="selectOradorLocalIndividual">Orador</label>
+          <select id="selectOradorLocalIndividual" onchange="selecionarOradorLocalIndividual()">
+            <option value="">Selecione o orador</option>
+          </select>
+        </div>
+        <div class="form-campo">
+          <label for="numTemaLocalIndividual">Nº do discurso</label>
+          <input id="numTemaLocalIndividual" type="text" inputmode="numeric" placeholder="Número" oninput="limparTemaLocalIndividual()" onblur="buscarTemaLocalIndividual()">
+        </div>
+        <div class="form-campo">
+          <label for="titTemaLocalIndividual">Tema</label>
+          <input id="titTemaLocalIndividual" type="text" placeholder="Preenchido pelo número" readonly>
+        </div>
+        <button class="btn-principal" style="background:#25d366;color:white;" onclick="enviarOradorLocalWhatsApp()">📲 WhatsApp</button>
+      </div>
+      <div class="acoes-formulario">
+        <button class="btn-secundario" onclick="alternarOradoresCadastrados(this)">Mostrar cadastrados</button>
+      </div>
+    </div>
+    <div id="containerOradoresLocais" style="display:none;"></div>
+    <div id="modalEscolherOradores" class="modal-overlay" style="display:none;">
+      <div class="modal-caixa" style="max-width:600px; max-height:85vh; overflow:auto;">
+        <div class="modal-titulo">Escolher oradores locais</div>
+        <div class="modal-mensagem">Marque os oradores que deseja incluir na mensagem.</div>
+        <div id="listaEscolhaOradores"></div>
+        <div class="modal-acoes" style="margin-top:16px;">
+          <button class="btn-secundario" onclick="fecharEscolhaOradores()">Cancelar</button>
+          <button class="btn-sucesso" onclick="enviarOradoresEscolhidosWhatsApp()">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEMA DO MÊS (ATUALIZADO) -->
+  <section id="paginaTemasDoMes" class="page">
+    <header>
+      <div class="header-titulo">
+        <span>📅</span>
+        <span>Tema do Mês</span>
+      </div>
+      <div class="header-menu-icon" onclick="voltarInicio()">🏠</div>
+    </header>
+
+    <div class="card">
+      <div class="campo-pesquisa">
+        <select id="selectMesTemasDoMes" onchange="consultarTemasDoMesTela()">
+          <option value="">Selecione o mês</option>
+        </select>
+        <button class="btn-principal" onclick="consultarTemasDoMesTela()">Consultar</button>
+        <button class="btn-sucesso" onclick="abrirFormularioNovoTemaDoMes()">＋ Novo</button>
+        <button class="btn-principal" style="background-color: #25d366; color: white;" onclick="enviarProgramacaoWhatsAppTela()">📲 Enviar WhatsApp</button>
+        <button class="btn-secundario" onclick="voltarInicio()">Voltar</button>
+      </div>
+    </div>
+
+    <!-- Formulário Modal de Edição/Adição Tema do Mês -->
+    <div id="formularioTemasDoMes" class="card" style="display:none;">
+      <h3 id="tituloFormTemaDoMes">Novo Registro (Tema do Mês)</h3>
+      <input type="hidden" id="tmLinha">
+
+      <div class="form-grid">
+        <div class="form-campo">
+          <label for="tmData">Data</label>
+          <input type="date" id="tmData">
+        </div>
+        <div class="form-campo">
+          <label for="tmStatus">Status</label>
+          <select id="tmStatus">
+            <option value="Recebendo">Recebendo</option>
+            <option value="Enviando">Enviando</option>
+          </select>
+        </div>
+        <div class="form-campo">
+          <label for="tmNumero">Nº Discurso</label>
+          <input type="text" id="tmNumero" placeholder="Ex.: 12">
+        </div>
+        <div class="form-campo form-campo-completo">
+          <label for="tmTema">Tema do Discurso</label>
+          <input type="text" id="tmTema" placeholder="Título do tema">
+        </div>
+        <div class="form-campo form-campo-completo">
+          <label for="tmOrador">Nome do Orador</label>
+          <input type="text" id="tmOrador" placeholder="Nome do orador">
+        </div>
+        <div class="form-campo form-campo-completo">
+          <label for="tmCongregacao">Congregação</label>
+          <input type="text" id="tmCongregacao" placeholder="Nome da congregação">
+        </div>
+      </div>
+
+      <div class="acoes-formulario" style="margin-top: 15px;">
+        <button class="btn-secundario" onclick="fecharFormularioTemaDoMes()">Cancelar</button>
+        <button class="btn-sucesso" onclick="salvarTemaDoMesTela()">Salvar</button>
+      </div>
+    </div>
+
+    <div id="resultadoTemasDoMes"></div>
+  </section>
+
+</div>
+
+<!-- COMPONENTES DE MODAL CUSTOMIZADOS -->
+<div id="modalAppOverlay" class="modal-overlay" style="display:none;">
+  <div class="modal-caixa">
+    <div class="modal-titulo" id="modalAppTitulo">Aviso</div>
+    <div class="modal-mensagem" id="modalAppMensagem">Mensagem</div>
+    <div class="modal-acoes" id="modalAppAcoes">
+      <button class="btn-principal" onclick="fecharModalApp()">OK</button>
     </div>
   </div>
 </div>
-
-<!-- MODAL DE SELEÇÃO DE ENCOMENDAS PENDENTES -->
-<div class="modal-overlay" id="modalSelecaoPendentes">
-  <div class="modal" style="width:min(100%,620px);max-height:90vh;overflow:auto;">
-    <div class="modal-title">☑️ Selecionar encomendas</div>
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;">
-      <span id="resumoSelecaoPendentes" style="color:#31527d;font-size:14px;font-weight:900;">0 encomendas selecionadas</span>
-      <div style="display:flex;gap:6px;">
-        <button type="button" onclick="selecionarTodasNoModalPendentes(true)" style="border:1px solid #b8d9c9;border-radius:8px;background:#f3faf6;color:#087c4b;font-size:12px;font-weight:900;padding:7px 9px;cursor:pointer;">Selecionar todas</button>
-        <button type="button" onclick="selecionarTodasNoModalPendentes(false)" style="border:1px solid #e1c4c4;border-radius:8px;background:#fff7f7;color:#b13b3b;font-size:12px;font-weight:900;padding:7px 9px;cursor:pointer;">Limpar</button>
-      </div>
-    </div>
-    <div id="listaSelecaoPendentes"></div>
-    <div class="modal-buttons">
-      <button class="cancel-button" type="button" onclick="fecharSelecaoPendentes()">Cancelar</button>
-      <button class="confirm-button" type="button" id="btnConfirmarSelecaoPendentes" onclick="confirmarSelecaoPendentes()" disabled style="opacity:.5;">📦 Continuar para dar baixa</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL DE BAIXA COM ASSINATURA VIRTUAL OPCIONAL -->
-<div class="modal-overlay" id="modalBaixa">
-  <div class="modal" style="width: min(100%, 480px);">
-    <div class="modal-title">📦 Dar baixa na encomenda</div>
-    <div class="modal-field">
-      <label>Retirado por (Nome)</label>
-      <input type="text" id="retiradoPor" placeholder="Nome de quem retirou">
-    </div>
-    <div class="modal-field">
-      <label>Assinatura Virtual <span style="font-weight:normal; color:#666; font-size:13px;">(Opcional)</span></label>
-      <div style="border: 2px dashed #cad9ea; border-radius: 9px; background: #fafbfc; position: relative; overflow: hidden; touch-action: none;">
-        <canvas id="canvasAssinatura" style="display: block; width: 100%; height: 140px; cursor: crosshair;"></canvas>
-      </div>
-      <div style="display: flex; justify-content: flex-end; margin-top: 5px;">
-        <button type="button" onclick="limparAssinatura()" style="background: none; border: 0; color: #0878ed; font-size: 13px; font-weight: 800; cursor: pointer;">🗑️ Limpar assinatura</button>
-      </div>
-    </div>
-    <div class="modal-buttons">
-      <button class="cancel-button" onclick="fecharModal()">Cancelar</button>
-      <button class="confirm-button" id="btnConfirmarBaixa" onclick="confirmarBaixa()">Confirmar retirada</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL DE EDIÇÃO DE REGISTRO -->
-<div class="modal-overlay" id="modalEdicao">
-  <div class="modal">
-    <div class="modal-title" id="modalEdicaoTitulo">✏️ Editar registro</div>
-    <div id="camposEdicaoEncomenda">
-      <div class="modal-field"><label>Porteiro</label><input type="text" id="editarPorteiro" placeholder="Nome do porteiro"></div>
-      <div class="modal-field"><label>Destinatário / Apartamento</label><input type="text" id="editarDestinatario" placeholder="Ex.: João Silva - Apto 203"></div>
-      <div class="modal-field"><label>Remetente</label><select id="editarRemetente" style="width:100%;border:2px solid #cad9ea;border-radius:9px;padding:12px;font-size:17px;outline:0;background:#fff;"></select></div>
-      <div class="modal-field"><label>Quantidade de volumes</label><select id="editarQuantidade" style="width:100%;border:2px solid #cad9ea;border-radius:9px;padding:12px;font-size:17px;outline:0;background:#fff;"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></div>
-      <div class="modal-field"><label>Código de barras</label><input type="text" id="editarCodigoBarras" placeholder="Código de barras (opcional)"></div>
-    </div>
-    <div id="camposEdicaoEntregador" style="display:none;">
-      <div class="modal-field"><label>Entregador</label><input type="text" id="editarEntregador" placeholder="Nome do entregador"></div>
-      <div class="modal-field"><label>Telefone</label><input type="text" id="editarTelefoneEntregador" placeholder="Telefone"></div>
-      <div class="modal-field"><label>Remetente</label><input type="text" id="editarRemetenteEntregador" placeholder="Remetente"></div>
-      <div class="modal-field"><label>Quantidade de volumes</label><select id="editarQuantidadeEntregador" style="width:100%;border:2px solid #cad9ea;border-radius:9px;padding:12px;font-size:17px;outline:0;background:#fff;"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></div>
-      <div class="modal-field"><label>Destinatários / Apartamentos</label><input type="text" id="editarDestinatariosEntregador" placeholder="Ex.: Apto 101, 202, 303"></div>
-    </div>
-    <div class="modal-buttons">
-      <button class="cancel-button" type="button" onclick="fecharModalEdicao()">Cancelar</button>
-      <button class="confirm-button" type="button" id="btnSalvarEdicao" onclick="salvarEdicao()">💾 Salvar alterações</button>
-    </div>
-  </div>
-</div>
-
-<div id="leitorCodigoBarras" style="display:none;width:1px;height:1px;overflow:hidden;"></div>
-<div id="toast" class="toast"></div>
 
 <script>
-/* ================================================================
-   PONTE PARA O APPS SCRIPT
-   - Dentro do Apps Script: usa o google.script.run original.
-   - No GitHub Pages: simula google.script.run via POST.
-   ================================================================ */
-(function(){
-  if (window.google && window.google.script && window.google.script.run) return;
+/*************************************************
+ * MODAIS CUSTOMIZADOS (DESIGN DO APP)
+ *************************************************/
+let modalConfirmCallback = null;
 
-  const APPS_SCRIPT_API = 'https://script.google.com/macros/s/AKfycby9vBVxWnOEALnmP-K0BU0Fx6M1N5NXJgNbOvDqlr3_Ds3INFZ09ksrsMqj7F0dcO0w/exec';
+function exibirAvisoApp(titulo, mensagem) {
+  document.getElementById('modalAppTitulo').textContent = titulo || 'Aviso';
+  document.getElementById('modalAppMensagem').textContent = mensagem || '';
+  document.getElementById('modalAppAcoes').innerHTML = 
+    '<button class="btn-principal" onclick="fecharModalApp()">OK</button>';
+  document.getElementById('modalAppOverlay').style.display = 'flex';
+}
 
-  function criarRunner(onSuccess, onFailure){
-    const runner = {
-      _success: typeof onSuccess === 'function' ? onSuccess : function(){},
-      _failure: typeof onFailure === 'function' ? onFailure : function(err){ console.error(err); }
-    };
+function exibirConfirmacaoApp(titulo, mensagem, callback) {
+  modalConfirmCallback = callback;
+  document.getElementById('modalAppTitulo').textContent = titulo || 'Confirmação';
+  document.getElementById('modalAppMensagem').textContent = mensagem || '';
+  document.getElementById('modalAppAcoes').innerHTML = 
+    '<button class="btn-secundario" onclick="fecharModalApp(false)">Cancelar</button>' +
+    '<button class="btn-sucesso" onclick="fecharModalApp(true)">Confirmar</button>';
+  document.getElementById('modalAppOverlay').style.display = 'flex';
+}
 
-    return new Proxy(runner, {
-      get(target, prop){
-        if(prop === 'withSuccessHandler'){
-          return function(fn){
-            return criarRunner(fn, target._failure);
-          };
-        }
-        if(prop === 'withFailureHandler'){
-          return function(fn){
-            return criarRunner(target._success, fn);
-          };
-        }
-        if(prop === 'withUserObject'){
-          return function(){ return criarRunner(target._success, target._failure); };
-        }
-        if(typeof prop !== 'string') return target[prop];
-
-        return function(){
-          const args = Array.prototype.slice.call(arguments);
-          fetch(APPS_SCRIPT_API, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ action: prop, args: args })
-          })
-          .then(function(response){
-            if(!response.ok) throw new Error('HTTP ' + response.status);
-            return response.text();
-          })
-          .then(function(text){
-            let data;
-            try { data = JSON.parse(text); }
-            catch(e){ throw new Error('Resposta inválida do Apps Script.'); }
-            if(data && data.ok === false) throw new Error(data.error || 'Erro no Apps Script.');
-            target._success(data ? data.result : null);
-          })
-          .catch(function(err){
-            target._failure(err);
-          });
-        };
-      }
-    });
+function fecharModalApp(resposta) {
+  document.getElementById('modalAppOverlay').style.display = 'none';
+  if (typeof modalConfirmCallback === 'function' && resposta !== undefined) {
+    const fn = modalConfirmCallback;
+    modalConfirmCallback = null;
+    if (resposta) fn();
   }
+}
 
-  window.google = window.google || {};
-  window.google.script = window.google.script || {};
-  window.google.script.run = criarRunner(null, null);
-})();
+/*************************************************
+ * NAVEGAÇÃO
+ *************************************************/
+function mostrarPagina(id) {
+  document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+  const p = document.getElementById(id);
+  if (p) p.classList.add('active');
+}
 
-let encomendas = [];
-let todasEncomendasPesquisa = [];
-let todosEntregadoresPesquisa = [];
-let linhaBaixaAtual = null;
-let linhasBaixaAptoAtual = null;
-let codigoBarrasDetectado = "";
-let fotosSelecionadas = [];
-let entregadoresCadastrados = [];
-let remetentesCadastrados = [];
-let pesquisaCarregada = false;
-let pesquisaEntregadoresCarregada = false;
-let resumoCarregado = false;
-let canvas, ctx;
-let desenhando = false;
-let tipoEdicaoAtual = "";
-let linhaEdicaoAtual = null;
-let linhasSelecionadasPendentes = new Set();
-let contadorLinhasCadastroLote = 0;
+function voltarInicio() { mostrarPagina('paginaInicio'); carregarResumo(); carregarCongregacaoLocal(); }
 
-document.addEventListener('DOMContentLoaded', function(){
-  configurarData();
-  configurarDataEntregador();
-  carregarPorteiro();
-  // Na abertura carregamos apenas o necessário para a tela Registrar.
-  // Pesquisa, Entregadores e Resumo são carregados somente quando abertos.
-  carregarRemetentes();
-  carregarEncomendas();
-  carregarResumo();
-
-  canvas = document.getElementById('canvasAssinatura');
-  if(canvas) {
-    ctx = canvas.getContext('2d');
-    canvas.addEventListener('mousedown', iniciarDesenho);
-    canvas.addEventListener('mousemove', desenhar);
-    canvas.addEventListener('mouseup', pararDesenho);
-    canvas.addEventListener('mouseleave', pararDesenho);
-    canvas.addEventListener('touchstart', e => { e.preventDefault(); iniciarDesenho(e.touches[0]); }, { passive: false });
-    canvas.addEventListener('touchmove', e => { e.preventDefault(); desenhar(e.touches[0]); }, { passive: false });
-    canvas.addEventListener('touchend', e => { e.preventDefault(); pararDesenho(); }, { passive: false });
+function abrirTemas() { 
+  mostrarPagina('paginaTemas'); 
+  
+  const campo = document.getElementById('campoTemas');
+  if (campo) {
+    campo.focus();
   }
+}
+function abrirTemasDoMes() { mostrarPagina('paginaTemasDoMes'); carregarMesesTemasDoMes(); }
+function abrirTrocaTemas() { mostrarPagina('paginaTrocaTemas'); carregarMesesTrocaTemas(); }
+function abrirTemasLocais() {
+  mostrarPagina('paginaTemasLocais');
+  carregarMesesTemasLocais();
+}
+function carregarMesesTemasLocais() {
+  const select = document.getElementById('selectMesTemasLocais');
+  if (!select) return;
+  select.innerHTML = '<option value="">Carregando meses...</option>';
 
-  document.getElementById('foto').addEventListener('change', e => {
-    if (!e.target.files.length) return;
-    const arquivo = e.target.files[0];
-    const numeroFoto = fotosSelecionadas.length + 1;
-    const texto = document.getElementById('fotoTexto');
-    texto.textContent = '📷 Foto ' + numeroFoto + ' (Lendo código...)';
-
-    const foto = { arquivo: arquivo, dataUrl: '', codigoBarras: '' };
-    fotosSelecionadas.push(foto);
-    renderizarFotosAdicionadas();
-
-    const reader = new FileReader();
-    reader.onload = function(evt){
-      foto.dataUrl = evt.target.result;
-      renderizarFotosAdicionadas();
-    };
-    reader.readAsDataURL(arquivo);
-
-    const html5QrCode = new Html5Qrcode("leitorCodigoBarras");
-    html5QrCode.scanFile(arquivo, true)
-      .then(decodedText => {
-        foto.codigoBarras = decodedText;
-        codigoBarrasDetectado = decodedText;
-        const codigoVisual = document.getElementById('codigoBarrasVisual');
-        if(codigoVisual) codigoVisual.value = decodedText;
-        texto.textContent = '📷 Foto ' + numeroFoto + ' adicionada ✓';
-        renderizarFotosAdicionadas();
-        try { html5QrCode.clear(); } catch(err) {}
-      })
-      .catch(err => {
-        foto.codigoBarras = '';
-        const codigoVisual = document.getElementById('codigoBarrasVisual');
-        if(codigoVisual) codigoVisual.value = 'Foto adicionada — código não identificado';
-        texto.textContent = '📷 Foto ' + numeroFoto + ' adicionada';
-        renderizarFotosAdicionadas();
-        try { html5QrCode.clear(); } catch(err) {}
+  google.script.run
+    .withSuccessHandler(function(meses) {
+      select.innerHTML = '<option value="">Selecione o mês</option>';
+      (meses || []).forEach(function(item) {
+        const option = document.createElement('option');
+        option.value = item.valor;
+        option.textContent = item.texto;
+        select.appendChild(option);
       });
+      carregarTemasLocaisTela();
+    })
+    .withFailureHandler(function(erro) {
+      select.innerHTML = '<option value="">Erro ao carregar meses</option>';
+    })
+    .obterMeses();
+}
+function abrirCongregacoes() { mostrarPagina('paginaCongregacoes'); consultarCongregacoesTela(); }
 
-    e.target.value = '';
-  });
-});
-
-function renderizarFotosAdicionadas(){
-  const container = document.getElementById('fotosAdicionadas');
-  const preview = document.getElementById('fotoPreview');
-  if(!container) return;
-  if(!fotosSelecionadas.length){
-    container.innerHTML = '';
-    if(preview) preview.style.display = 'none';
-    return;
-  }
-  let html = '';
-  fotosSelecionadas.forEach((foto, index)=>{
-    const numero = index + 1;
-    const codigo = foto.codigoBarras ? '🏷️ ' + escapeHtml(foto.codigoBarras) : '⏳ Código não identificado';
-    html += '<div style="display:flex;align-items:center;gap:8px;padding:7px 8px;margin-top:6px;border:1px solid #ffb15a;border-radius:9px;background:#fff8ed;">';
-    if(foto.dataUrl){
-      html += '<img src="' + foto.dataUrl + '" style="width:52px;height:52px;object-fit:cover;border-radius:7px;border:1px solid #ffb15a;">';
-    } else {
-      html += '<div style="width:52px;height:52px;border-radius:7px;background:#ffe9ca;display:flex;align-items:center;justify-content:center;font-size:24px;">📷</div>';
-    }
-    html += '<div style="flex:1;min-width:0;font-size:14px;color:#31527d;"><strong>Foto ' + numero + '</strong><br>' + codigo + '</div>';
-    html += '<button type="button" onclick="removerFoto(' + index + ')" style="border:0;background:#dc3545;color:#fff;border-radius:7px;padding:7px 9px;font-size:12px;font-weight:800;cursor:pointer;">✕</button>';
-    html += '</div>';
-  });
-  container.innerHTML = html;
-  if(preview && fotosSelecionadas[0] && fotosSelecionadas[0].dataUrl){
-    preview.src = fotosSelecionadas[0].dataUrl;
-    preview.style.display = 'none';
-  }
+function escapar(texto) {
+  if (!texto) return '';
+  return String(texto).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-function removerFoto(index){
-  fotosSelecionadas.splice(index, 1);
-  codigoBarrasDetectado = fotosSelecionadas.length ? (fotosSelecionadas[fotosSelecionadas.length - 1].codigoBarras || '') : '';
-  const codigoVisual = document.getElementById('codigoBarrasVisual');
-  if(codigoVisual){
-    codigoVisual.value = codigoBarrasDetectado ||
-      (fotosSelecionadas.length ? 'Foto adicionada — código não identificado' : '');
-  }
-  renderizarFotosAdicionadas();
-  document.getElementById('fotoTexto').textContent = fotosSelecionadas.length ? 'Tirar outra foto para ler o código.' : 'Tire uma foto da encomenda para ler o código.';
-}
-
-function inicializarCanvas() {
-  if(!canvas) canvas = document.getElementById('canvasAssinatura');
-  if(canvas) {
-    ctx = canvas.getContext('2d');
-    canvas.width = canvas.parentElement.clientWidth || 350;
-    canvas.height = 140;
-    limparAssinatura();
-  }
-}
-
-function obterPosicaoMouse(e) {
-  const rect = canvas.getBoundingClientRect();
-  return { x: e.clientX - rect.left, y: e.clientY - rect.top };
-}
-
-function iniciarDesenho(e) {
-  desenhando = true;
-  const pos = obterPosicaoMouse(e);
-  ctx.beginPath();
-  ctx.moveTo(pos.x, pos.y);
-  ctx.strokeStyle = '#17345f';
-  ctx.lineWidth = 2.5;
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-}
-
-function desenhar(e) {
-  if (!desenhando) return;
-  const pos = obterPosicaoMouse(e);
-  ctx.lineTo(pos.x, pos.y);
-  ctx.stroke();
-}
-
-function pararDesenho() {
-  desenhando = false;
-}
-
-function limparAssinatura() {
-  if(ctx && canvas) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-  }
-}
-
-function canvasEstaVazio() {
-  if(!canvas || !ctx) return true;
-  try {
-    const pixelBuffer = new Uint32Array(
-      ctx.getImageData(0, 0, canvas.width, canvas.height).data.buffer
-    );
-    return !pixelBuffer.some(color => color !== 0);
-  } catch(e) {
-    return true;
-  }
-}
-
-function mudarAba(abaId, elementoBtn) {
-  document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-
-  if(abaId === 'cadastro') {
-    document.getElementById('aba-cadastro').classList.add('active');
-  } else if(abaId === 'listagem') {
-    document.getElementById('aba-listagem').classList.add('active');
-    carregarEncomendas();
-  } else if(abaId === 'pesquisa') {
-    document.getElementById('aba-pesquisa').classList.add('active');
-    if(!pesquisaCarregada) carregarTodasEncomendasParaPesquisa();
-    if(!pesquisaEntregadoresCarregada) carregarTodosEntregadoresParaPesquisa();
-  } else if(abaId === 'entregadores') {
-    document.getElementById('aba-entregadores').classList.add('active');
-    if(!entregadoresCadastrados.length) carregarEntregadores();
-    if(!remetentesCadastrados.length) carregarRemetentesEntregador();
-  } else if(abaId === 'resumo') {
-    document.getElementById('aba-resumo').classList.add('active');
-    carregarResumo();
-  }
-  elementoBtn.classList.add('active');
-}
-
-function carregarResumo(){
-  resumoCarregado = false;
+/*************************************************
+ * INÍCIO E CONGREGAÇÃO LOCAL
+ *************************************************/
+function carregarResumo() {
   google.script.run
-    .withSuccessHandler(function(res){
-      if(!res) return;
-      resumoCarregado = true;
-      const totalDia = res.totalEntregasDia || 0;
-      document.getElementById('resumoTotalDia').textContent = totalDia;
-      const totalDiaCadastro = document.getElementById('resumoTotalDiaCadastro');
-      if(totalDiaCadastro) totalDiaCadastro.textContent = totalDia;
-      const entregadoresDia = res.totalEntregadoresDia || 0;
-      document.getElementById('resumoEntregadoresDia').textContent = entregadoresDia;
-      const entregadoresDiaCadastro = document.getElementById('resumoEntregadoresDiaCadastro');
-      if(entregadoresDiaCadastro) entregadoresDiaCadastro.textContent = entregadoresDia;
-      document.getElementById('resumoPendentes').textContent = res.totalPendentes || 0;
-      document.getElementById('resumoFornecedorTop').textContent = res.fornecedorMaisEntregou || 'Nenhum';
-      document.getElementById('resumoTotalMes').textContent = res.totalEntregasMes || 0;
+    .withSuccessHandler(function(dados) {
+      if(dados) {
+        document.getElementById('totalTemas').textContent = dados.totalTemas || 0;
+        document.getElementById('totalMeses').textContent = dados.totalMeses || 0;
+      }
+    })
+    .withFailureHandler(function(erro) { console.error(erro); })
+    .obterResumoInicial();
+}
 
-      const tbodyDias = document.getElementById('tabelaResumoDias');
-      if(res.entregasPorDia && res.entregasPorDia.length > 0){
-        let htmlDias = '';
-        res.entregasPorDia.forEach(item => {
-          htmlDias += '<tr><td>' + escapeHtml(item.data) + '</td><td style="text-align: right; font-weight: 800; color: #0878ed;">' + item.quantidade + '</td></tr>';
-        });
-        tbodyDias.innerHTML = htmlDias;
+function carregarCongregacaoLocal() {
+  google.script.run
+    .withSuccessHandler(function(dados) {
+      if (dados && dados.nome) {
+        document.getElementById('dispNomeLocal').textContent = dados.nome;
+        document.getElementById('dispDiaHorarioLocal').textContent = (dados.dia || 'Dia não definido') + ' às ' + (dados.horario || '--:--');
+        document.getElementById('dispEnderecoLocal').textContent = dados.endereco || 'Endereço não definido';
+        
+        document.getElementById('inputNomeLocal').value = dados.nome || '';
+        document.getElementById('inputDiaLocal').value = dados.dia || '';
+        document.getElementById('inputHorarioLocal').value = dados.horario || '';
+        document.getElementById('inputEnderecoLocal').value = dados.endereco || '';
       } else {
-        tbodyDias.innerHTML = '<tr><td colspan="2" style="text-align: center; color: #70849f;">Nenhum registro encontrado.</td></tr>';
-      }
-
-      const tbodyMeses = document.getElementById('tabelaResumoMeses');
-      if(res.entregasPorMes && res.entregasPorMes.length > 0){
-        let htmlMeses = '';
-        res.entregasPorMes.forEach(item => {
-          htmlMeses += '<tr><td>' + escapeHtml(item.mes) + '</td><td style="text-align: right; font-weight: 800; color: #0878ed;">' + item.quantidade + '</td></tr>';
-        });
-        tbodyMeses.innerHTML = htmlMeses;
-      } else {
-        tbodyMeses.innerHTML = '<tr><td colspan="2" style="text-align: center; color: #70849f;">Nenhum registro encontrado.</td></tr>';
+        document.getElementById('dispNomeLocal').textContent = 'Nenhuma congregação cadastrada';
+        document.getElementById('dispDiaHorarioLocal').textContent = 'Clique em Editar para preencher os dados.';
+        document.getElementById('dispEnderecoLocal').textContent = '';
       }
     })
-    .withFailureHandler(function(err){
-      console.error(err);
-    })
-    .obterDadosResumo();
+    .obterCongregacaoLocal();
 }
 
-function configurarData(){
-  const hoje = new Date();
-  const ano = hoje.getFullYear();
-  const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-  const dia = String(hoje.getDate()).padStart(2, '0');
-  document.getElementById('dataRecebimento').value = ano + '-' + mes + '-' + dia;
-}
-
-function carregarPorteiro(){
-  const salvo = localStorage.getItem('porteiro');
-  if(salvo) document.getElementById('porteiro').value = salvo;
-}
-
-function salvarPorteiroLocal(){
-  const nome = document.getElementById('porteiro').value.trim();
-  if(nome) localStorage.setItem('porteiro', nome);
-}
-
-function carregarRemetentes(){
-  google.script.run
-    .withSuccessHandler(function(lista){
-      lista = lista || [];
-      const input = document.getElementById('remetente');
-      const datalist = document.getElementById('sugestoesRemetentesRegistrar');
-      if(input && !input.value.trim()) input.value = lista.length ? lista[0] : 'Outros';
-      if(datalist){
-        datalist.innerHTML = '';
-        lista.forEach(function(nome){
-          const option = document.createElement('option');
-          option.value = nome;
-          datalist.appendChild(option);
-        });
-        if(!lista.length){
-          const option = document.createElement('option');
-          option.value = 'Outros';
-          datalist.appendChild(option);
-        }
-      }
-      atualizarSugestoesLoteRemetentes(lista);
-    })
-    .withFailureHandler(function(){
-      const input = document.getElementById('remetente');
-      if(input && !input.value.trim()) input.value = 'Outros';
-      atualizarSugestoesLoteRemetentes(['Outros']);
-    })
-    .listarRemetentes();
-}
-
-function adicionarRemetenteRegistrar(){
-  const input = document.getElementById('remetente');
-  const nomeAtual = input ? input.value.trim() : '';
-  const nome = prompt('Digite o nome do novo remetente:', nomeAtual);
-  if(nome === null) return;
-  const novo = nome.trim();
-  if(!novo){
-    mostrarToast('Informe o nome do remetente.');
-    return;
-  }
-  google.script.run
-    .withSuccessHandler(function(lista){
-      if(input) input.value = novo;
-      atualizarSugestoesRemetentesRegistrar(lista || []);
-      atualizarSugestoesLoteRemetentes(lista || []);
-      mostrarToast('Remetente adicionado!');
-    })
-    .withFailureHandler(function(erro){
-      console.error(erro);
-      mostrarToast('Não foi possível adicionar o remetente.');
-    })
-    .adicionarRemetente(novo);
-}
-
-function atualizarSugestoesRemetentesRegistrar(lista){
-  const datalist = document.getElementById('sugestoesRemetentesRegistrar');
-  if(!datalist) return;
-  datalist.innerHTML = '';
-  (lista || []).forEach(function(nome){
-    const option = document.createElement('option');
-    option.value = nome;
-    datalist.appendChild(option);
-  });
-  if(!(lista || []).length){
-    const option = document.createElement('option');
-    option.value = 'Outros';
-    datalist.appendChild(option);
-  }
-}
-
-function atualizarSugestoesLoteRemetentes(lista){
-  const datalist = document.getElementById('sugestoesLoteRemetentes');
-  if(!datalist) return;
-  datalist.innerHTML = '';
-  (lista || []).forEach(function(nome){
-    const option = document.createElement('option');
-    option.value = nome;
-    datalist.appendChild(option);
-  });
-  if(!(lista || []).length){
-    const option = document.createElement('option');
-    option.value = 'Outros';
-    datalist.appendChild(option);
-  }
-}
-
-
-function configurarDataEntregador(){
-  const hoje = new Date();
-  const ano = hoje.getFullYear();
-  const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-  const dia = String(hoje.getDate()).padStart(2, '0');
-  const campo = document.getElementById('dataEntregador');
-  if(campo) campo.value = ano + '-' + mes + '-' + dia;
-}
-
-function carregarEntregadores(){
-  google.script.run
-    .withSuccessHandler(function(lista){
-      entregadoresCadastrados = lista || [];
-      atualizarSugestoesEntregadores();
-      preencherTelefoneEntregador();
-    })
-    .withFailureHandler(function(erro){
-      console.error(erro);
-      entregadoresCadastrados = [];
-      atualizarSugestoesEntregadores();
-    })
-    .listarEntregadores();
-}
-
-function atualizarSugestoesEntregadores(){
-  const datalist = document.getElementById('sugestoesEntregadores');
-  if(!datalist) return;
-  datalist.innerHTML = '';
-  entregadoresCadastrados
-    .filter(item => item && item.nome)
-    .sort((a,b)=>String(a.nome).localeCompare(String(b.nome),'pt-BR'))
-    .forEach(item=>{
-      const opt = document.createElement('option');
-      opt.value = item.nome;
-      datalist.appendChild(opt);
-    });
-}
-
-function preencherTelefoneEntregador(){
-  const campoNome = document.getElementById('entregador');
-  const campoTelefone = document.getElementById('telefoneEntregador');
-  if(!campoNome || !campoTelefone) return;
-  const nome = normalizar(campoNome.value);
-  if(!nome) return;
-  const encontrado = entregadoresCadastrados.find(item=>normalizar(item.nome)===nome);
-  if(encontrado) campoTelefone.value = encontrado.telefone || '';
-}
-
-function carregarRemetentesEntregador(){
-  google.script.run
-    .withSuccessHandler(function(lista){
-      remetentesCadastrados = lista || [];
-      atualizarSugestoesRemetentesEntregador();
-    })
-    .withFailureHandler(function(erro){
-      console.error(erro);
-    })
-    .listarRemetentes();
-}
-
-function atualizarSugestoesRemetentesEntregador(){
-  const datalist = document.getElementById('sugestoesRemetentesEntregador');
-  if(!datalist) return;
-  datalist.innerHTML = '';
-  remetentesCadastrados.forEach(function(nome){
-    const opt = document.createElement('option');
-    opt.value = nome;
-    datalist.appendChild(opt);
-  });
-}
-
-function adicionarRemetenteEntregador(){
-  const nomeAtual = document.getElementById('remetenteEntregador').value.trim();
-  const nome = prompt('Digite o nome do novo remetente:', nomeAtual);
-  if(nome === null) return;
-  const novo = nome.trim();
-  if(!novo){
-    mostrarToast('Informe o nome do remetente.');
-    return;
-  }
-  google.script.run
-    .withSuccessHandler(function(lista){
-      remetentesCadastrados = lista || [];
-      atualizarSugestoesRemetentesEntregador();
-      document.getElementById('remetenteEntregador').value = novo;
-      carregarRemetentes();
-      mostrarToast('Remetente adicionado!');
-    })
-    .withFailureHandler(function(erro){
-      console.error(erro);
-      mostrarToast('Não foi possível adicionar o remetente.');
-    })
-    .adicionarRemetente(novo);
-}
-
-function salvarEntregador(){
-  const nome = document.getElementById('entregador').value.trim();
-  const telefone = document.getElementById('telefoneEntregador').value.trim();
-  const remetente = document.getElementById('remetenteEntregador').value.trim();
-  const quantidade = Number(document.getElementById('quantidadeEntregador').value) || 1;
-  const destinatarios = document.getElementById('destinatariosEntregador').value.trim();
-  const data = document.getElementById('dataEntregador').value;
-
-  if(!nome){
-    mostrarToast('Informe o nome do entregador.');
-    document.getElementById('entregador').focus();
-    return;
-  }
-  if(!telefone){
-    mostrarToast('Informe o telefone do entregador.');
-    document.getElementById('telefoneEntregador').focus();
-    return;
-  }
-  if(!remetente){
-    mostrarToast('Informe o remetente.');
-    document.getElementById('remetenteEntregador').focus();
-    return;
-  }
-
-  const btn = document.getElementById('btnSalvarEntregador');
-  btn.disabled = true;
-  btn.textContent = '⏳ SALVANDO...';
-
-  google.script.run
-    .withSuccessHandler(function(){
-      btn.disabled = false;
-      btn.textContent = '💾 REGISTRAR ENTREGA';
-      mostrarToast('Entrega registrada com sucesso!');
-      limparFormularioEntregador();
-      carregarEntregadores();
-      if(pesquisaEntregadoresCarregada) carregarTodosEntregadoresParaPesquisa();
-      if(resumoCarregado) carregarResumo();
-    })
-    .withFailureHandler(function(erro){
-      console.error(erro);
-      btn.disabled = false;
-      btn.textContent = '💾 REGISTRAR ENTREGA';
-      mostrarToast('Erro ao registrar a entrega.');
-    })
-    .salvarEntregaEntregador({
-      nome: nome,
-      telefone: telefone,
-      remetente: remetente,
-      quantidade: quantidade,
-      destinatarios: destinatarios,
-      data: data
-    });
-}
-
-function limparFormularioEntregador(){
-  document.getElementById('entregador').value = '';
-  document.getElementById('telefoneEntregador').value = '';
-  document.getElementById('remetenteEntregador').value = '';
-  document.getElementById('quantidadeEntregador').value = '1';
-  document.getElementById('destinatariosEntregador').value = '';
-  configurarDataEntregador();
-}
-
-function atualizarPagina(){
-  const btn = document.querySelector('.header-refresh');
-  if(btn){
-    btn.disabled = true;
-    btn.textContent = '⏳ Atualizando...';
-  }
-
-  configurarData();
-  configurarDataEntregador();
-
-  let pendentesOk = false;
-  let remetentesOk = false;
-
-  function finalizarBase(){
-    if(pendentesOk && remetentesOk){
-      const ativa = document.querySelector('.tab-content.active');
-      if(ativa && ativa.id === 'aba-pesquisa'){
-        pesquisaCarregada = false;
-        pesquisaEntregadoresCarregada = false;
-        carregarTodasEncomendasParaPesquisa();
-        carregarTodosEntregadoresParaPesquisa();
-      } else if(ativa && ativa.id === 'aba-entregadores'){
-        carregarEntregadores();
-        carregarRemetentesEntregador();
-      } else if(ativa && ativa.id === 'aba-resumo'){
-        carregarResumo();
-      } else {
-        carregarResumo();
-      }
-      if(btn){
-        btn.disabled = false;
-        btn.textContent = '🔄 Atualizar';
-      }
-      mostrarToast('Página atualizada!');
-      return;
-    }
-  }
-
-  document.getElementById('lista').innerHTML = '<div class="loading">Atualizando encomendas...</div>';
-
-  google.script.run.withSuccessHandler(function(lista){
-    encomendas = lista || [];
-    atualizarFiltro();
-    atualizarSugestoesDestinatarios();
-    aplicarFiltro();
-    atualizarTotal();
-    pendentesOk = true;
-    finalizarBase();
-  }).withFailureHandler(function(erro){
-    console.error(erro);
-    pendentesOk = true;
-    finalizarBase();
-  }).listarEncomendasDoDia();
-
-  google.script.run.withSuccessHandler(function(lista){
-    const select = document.getElementById('remetente');
-    select.innerHTML = '';
-    (lista || []).forEach(function(nome){
-      const option=document.createElement('option');
-      option.value=nome;
-      option.textContent=nome;
-      select.appendChild(option);
-    });
-    if(!(lista || []).length){
-      const option=document.createElement('option');
-      option.value='Outros';
-      option.textContent='Outros';
-      select.appendChild(option);
-    }
-    remetentesOk = true;
-    finalizarBase();
-  }).withFailureHandler(function(erro){
-    console.error(erro);
-    remetentesOk = true;
-    finalizarBase();
-  }).listarRemetentes();
-}
-
-function salvar(){
-  const porteiro = document.getElementById('porteiro').value.trim();
-  const destinatario = document.getElementById('destinatario').value.trim();
-  const remetente = document.getElementById('remetente').value;
-  const quantidade = Number(document.getElementById('quantidade').value) || 1;
-  const dataRecebimento = document.getElementById('dataRecebimento').value;
-
-  if(!porteiro){
-    mostrarToast('Informe o nome do porteiro.');
-    document.getElementById('porteiro').focus();
-    return;
-  }
-  if(!destinatario){
-    mostrarToast('Informe o destinatário e o apartamento.');
-    document.getElementById('destinatario').focus();
-    return;
-  }
-
-  salvarPorteiroLocal();
-
-  const btn = document.getElementById('btnSalvar');
-  btn.disabled = true;
-  btn.textContent = '⏳ SALVANDO...';
-
-  const fotosProntas = fotosSelecionadas.filter(foto => foto.dataUrl);
-  const imagens = fotosProntas.map(foto => foto.dataUrl);
-  const codigosBarras = fotosProntas.map(foto => foto.codigoBarras || '').filter(codigo => codigo);
-
-  enviarDados({
-    porteiro,
-    destinatario,
-    remetente,
-    quantidade,
-    dataRecebimento,
-    imagem: imagens.length ? imagens[0] : '',
-    imagens: imagens,
-    codigoBarras: codigosBarras.join(' | '),
-    codigosBarras: codigosBarras
-  });
-}
-
-function enviarDados(dados){
-  google.script.run
-    .withSuccessHandler(function(){
-      const btn = document.getElementById('btnSalvar');
-      btn.disabled = false;
-      btn.textContent = '💾 SALVAR ENCOMENDA';
-      mostrarToast('Encomenda registrada com sucesso!');
-      limparFormulario();
-      carregarEncomendas();
-      if(pesquisaCarregada) carregarTodasEncomendasParaPesquisa();
-      if(resumoCarregado) carregarResumo();
-    })
-    .withFailureHandler(function(erro){
-      console.error(erro);
-      const btn = document.getElementById('btnSalvar');
-      btn.disabled = false;
-      btn.textContent = '💾 SALVAR ENCOMENDA';
-      mostrarToast('Erro ao salvar a encomenda.');
-    })
-    .salvarEncomenda(dados);
-}
-
-function limparFormulario(){
-  document.getElementById('destinatario').value = '';
-  document.getElementById('quantidade').value = '1';
-  document.getElementById('foto').value = '';
-  document.getElementById('fotoPreview').style.display = 'none';
-  const codigoVisual = document.getElementById('codigoBarrasVisual');
-  if(codigoVisual) codigoVisual.value = '';
-  document.getElementById('fotoTexto').textContent = 'Tire uma foto da encomenda para ler o código.';
-  document.getElementById('fotosAdicionadas').innerHTML = '';
-  fotosSelecionadas = [];
-  codigoBarrasDetectado = '';
-  configurarData();
-}
-
-function carregarEncomendas(){
-  document.getElementById('lista').innerHTML = '<div class="loading">Carregando encomendas...</div>';
-  google.script.run
-    .withSuccessHandler(function(lista){
-      encomendas = lista || [];
-      linhasSelecionadasPendentes = new Set();
-      atualizarFiltro();
-      atualizarSugestoesDestinatarios();
-      aplicarFiltro();
-      atualizarTotal();
-    })
-    .withFailureHandler(function(erro){
-      console.error(erro);
-      document.getElementById('lista').innerHTML = '<div class="empty">Não foi possível carregar as encomendas.</div>';
-    })
-    .listarEncomendasDoDia();
-}
-
-function carregarTodasEncomendasParaPesquisa(){
-  pesquisaCarregada = false;
-  google.script.run
-    .withSuccessHandler(function(lista){
-      todasEncomendasPesquisa = lista || [];
-      pesquisaCarregada = true;
-      atualizarSugestoesDestinatarios();
-      executarPesquisa();
-    })
-    .withFailureHandler(function(erro){
-      console.error(erro);
-    })
-    .listarTodasEncomendas();
-}
-
-function carregarTodosEntregadoresParaPesquisa(){
-  pesquisaEntregadoresCarregada = false;
-  google.script.run
-    .withSuccessHandler(function(lista){
-      // Guarda a posição original de cada registro para que o botão
-      // Editar abra exatamente o entregador que foi clicado.
-      todosEntregadoresPesquisa = (lista || []).map(function(item, indice){
-        const copia = Object.assign({}, item);
-        copia._indicePesquisa = indice;
-        return copia;
-      });
-      pesquisaEntregadoresCarregada = true;
-      executarPesquisa();
-    })
-    .withFailureHandler(function(erro){
-      console.error(erro);
-    })
-    .listarTodosEntregadoresPesquisa();
-}
-
-function executarPesquisa(){
-  const termo = normalizar(document.getElementById('filtroNomePesquisa').value);
-  const dataFiltro = document.getElementById('filtroDataPesquisa').value;
-  const container = document.getElementById('listaPesquisa');
-
-  // Filtrar Encomendas
-  const filtradasEncomendas = todasEncomendasPesquisa.filter(item => {
-    const nomeDest = normalizar(item.destinatario);
-    const apto = normalizar(item.apartamento);
-    const rem = normalizar(item.remetente);
-    const codBarras = normalizar(item.codigoBarras);
-
-    if(termo && !nomeDest.includes(termo) && !apto.includes(termo) && !rem.includes(termo) && !codBarras.includes(termo)) {
-      return false;
-    }
-    if(dataFiltro) {
-      const partesD = dataFiltro.split('-');
-      const dataFiltroFormatada = `${partesD[2]}/${partesD[1]}/${partesD[0]}`;
-      if(item.dataRecebimento !== dataFiltroFormatada) {
-        return false;
-      }
-    }
-    return true;
-  });
-
-  // A lista inteira de Resultados da Pesquisa fica ordenada
-  // pela data, do mais recente para o mais antigo.
-
-  // Filtrar Entregadores
-  const filtradosEntregadores = todosEntregadoresPesquisa.filter(item => {
-    const nomeEnt = normalizar(item.entregador);
-    const telEnt = normalizar(item.telefone);
-    const remEnt = normalizar(item.remetente);
-    const destEnt = normalizar(item.destinatarios);
-
-    if(termo && !nomeEnt.includes(termo) && !telEnt.includes(termo) && !remEnt.includes(termo) && !destEnt.includes(termo)) {
-      return false;
-    }
-    if(dataFiltro) {
-      const partesD = dataFiltro.split('-');
-      const dataFiltroFormatada = `${partesD[2]}/${partesD[1]}/${partesD[0]}`;
-      if(item.data !== dataFiltroFormatada) {
-        return false;
-      }
-    }
-    return true;
-  });
-
-  const resultadosPesquisa = []
-    .concat(filtradasEncomendas.map(function(item){ return {tipo:'encomenda', item:item}; }))
-    .concat(filtradosEntregadores.map(function(item){ return {tipo:'entregador', item:item}; }));
-
-  resultadosPesquisa.sort(function(a, b){
-    const dataA = a.tipo === 'encomenda' ? a.item.dataRecebimento : a.item.data;
-    const dataB = b.tipo === 'encomenda' ? b.item.dataRecebimento : b.item.data;
-    return obterDataPesquisa(dataB) - obterDataPesquisa(dataA);
-  });
-
-  if(resultadosPesquisa.length === 0){
-    container.innerHTML = '<div class="empty">📦 Nenhuma encomenda ou entrega encontrada com esses filtros.</div>';
-    return;
-  }
-
-  let html = '';
-
-  resultadosPesquisa.forEach(function(resultado){
-    const item = resultado.item;
-
-    if(resultado.tipo === 'encomenda'){
-      const statusCor = normalizar(item.status) === 'retirado' ? '#08a66a' : '#ff9700';
-      const nomeLimpo = obterNomeDestinatario(item.destinatario);
-
-      html += '<div class="recipient-row" style="min-height: 120px;">';
-      html += '<div class="recipient-main" style="padding-right: 90px;">';
-      html += '<div class="recipient-name"><span class="recipient-icon">👤</span><span>' + escapeHtml(nomeLimpo) + '</span></div>';
-      html += '<div class="senders"><span class="senders-icon">🏠</span><span>Apartamento: <strong>' + escapeHtml(item.apartamento) + '</strong></span></div>';
-      html += '<div class="senders"><span class="senders-icon">📦</span><span>Remetente: <strong>' + escapeHtml(item.remetente || 'Outros') + '</strong> | Recebido em: ' + escapeHtml(item.dataRecebimento) + '</span></div>';
-
-      if(item.codigoBarras) {
-        html += '<div class="senders"><span class="senders-icon">🏷️</span><span>Código de Barras: <strong>' + escapeHtml(item.codigoBarras) + '</strong></span></div>';
-      }
-
-      if(normalizar(item.status) === 'retirado') {
-        html += '<div class="senders" style="color: #08a66a;"><span class="senders-icon">✓</span><span>Retirado por: <strong>' + escapeHtml(item.retiradoPor) + '</strong> em ' + escapeHtml(item.dataRetirada) + '</span></div>';
-        if(item.assinaturaUrl && String(item.assinaturaUrl).trim() !== '') {
-          html += '<div class="senders" style="margin-top: 4px;"><a href="' + escapeAttr(item.assinaturaUrl) + '" target="_blank" style="color: #08a66a; font-weight: bold; text-decoration: underline;">✍️ Ver assinatura digital cadastrada</a></div>';
-        }
-      } else {
-        html += '<div class="senders" style="color: #ff9700;"><span class="senders-icon">⏳</span><span>Status: <strong>Pendente</strong></span></div>';
-      }
-
-      if(item.fotoUrl) {
-        html += '<div class="senders" style="margin-top: 4px;"><a href="' + escapeAttr(item.fotoUrl) + '" target="_blank" style="color: #0878ed; font-weight: bold; text-decoration: underline;">📷 Ver foto cadastrada</a></div>';
-      } else {
-        html += '<div class="senders" style="color: #888; margin-top: 4px;">Sem foto cadastrada</div>';
-      }
-
-      html += '</div>';
-      html += '<div class="volume-badge" style="background:' + statusCor + ';">' + (item.quantidade || 1) + '</div>';
-      if(registroEhHojeNoApp(item.dataRecebimento)){
-        html += '<button type="button" onclick="abrirEdicaoEncomenda(' + Number(item.linha) + ')" style="position:absolute;right:10px;bottom:9px;border:0;border-radius:8px;background:#0878ed;color:#fff;font-size:12px;font-weight:900;padding:8px 10px;cursor:pointer;">✏️ Editar</button>';
-      }
-      html += '</div>';
-    } else {
-      // Renderizar Entregadores na mesma ordenação por data.
-      html += '<div class="recipient-row" style="min-height: 120px; border-left: 5px solid #ed6800;">';
-      html += '<div class="recipient-main" style="padding-right: 90px;">';
-      html += '<div class="recipient-name" style="color:#ed6800;"><span class="recipient-icon">🚚</span><span>Entregador: ' + escapeHtml(item.entregador) + '</span></div>';
-      html += '<div class="senders"><span class="senders-icon">📞</span><span>Telefone: <strong>' + escapeHtml(item.telefone) + '</strong></span></div>';
-      html += '<div class="senders"><span class="senders-icon">📦</span><span>Remetente: <strong>' + escapeHtml(item.remetente) + '</strong> | Data: ' + escapeHtml(item.data) + '</span></div>';
-      html += '<div class="senders"><span class="senders-icon">🏠</span><span>Destinatários: <strong>' + escapeHtml(item.destinatarios || 'Não informado') + '</strong></span></div>';
-      html += '</div>';
-      html += '<div class="volume-badge" style="background:#ed6800;">' + (item.quantidade || 1) + '</div>';
-      if(registroEhHojeNoApp(item.data)){
-        html += '<button type="button" onclick="abrirEdicaoEntregadorPorIndice(' + Number(item._indicePesquisa || 0) + ')" style="position:absolute;right:10px;bottom:9px;border:0;border-radius:8px;background:#ed6800;color:#fff;font-size:12px;font-weight:900;padding:8px 10px;cursor:pointer;">✏️ Editar</button>';
-      }
-      html += '</div>';
-    }
-  });
-
-  container.innerHTML = html;
-}
-
-function obterDataPesquisa(dataTexto){
-  if(!dataTexto) return 0;
-  const texto=String(dataTexto).trim();
-
-  // dd/mm/yyyy ou dd/mm/yyyy HH:mm:ss
-  let m=texto.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
-  if(m){
-    return new Date(Number(m[3]),Number(m[2])-1,Number(m[1]),Number(m[4]||0),Number(m[5]||0),Number(m[6]||0)).getTime();
-  }
-
-  // yyyy-mm-dd ou yyyy-mm-dd HH:mm:ss
-  m=texto.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
-  if(m){
-    return new Date(Number(m[1]),Number(m[2])-1,Number(m[3]),Number(m[4]||0),Number(m[5]||0),Number(m[6]||0)).getTime();
-  }
-
-  const parsed=Date.parse(texto);
-  return Number.isNaN(parsed) ? 0 : parsed;
-}
-function registroEhHojeNoApp(dataTexto){
-  if(!dataTexto) return false;
-  const texto=String(dataTexto).trim();
-  const partes=texto.split('/');
-  if(partes.length!==3) return false;
-  const dia=Number(partes[0]);
-  const mes=Number(partes[1]);
-  const ano=Number(partes[2]);
-  const hoje=new Date();
-  return dia===hoje.getDate() && mes===hoje.getMonth()+1 && ano===hoje.getFullYear();
-}
-function abrirEdicaoEncomenda(linha){
-  const item=todasEncomendasPesquisa.find(x=>Number(x.linha)===Number(linha));
-  if(!item){mostrarToast('Registro de encomenda não encontrado.');return;}
-  if(!registroEhHojeNoApp(item.dataRecebimento)){mostrarToast('Somente registros de hoje podem ser editados.');return;}
-  tipoEdicaoAtual='encomenda'; linhaEdicaoAtual=Number(linha);
-  document.getElementById('modalEdicaoTitulo').textContent='✏️ Editar encomenda';
-  document.getElementById('camposEdicaoEncomenda').style.display='block';
-  document.getElementById('camposEdicaoEntregador').style.display='none';
-  document.getElementById('editarPorteiro').value=item.porteiro||'';
-  document.getElementById('editarDestinatario').value=item.destinatario||'';
-  document.getElementById('editarQuantidade').value=String(item.quantidade||1);
-  document.getElementById('editarCodigoBarras').value=item.codigoBarras||'';
-  const select=document.getElementById('editarRemetente'); select.innerHTML='';
-  const nomes=Array.from(new Set((remetentesCadastrados||[]).concat([item.remetente||'Outros']).filter(Boolean)));
-  nomes.forEach(nome=>{const o=document.createElement('option');o.value=nome;o.textContent=nome;if(normalizar(nome)===normalizar(item.remetente||'Outros'))o.selected=true;select.appendChild(o);});
-  document.getElementById('modalEdicao').classList.add('show');
-}
-function abrirEdicaoEntregadorPorIndice(indice){
-  const pos=Number(indice);
-  const item=todosEntregadoresPesquisa[pos];
-  if(!item){mostrarToast('Registro de entrega não encontrado.');return;}
-
-  const linhaInformada=Number(item.linha);
-  const linha=Number.isFinite(linhaInformada) && linhaInformada>=2 ? linhaInformada : (pos+2);
-  tipoEdicaoAtual='entregador';
-  linhaEdicaoAtual=linha;
-
-  document.getElementById('modalEdicaoTitulo').textContent='✏️ Editar entrega';
-  document.getElementById('camposEdicaoEncomenda').style.display='none';
-  document.getElementById('camposEdicaoEntregador').style.display='block';
-  document.getElementById('editarEntregador').value=item.entregador||'';
-  document.getElementById('editarTelefoneEntregador').value=item.telefone||'';
-  document.getElementById('editarRemetenteEntregador').value=item.remetente||'';
-  document.getElementById('editarQuantidadeEntregador').value=String(item.quantidade||1);
-  document.getElementById('editarDestinatariosEntregador').value=item.destinatarios||'';
-  document.getElementById('modalEdicao').classList.add('show');
-}
-
-function fecharModalEdicao(){document.getElementById('modalEdicao').classList.remove('show');tipoEdicaoAtual='';linhaEdicaoAtual=null;}
-function salvarEdicao(){
-  if(!tipoEdicaoAtual || linhaEdicaoAtual === null || !Number.isFinite(Number(linhaEdicaoAtual)) || Number(linhaEdicaoAtual) < 2){
-    mostrarToast('Registro de edição inválido.');
-    return;
-  }
-
-  const btn=document.getElementById('btnSalvarEdicao');
-  btn.disabled=true;
-  btn.textContent='⏳ Salvando...';
-
-  const sucesso=function(resultado){
-    console.log('Edição salva:', resultado);
-    btn.disabled=false;
-    btn.textContent='💾 Salvar alterações';
-    fecharModalEdicao();
-    mostrarToast('Alterações salvas com sucesso!');
-    // Recarrega os dados para confirmar visualmente o que foi gravado.
-    carregarTodasEncomendasParaPesquisa();
-    carregarTodosEntregadoresParaPesquisa();
-    carregarEncomendas();
-    carregarResumo();
-  };
-
-  const falha=function(erro){
-    console.error('Erro ao salvar edição:', erro);
-    btn.disabled=false;
-    btn.textContent='💾 Salvar alterações';
-    mostrarToast(erro && erro.message ? erro.message : 'Não foi possível salvar as alterações.');
-  };
-  if(tipoEdicaoAtual==='encomenda'){
-    const dados={porteiro:document.getElementById('editarPorteiro').value.trim(),destinatario:document.getElementById('editarDestinatario').value.trim(),remetente:document.getElementById('editarRemetente').value.trim()||'Outros',quantidade:Number(document.getElementById('editarQuantidade').value)||0,codigoBarras:document.getElementById('editarCodigoBarras').value.trim()};
-    if(!dados.destinatario){mostrarToast('Informe o destinatário e o apartamento.');btn.disabled=false;btn.textContent='💾 Salvar alterações';return;}
-    if(dados.quantidade<1){mostrarToast('Informe uma quantidade válida.');btn.disabled=false;btn.textContent='💾 Salvar alterações';return;}
-    google.script.run.withSuccessHandler(sucesso).withFailureHandler(falha).editarEncomendaHoje(linhaEdicaoAtual,dados);
-  }else{
-    const dados={nome:document.getElementById('editarEntregador').value.trim(),telefone:document.getElementById('editarTelefoneEntregador').value.trim(),remetente:document.getElementById('editarRemetenteEntregador').value.trim(),quantidade:Number(document.getElementById('editarQuantidadeEntregador').value)||0,destinatarios:document.getElementById('editarDestinatariosEntregador').value.trim()};
-    if(!dados.nome||!dados.telefone||!dados.remetente||!dados.destinatarios){mostrarToast('Preencha todos os campos da entrega.');btn.disabled=false;btn.textContent='💾 Salvar alterações';return;}
-    if(dados.quantidade<1){mostrarToast('Informe uma quantidade válida.');btn.disabled=false;btn.textContent='💾 Salvar alterações';return;}
-    google.script.run.withSuccessHandler(sucesso).withFailureHandler(falha).editarEntregadorHoje(linhaEdicaoAtual,dados);
-  }
-}
-
-function limparFiltroPesquisa(){
-  document.getElementById('filtroNomePesquisa').value = '';
-  document.getElementById('filtroDataPesquisa').value = '';
-  executarPesquisa();
-}
-
-function atualizarSugestoesDestinatarios(){
-  const datalist = document.getElementById('sugestoesDestinatarios');
-  if(!datalist) return;
-  const destinatarios = new Set();
-  const fonte = todasEncomendasPesquisa.length ? todasEncomendasPesquisa : encomendas;
-  fonte.forEach(item => {
-    if(item && item.destinatario) destinatarios.add(String(item.destinatario).trim());
-  });
-  datalist.innerHTML = '';
-  Array.from(destinatarios).filter(Boolean).sort((a,b)=>a.localeCompare(b,'pt-BR')).forEach(dest => {
-    const opt = document.createElement('option');
-    opt.value = dest;
-    datalist.appendChild(opt);
-  });
-}
-
-function atualizarTotal(){
-  let total = 0;
-  encomendas.forEach(function(item){
-    if(normalizar(item.status) === 'retirado') return;
-    total += Number(item.quantidade) || 0;
-  });
-  document.getElementById('totalPendente').textContent = total;
-}
-
-function atualizarFiltro(){
-  const select = document.getElementById('filtroApartamento');
-  const atual = select.value;
-  const apartamentos = new Set();
-  encomendas.forEach(function(item){
-    if(normalizar(item.status) === 'retirado') return;
-    apartamentos.add(item.apartamento || 'Sem apartamento');
-  });
-  select.innerHTML = '<option value="">Apartamento</option>';
-  Array.from(apartamentos).sort((a,b)=>a.localeCompare(b,'pt-BR',{numeric:true})).forEach(apto=>{
-    const option = document.createElement('option');
-    option.value = apto;
-    option.textContent = apto;
-    if(apto===atual) option.selected = true;
-    select.appendChild(option);
-  });
-}
-
-function aplicarFiltro(){
-  const filtro = document.getElementById('filtroApartamento').value;
-  const lista = encomendas.filter(item=>{
-    if(normalizar(item.status)==='retirado') return false;
-    if(filtro && item.apartamento!==filtro) return false;
-    return true;
-  });
-  renderizarLista(lista);
-}
-
-function normalizar(texto){
-  return String(texto||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
-}
-
-function obterNomeDestinatario(texto){
-  let nome = String(texto||'').trim();
-  nome = nome.replace(/\s*[-–—]?\s*(?:APARTAMENTO|APTO|APT|AP)\s*[-.:]?\s*\d{1,5}\s*$/i,'');
-  nome = nome.replace(/\s*[-–—]?\s*\b\d{3,5}\b\s*$/, '');
-  return nome.trim();
-}
-
-function renderizarLista(lista){
-  const container = document.getElementById('lista');
-  if(!lista.length){
-    container.innerHTML = '<div class="empty">📦 Nenhuma encomenda pendente.</div>';
-    return;
-  }
-  const apartamentos = {};
-  lista.forEach(item=>{
-    const apto = item.apartamento || 'Sem apartamento';
-    if(!apartamentos[apto]) apartamentos[apto] = [];
-    apartamentos[apto].push(item);
-  });
-
-  const aptosOrdenados = Object.keys(apartamentos).sort((a,b)=>a.localeCompare(b,'pt-BR',{numeric:true}));
-  let html = '';
-
-  aptosOrdenados.forEach(apto=>{
-    const itens = apartamentos[apto];
-    itens.sort((a,b)=>(Number(a.timestampRecebimento)||0)-(Number(b.timestampRecebimento)||0));
-
-    const grupos = {};
-    itens.forEach(item=>{
-      const nome = obterNomeDestinatario(item.destinatario);
-      const chave = normalizar(nome);
-      if(!grupos[chave]) grupos[chave] = {nome:nome, itens:[]};
-      grupos[chave].itens.push(item);
-    });
-
-    const data = itens[0] ? itens[0].dataRecebimento : '';
-    const linhasApto = itens.map(i => i.linha);
-
-    html += '<div class="apartment-group">';
-    html += '<div class="apartment-header">' +
-              '<div class="apartment-name">🏠 ' + escapeHtml(apto) + '</div>' +
-              '<div style="display:flex; align-items:center; gap:10px;">' +
-                '<div class="apartment-date">📅 ' + escapeHtml(data) + '</div>' +
-                '<button class="retire-all-btn" onclick=\'abrirBaixaApartamento(' + JSON.stringify(linhasApto) + ', "' + escapeAttr(apto) + '")\'>Retirar todas</button>' +
-              '</div>' +
-            '</div>';
-
-    Object.values(grupos).forEach(grupo=>{
-      html += renderizarDestinatario(grupo.nome, grupo.itens);
-    });
-    html += '</div>';
-  });
-  container.innerHTML = html;
-  atualizarBotaoBaixaSelecionadas();
-}
-
-function renderizarDestinatario(nome, itens){
-  let totalVolumes = 0;
-  itens.forEach(item=>{
-    totalVolumes += Number(item.quantidade) || 1;
-  });
-
-  const linhas = itens.map(item=>item.linha);
-  const naoAvisados = itens.filter(item=>!item.avisadoEm);
-  const foto = itens.find(item=>item.fotoUrl);
-
-  let html = '<div class="recipient-row">';
-  html += '<div class="recipient-main">';
-  html += '<div class="recipient-name"><span class="recipient-icon">👤</span><span>' + escapeHtml(nome) + '</span></div>';
-  html += '<div class="senders"><span class="senders-icon">📦</span><span><strong>' + totalVolumes + (totalVolumes === 1 ? ' volume pendente' : ' volumes pendentes') + '</strong></span></div>';
-  html += '</div>';
-  html += '<div class="volume-badge">' + totalVolumes + '</div>';
-  html += '<div class="actions">';
-
-  if(foto){
-    html += '<button class="photo-button" onclick="abrirFoto(\'' + escapeAttr(foto.fotoUrl) + '\')">📷 FOTO</button>';
-  }
-  if(naoAvisados.length){
-    html += '<button class="whatsapp-button" onclick=\'avisarGrupo(' + JSON.stringify(linhas) + ')\'>💬 AVISAR</button>';
+function alternarEdicaoCongregacaoLocal() {
+  const visualizacao = document.getElementById('visualizacaoCongregacaoLocal');
+  const formulario = document.getElementById('formularioCongregacaoLocal');
+  const btnEditar = document.getElementById('btnEditarCongregacaoLocal');
+
+  if (formulario.style.display === 'none') {
+    formulario.style.display = 'block';
+    visualizacao.style.display = 'none';
+    btnEditar.style.display = 'none';
   } else {
-    html += '<button class="whatsapp-button sent" disabled>✓ AVISADO</button>';
-  }
-  html += '<button class="retire-button" onclick="abrirBaixa(' + itens[0].linha + ')">📦 Retirar</button>';
-  html += '</div></div>';
-  return html;
-}
-function atualizarSugestoesLoteDestinatarios(){
-  const datalist = document.getElementById('sugestoesLoteDestinatarios');
-  if(!datalist) return;
-  const destinatarios = new Set();
-  const fonte = todasEncomendasPesquisa.length ? todasEncomendasPesquisa : encomendas;
-  fonte.forEach(function(item){
-    if(item && item.destinatario) destinatarios.add(String(item.destinatario).trim());
-  });
-  datalist.innerHTML = '';
-  Array.from(destinatarios).filter(Boolean).sort((a,b)=>a.localeCompare(b,'pt-BR')).forEach(function(nome){
-    const option = document.createElement('option');
-    option.value = nome;
-    datalist.appendChild(option);
-  });
-}
-
-function abrirCadastroEmLote(){
-  atualizarSugestoesLoteDestinatarios();
-  const porteiroAtual = document.getElementById('porteiro').value.trim() || localStorage.getItem('porteiro') || '';
-  document.getElementById('lotePorteiro').value = porteiroAtual;
-  document.getElementById('linhasCadastroLote').innerHTML = '';
-  contadorLinhasCadastroLote = 0;
-  adicionarLinhaCadastroLote();
-  document.getElementById('modalCadastroLote').classList.add('show');
-}
-
-function fecharCadastroEmLote(){
-  document.getElementById('modalCadastroLote').classList.remove('show');
-}
-
-function obterRemetentesParaLote(){
-  const datalist = document.getElementById('sugestoesRemetentesRegistrar');
-  const nomes = Array.from(datalist ? datalist.options : []).map(o=>o.value).filter(Boolean);
-  const atual = document.getElementById('remetente')?.value.trim();
-  if(atual && !nomes.includes(atual)) nomes.unshift(atual);
-  if(!nomes.length) nomes.push('Outros');
-  return Array.from(new Set(nomes));
-}
-
-function adicionarLinhaCadastroLote(){
-  contadorLinhasCadastroLote++;
-  const n = contadorLinhasCadastroLote;
-  const container = document.getElementById('linhasCadastroLote');
-  const remetentes = obterRemetentesParaLote();
-  let options = remetentes.map(nome=>'<option value="'+escapeHtml(nome)+'">'+escapeHtml(nome)+'</option>').join('');
-  const div = document.createElement('div');
-  div.className = 'card linha-cadastro-lote';
-  div.style.cssText = 'padding:12px;margin-top:10px;border:1px solid #dfe9e4;border-radius:12px;box-shadow:none;';
-  div.dataset.numero = String(n);
-  div.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px;">'
-    + '<strong style="color:#087c4b;font-size:15px;">Encomenda '+n+'</strong>'
-    + '<button type="button" onclick="removerLinhaCadastroLote(this)" style="border:0;border-radius:7px;background:#fff0f0;color:#dc3545;font-size:12px;font-weight:900;padding:6px 8px;cursor:pointer;">✕ Remover</button>'
-    + '</div>'
-    + '<div style="display:grid;grid-template-columns:1fr;gap:10px;">'
-    + '<input class="lote-destinatario" type="text" placeholder="Destinatário / Apartamento" list="sugestoesLoteDestinatarios" autocomplete="off" style="width:100%;min-height:49px;box-sizing:border-box;border:2px solid #cad9ea;border-radius:9px;padding:12px 14px;font-size:19px;color:#17345f;outline:0;">'
-    + '<input class="lote-remetente" type="text" placeholder="Remetente" list="sugestoesLoteRemetentes" autocomplete="off" value="'+(remetentes[0] ? escapeAttr(remetentes[0]) : 'Outros')+'" style="width:100%;min-height:49px;box-sizing:border-box;border:2px solid #cad9ea;border-radius:9px;padding:12px 14px;font-size:19px;color:#17345f;outline:0;">'
-    + '<input class="lote-codigo" type="text" placeholder="Código da encomenda (digite manualmente)" style="width:100%;min-height:49px;box-sizing:border-box;border:2px solid #cad9ea;border-radius:9px;padding:12px 14px;font-size:19px;color:#17345f;outline:0;">'
-    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">'
-    + '<select class="lote-quantidade" style="width:100%;min-height:49px;box-sizing:border-box;border:2px solid #cad9ea;border-radius:9px;padding:10px 12px;font-size:19px;color:#17345f;outline:0;"><option value="1">1 volume</option><option value="2">2 volumes</option><option value="3">3 volumes</option><option value="4">4 volumes</option><option value="5">5 volumes</option><option value="6">6 volumes</option><option value="7">7 volumes</option><option value="8">8 volumes</option><option value="9">9 volumes</option><option value="10">10 volumes</option></select>'
-    + '<input class="lote-data" type="date" value="'+document.getElementById('dataRecebimento').value+'">'
-    + '</div></div>';
-  container.appendChild(div);
-  atualizarSugestoesLoteDestinatarios();
-  atualizarContadorCadastroLote();
-}
-
-function removerLinhaCadastroLote(botao){
-  const linhas = document.querySelectorAll('#linhasCadastroLote .linha-cadastro-lote');
-  if(linhas.length <= 1){
-    mostrarToast('Mantenha pelo menos uma encomenda.');
-    return;
-  }
-  botao.closest('.linha-cadastro-lote').remove();
-  atualizarContadorCadastroLote();
-}
-
-function atualizarContadorCadastroLote(){
-  const total = document.querySelectorAll('#linhasCadastroLote .linha-cadastro-lote').length;
-  document.getElementById('contadorCadastroLote').textContent = total + (total === 1 ? ' encomenda' : ' encomendas');
-}
-
-function salvarCadastroEmLote(){
-  const porteiro = document.getElementById('lotePorteiro').value.trim();
-  const linhas = Array.from(document.querySelectorAll('#linhasCadastroLote .linha-cadastro-lote'));
-  if(!porteiro){ mostrarToast('Informe o nome do porteiro.'); return; }
-  if(!linhas.length){ mostrarToast('Adicione pelo menos uma encomenda.'); return; }
-
-  const dadosLote = [];
-  for(let i=0;i<linhas.length;i++){
-    const row = linhas[i];
-    const destinatario = row.querySelector('.lote-destinatario').value.trim();
-    const remetente = row.querySelector('.lote-remetente').value.trim() || 'Outros';
-    const codigoBarras = row.querySelector('.lote-codigo').value.trim();
-    const quantidade = Number(row.querySelector('.lote-quantidade').value) || 1;
-    const dataRecebimento = row.querySelector('.lote-data').value;
-    if(!destinatario){ mostrarToast('Informe o destinatário da encomenda '+(i+1)+'.'); row.querySelector('.lote-destinatario').focus(); return; }
-    if(!dataRecebimento){ mostrarToast('Informe a data da encomenda '+(i+1)+'.'); row.querySelector('.lote-data').focus(); return; }
-    dadosLote.push({porteiro,destinatario,remetente,quantidade,dataRecebimento,imagem:'',imagens:[],codigoBarras,codigosBarras:codigoBarras ? [codigoBarras] : []});
-  }
-
-  const btn = document.getElementById('btnSalvarLote');
-  btn.disabled = true;
-  btn.textContent = '⏳ CADASTRANDO...';
-  salvarPorteiroLocal();
-
-  let concluidas = 0;
-  let falhas = 0;
-  dadosLote.forEach(function(dados){
-    google.script.run
-      .withSuccessHandler(function(){
-        concluidas++;
-        finalizar();
-      })
-      .withFailureHandler(function(erro){
-        falhas++;
-        console.error(erro);
-        finalizar();
-      })
-      .salvarEncomenda(dados);
-  });
-
-  function finalizar(){
-    if(concluidas + falhas < dadosLote.length) return;
-    btn.disabled = false;
-    btn.textContent = '💾 CADASTRAR TODAS';
-    if(falhas === 0){
-      fecharCadastroEmLote();
-      mostrarToast(dadosLote.length + (dadosLote.length === 1 ? ' encomenda cadastrada!' : ' encomendas cadastradas!'));
-    } else {
-      mostrarToast(concluidas + ' cadastradas e ' + falhas + ' com erro.');
-    }
-    carregarEncomendas();
-    if(pesquisaCarregada) carregarTodasEncomendasParaPesquisa();
-    carregarResumo();
+    formulario.style.display = 'none';
+    visualizacao.style.display = 'block';
+    btnEditar.style.display = 'block';
   }
 }
 
-function alternarSelecaoPendente(linha, marcado){
-  const id = Number(linha);
-  if(!Number.isFinite(id)) return;
-  if(marcado) linhasSelecionadasPendentes.add(id);
-  else linhasSelecionadasPendentes.delete(id);
-}
+function salvarCongregacaoLocalTela() {
+  const dados = {
+    nome: document.getElementById('inputNomeLocal').value.trim(),
+    dia: document.getElementById('inputDiaLocal').value.trim(),
+    horario: document.getElementById('inputHorarioLocal').value.trim(),
+    endereco: document.getElementById('inputEnderecoLocal').value.trim()
+  };
 
-function abrirSelecaoPendentes(){
-  const pendentes = encomendas
-    .filter(item=>normalizar(item.status)!=='retirado')
-    .sort((a,b)=>{
-      const da = Number(a.timestampRecebimento)||0;
-      const db = Number(b.timestampRecebimento)||0;
-      return da-db;
-    });
-
-  if(!pendentes.length){
-    mostrarToast('Não há encomendas pendentes.');
+  if (!dados.nome) {
+    exibirAvisoApp('Atenção', 'Informe o nome da congregação.');
     return;
   }
 
-  const container = document.getElementById('listaSelecaoPendentes');
-  let html = '';
-  pendentes.forEach(function(item){
-    const id = Number(item.linha);
-    const marcado = linhasSelecionadasPendentes.has(id);
-    const nome = obterNomeDestinatario(item.destinatario);
-    const apartamento = item.apartamento || '';
-    const quantidade = Number(item.quantidade)||1;
-    const codigo = item.codigoBarras ? String(item.codigoBarras) : '';
-    html += '<label style="display:flex;align-items:flex-start;gap:10px;padding:11px 10px;border:1px solid #dfe9e4;border-radius:10px;background:#fff;margin-bottom:8px;cursor:pointer;">';
-    html += '<input type="checkbox" data-linha-selecao="'+id+'" '+(marcado?'checked':'')+' onchange="alternarSelecaoPendente('+id+', this.checked); atualizarResumoSelecaoPendentes();" style="width:20px;height:20px;min-width:20px;margin-top:2px;accent-color:#08a45b;">';
-    html += '<span style="display:block;min-width:0;flex:1;color:#31527d;font-size:14px;line-height:1.4;">';
-    html += '<strong style="color:#17345f;">'+escapeHtml(nome || 'Destinatário não informado')+'</strong>';
-    if(apartamento) html += ' <span style="color:#70849f;">— Apto '+escapeHtml(apartamento)+'</span>';
-    html += '<br><span>📦 '+quantidade+(quantidade===1?' volume':' volumes');
-    if(item.remetente) html += ' · '+escapeHtml(item.remetente);
-    if(codigo) html += ' · 🏷️ '+escapeHtml(codigo);
-    html += '</span>';
-    html += '</span></label>';
-  });
-  container.innerHTML = html;
-  atualizarResumoSelecaoPendentes();
-  document.getElementById('modalSelecaoPendentes').classList.add('show');
+  google.script.run
+    .withSuccessHandler(function() {
+      alternarEdicaoCongregacaoLocal();
+      carregarCongregacaoLocal();
+      exibirAvisoApp('Sucesso', 'Informações da congregação local salvas.');
+    })
+    .withFailureHandler(function(erro) {
+      exibirAvisoApp('Erro', 'Erro ao salvar congregação local: ' + (erro.message || erro));
+    })
+    .salvarCongregacaoLocal(dados);
 }
 
-function fecharSelecaoPendentes(){
-  document.getElementById('modalSelecaoPendentes').classList.remove('show');
-}
+/*************************************************
+ * CONSULTAR TEMAS
+ *************************************************/
+let temasCache = [];
 
-function selecionarTodasNoModalPendentes(marcar){
-  const caixas = document.querySelectorAll('#listaSelecaoPendentes input[type="checkbox"]');
-  caixas.forEach(function(checkbox){
-    const id = Number(checkbox.getAttribute('data-linha-selecao'));
-    checkbox.checked = marcar;
-    if(marcar) linhasSelecionadasPendentes.add(id);
-    else linhasSelecionadasPendentes.delete(id);
-  });
-  atualizarResumoSelecaoPendentes();
-}
+function consultarTemas() {
+  const termo = document.getElementById('campoTema').value.trim();
+  const resultado = document.getElementById('resultadoTemas');
+  resultado.innerHTML = '<div class="card loading">Consultando...</div>';
 
-function atualizarResumoSelecaoPendentes(){
-  const total = linhasSelecionadasPendentes.size;
-  const resumo = document.getElementById('resumoSelecaoPendentes');
-  const btn = document.getElementById('btnConfirmarSelecaoPendentes');
-  if(resumo) resumo.textContent = total + (total===1 ? ' encomenda selecionada' : ' encomendas selecionadas');
-  if(btn){
-    btn.disabled = total === 0;
-    btn.style.opacity = total === 0 ? '.5' : '1';
-  }
-}
+  google.script.run
+    .withSuccessHandler(function(dados) {
+      temasCache = dados || [];
+      if (!dados || dados.length === 0) {
+        resultado.innerHTML = '<div class="card mensagem">Nenhum tema encontrado.</div>';
+        return;
+      }
+      let html = '';
+      dados.forEach(function(item) {
+        let badgeSituacao = '';
+        const sit = String(item.situacao || '').trim();
+        if (sit.toLowerCase() === 'atualizado') {
+          badgeSituacao = '<span class="badge-situacao badge-atualizado">Atualizado</span>';
+        } else if (sit.toLowerCase() === 'descontinuado') {
+          badgeSituacao = '<span class="badge-situacao badge-descontinuado">Descontinuado</span>';
+        }
 
-function confirmarSelecaoPendentes(){
-  const selecionadas = encomendas.filter(item=>normalizar(item.status)!=='retirado' && linhasSelecionadasPendentes.has(Number(item.linha)));
-  if(!selecionadas.length){
-    mostrarToast('Selecione pelo menos uma encomenda.');
-    return;
-  }
-  fecharSelecaoPendentes();
-  linhaBaixaAtual = null;
-  linhasBaixaAptoAtual = selecionadas.map(item=>item.linha);
-  const nomes = [];
-  selecionadas.forEach(item=>{
-    const nome = obterNomeDestinatario(item.destinatario);
-    if(nome && !nomes.some(x=>normalizar(x)===normalizar(nome))) nomes.push(nome);
-  });
-  document.getElementById('retiradoPor').value = nomes.length === 1 ? nomes[0] : '';
-  document.getElementById('modalBaixa').classList.add('show');
-  setTimeout(inicializarCanvas, 50);
-}
+        html += '<div class="card">' +
+          '<div style="display: flex; justify-content: space-between; align-items: flex-start;">' +
+            '<div style="color: #1f4e78; font-weight: bold;">Tema nº ' + escapar(item.numero) + '</div>' +
+            '<button class="btn-principal" style="padding: 6px 12px; font-size: 13px;" onclick="abrirFormularioEditarTema(' + item.linha + ')">✏️ Editar</button>' +
+          '</div>' +
+          '<div style="font-size: 18px; font-weight: bold; margin: 6px 0;">' + escapar(item.tema) + '</div>';
 
-function atualizarBotaoBaixaSelecionadas(){
-  atualizarResumoSelecaoPendentes();
-}
+        if (item.assunto) {
+          html += '<div style="color: #555;"><strong>Assunto:</strong> ' + escapar(item.assunto) + '</div>';
+        }
 
-function avisarGrupo(linhas){
-  const grupo = encomendas.filter(item=>linhas.indexOf(item.linha)!==-1);
-  if(!grupo.length) return;
-  const naoAvisados = grupo.filter(item=>!item.avisadoEm);
-  if(!naoAvisados.length){
-    mostrarToast('Este destinatário já foi avisado.');
-    return;
-  }
-  const primeiro = naoAvisados[0];
-  const nome = obterNomeDestinatario(primeiro.destinatario);
-  const apartamento = primeiro.apartamento || 'Sem apartamento';
-  const remetentes = [];
-  naoAvisados.forEach(item=>{
-    const rem = String(item.remetente||'').trim();
-    if(rem && !remetentes.some(x=>normalizar(x)===normalizar(rem))) remetentes.push(rem);
-  });
-  let totalVolumes = 0;
-  naoAvisados.forEach(item=>{
-    totalVolumes += Number(item.quantidade)||1;
-  });
+        if (badgeSituacao) {
+          html += '<div style="margin-top: 6px;"><strong>Situação:</strong> ' + badgeSituacao + '</div>';
+        }
 
-  let mensagem = (naoAvisados.length === 1 ? '*Olá! Uma encomenda chegou!*' : '*Olá! Chegaram várias encomendas!*');
-  mensagem += '\n\n👤 Destinatário: ' + nome + '\n🏠 Apartamento: ' + apartamento + '\n\n📦 Remetente: ' + remetentes.join(', ') + '\n📦 Quantidade de volumes: ' + totalVolumes;
-
-  window.open('https://wa.me/?text=' + encodeURIComponent(mensagem), '_blank');
-  marcarLinhasComoAvisadas(naoAvisados);
-}
-
-function marcarLinhasComoAvisadas(itens){
-  if(!itens.length) return;
-  let restante = itens.length;
-  itens.forEach(item=>{
-    google.script.run
-      .withSuccessHandler(()=>{
-        item.avisadoEm = 'agora';
-        restante--;
-        if(restante <= 0) setTimeout(()=>carregarEncomendas(), 500);
-      })
-      .withFailureHandler(()=>{
-        restante--;
-        if(restante <= 0) carregarEncomendas();
-      })
-      .marcarEncomendaAvisada(item.linha);
-  });
-}
-
-function abrirFoto(url){
-  if(!url){
-    mostrarToast('Esta encomenda não possui foto.');
-    return;
-  }
-  window.open(url, '_blank');
-}
-
-function abrirBaixa(linha){
-  linhaBaixaAtual = linha;
-  linhasBaixaAptoAtual = null;
-  const item = encomendas.find(i => i.linha === linha);
-  const nomeRec = item ? obterNomeDestinatario(item.destinatario) : '';
-  document.getElementById('retiradoPor').value = nomeRec;
-  document.getElementById('modalBaixa').classList.add('show');
-  setTimeout(inicializarCanvas, 50);
-}
-
-function abrirBaixaApartamento(linhas, apto){
-  linhasBaixaAptoAtual = linhas;
-  linhaBaixaAtual = null;
-  document.getElementById('retiradoPor').value = apto;
-  document.getElementById('modalBaixa').classList.add('show');
-  setTimeout(inicializarCanvas, 50);
-}
-
-function fecharModal(){
-  linhaBaixaAtual = null;
-  linhasBaixaAptoAtual = null;
-  limparAssinatura();
-  const btnConfirmar = document.getElementById('btnConfirmarBaixa');
-  if(btnConfirmar){
-    btnConfirmar.disabled = false;
-    btnConfirmar.textContent = 'Confirmar retirada';
-  }
-  document.getElementById('modalBaixa').classList.remove('show');
-}
-
-function confirmarBaixa(){
-  const nome = document.getElementById('retiradoPor').value.trim();
-  if(!nome){
-    mostrarToast('Informe quem retirou a encomenda.');
-    return;
-  }
-  let dadosAssinatura = '';
-  if(!canvasEstaVazio()) {
-    dadosAssinatura = canvas.toDataURL('image/png');
-  }
-
-  const btnConfirmar = document.getElementById('btnConfirmarBaixa');
-  btnConfirmar.disabled = true;
-  btnConfirmar.textContent = 'Confirmando...';
-
-  if(linhaBaixaAtual) {
-    const linha = linhaBaixaAtual;
-    google.script.run
-      .withSuccessHandler(()=>{
-        btnConfirmar.disabled = false;
-        btnConfirmar.textContent = 'Confirmar retirada';
-        fecharModal();
-        limparAssinatura();
-        mostrarToast('Encomenda retirada com sucesso!');
-        carregarEncomendas();
-        carregarTodasEncomendasParaPesquisa();
-        carregarResumo();
-      })
-      .withFailureHandler(()=>{
-        btnConfirmar.disabled = false;
-        btnConfirmar.textContent = 'Confirmar retirada';
-        mostrarToast('Não foi possível registrar a retirada.');
-      })
-      .darBaixaEncomenda(linha, nome, dadosAssinatura);
-  } else if(linhasBaixaAptoAtual && linhasBaixaAptoAtual.length > 0) {
-    const baixaFoiPorSelecao = linhasSelecionadasPendentes.size > 0 && linhasBaixaAptoAtual.length === linhasSelecionadasPendentes.size;
-    let restantes = linhasBaixaAptoAtual.length;
-    linhasBaixaAptoAtual.forEach(linha => {
-      google.script.run
-        .withSuccessHandler(()=>{
-          restantes--;
-          if(restantes <= 0) {
-            fecharModal();
-            limparAssinatura();
-            if(baixaFoiPorSelecao) linhasSelecionadasPendentes.clear();
-            mostrarToast(baixaFoiPorSelecao ? 'Encomendas selecionadas retiradas com sucesso!' : 'Todas as encomendas do apartamento foram retiradas!');
-            carregarEncomendas();
-            carregarTodasEncomendasParaPesquisa();
-            carregarResumo();
-          }
-        })
-        .withFailureHandler(()=>{
-          restantes--;
-          if(restantes <= 0) {
-            btnConfirmar.disabled = false;
-            btnConfirmar.textContent = 'Confirmar retirada';
-            fecharModal();
-            limparAssinatura();
-            carregarEncomendas();
-            carregarTodasEncomendasParaPesquisa();
-            carregarResumo();
-          }
-        })
-        .darBaixaEncomenda(linha, nome, dadosAssinatura);
-    });
-  }
-}
-
-function enviarRelatorio(){
-  const pendentes = encomendas.filter(item=>normalizar(item.status)!=='retirado');
-  if(!pendentes.length){
-    mostrarToast('Não há encomendas pendentes.');
-    return;
-  }
-  const apartamentos = {};
-  pendentes.forEach(item=>{
-    const apto = item.apartamento || 'Sem apartamento';
-    if(!apartamentos[apto]) apartamentos[apto] = [];
-    apartamentos[apto].push(item);
-  });
-  const aptos = Object.keys(apartamentos).sort((a,b)=>a.localeCompare(b,'pt-BR',{numeric:true}));
-  let mensagem = '*Relatório de Encomendas Pendentes*\n\n';
-  let total = 0;
-
-  aptos.forEach(apto=>{
-    const itens = apartamentos[apto];
-    mensagem += '🏠 Apartamento: ' + apto + '\n';
-    const grupos = {};
-    itens.forEach(item=>{
-      const nome = obterNomeDestinatario(item.destinatario);
-      const chave = normalizar(nome);
-      if(!grupos[chave]) grupos[chave] = [];
-      grupos[chave].push(item);
-    });
-
-    Object.keys(grupos).forEach(chave=>{
-      const grupo = grupos[chave];
-      const nome = obterNomeDestinatario(grupo[0].destinatario);
-      let volumes = 0;
-      const remetentes = [];
-      grupo.forEach(item=>{
-        volumes += Number(item.quantidade)||1;
-        const rem = String(item.remetente||'').trim();
-        if(rem && !remetentes.some(x=>normalizar(x)===normalizar(rem))) remetentes.push(rem);
+        if (item.apresentacoes && item.apresentacoes.length) {
+          html += '<div style="margin-top: 10px;"><strong>Últimas apresentações:</strong><br>';
+          item.apresentacoes.forEach(ap => { html += '<span class="chip">' + ap.ano + ' — ' + ap.data + '</span>'; });
+          html += '</div>';
+        }
+        html += '</div>';
       });
-      total += volumes;
-      const avisado = grupo.every(item=>!!item.avisadoEm);
-      mensagem += '👤 ' + nome + ' — ' + volumes + (volumes === 1 ? ' volume' : ' volumes') + ' — ' + remetentes.join(', ') + (avisado ? ' — Avisado' : ' — Pendente') + '\n';
+      resultado.innerHTML = html;
+    })
+    .withFailureHandler(function(erro) {
+      resultado.innerHTML = '<div class="card mensagem">Erro ao consultar os temas.<br>' + escapar(erro.message || erro) + '</div>';
+    })
+    .consultarTemas(termo);
+}
+
+function abrirFormularioNovoTema() {
+  document.getElementById('temaLinha').value = '';
+  document.getElementById('tituloFormTema').textContent = 'Adicionar Tema';
+  document.getElementById('formTemaNumero').value = '';
+  document.getElementById('formTemaTitulo').value = '';
+  document.getElementById('formTemaAssunto').value = '';
+  document.getElementById('formTemaSituacao').value = '';
+
+  const form = document.getElementById('formularioTema');
+  form.style.display = 'block';
+  form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function abrirFormularioEditarTema(linha) {
+  const item = temasCache.find(t => Number(t.linha) === Number(linha));
+  if (!item) { exibirAvisoApp('Aviso', 'Tema não encontrado.'); return; }
+
+  document.getElementById('temaLinha').value = item.linha;
+  document.getElementById('tituloFormTema').textContent = 'Editar Tema';
+  document.getElementById('formTemaNumero').value = item.numero || '';
+  document.getElementById('formTemaTitulo').value = item.tema || '';
+  document.getElementById('formTemaAssunto').value = item.assunto || '';
+  document.getElementById('formTemaSituacao').value = item.situacao || '';
+
+  const form = document.getElementById('formularioTema');
+  form.style.display = 'block';
+  form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function fecharFormularioTema() {
+  document.getElementById('formularioTema').style.display = 'none';
+}
+
+function salvarTemaTela() {
+  const dados = {
+    linha: document.getElementById('temaLinha').value,
+    numero: document.getElementById('formTemaNumero').value.trim(),
+    tema: document.getElementById('formTemaTitulo').value.trim(),
+    assunto: document.getElementById('formTemaAssunto').value.trim(),
+    situacao: document.getElementById('formTemaSituacao').value
+  };
+
+  if (!dados.numero) { exibirAvisoApp('Aviso', 'Informe o número do tema.'); return; }
+  if (!dados.tema) { exibirAvisoApp('Aviso', 'Informe o título do tema.'); return; }
+
+  google.script.run
+    .withSuccessHandler(function() {
+      fecharFormularioTema();
+      consultarTemas();
+      carregarResumo();
+      exibirAvisoApp('Sucesso', 'Tema salvo com sucesso.');
+    })
+    .withFailureHandler(function(erro) {
+      exibirAvisoApp('Erro', 'Erro ao salvar tema: ' + (erro.message || erro));
+    })
+    .salvarTema(dados);
+}
+
+/*************************************************
+ * CONGREGAÇÕES
+ *************************************************/
+let congregaçõesCache = [];
+
+function consultarCongregacoesTela() {
+  const termo = document.getElementById('campoPesquisaCongregacao').value.trim();
+  const resultado = document.getElementById('resultadoCongregacoes');
+  resultado.innerHTML = '<div class="card loading">Carregando congregações...</div>';
+
+  google.script.run
+    .withSuccessHandler(function(dados) {
+      congregaçõesCache = dados || [];
+      if (!dados || dados.length === 0) {
+        resultado.innerHTML = '<div class="card mensagem">Nenhuma congregação encontrada.</div>';
+        return;
+      }
+
+      let html = '';
+      dados.forEach(function(item) {
+        let linkMapa = item.localizacao ? '<a href="' + escapar(item.localizacao) + '" target="_blank" class="btn-link">🗺️ Mapa</a>' : '';
+        let htmlOradores = '';
+        if (item.oradoresTemas && item.oradoresTemas.length > 0) {
+          htmlOradores = '<div style="margin-top: 10px; font-size: 14px; background: #f8f9fa; padding: 10px; border-radius: 6px;"><strong>Oradores e Discursos:</strong><ul style="margin: 6px 0 0 18px; padding: 0;">';
+          item.oradoresTemas.forEach(ot => {
+            htmlOradores += '<li style="margin-bottom: 4px;"><strong>' + escapar(ot.orador) + '</strong> — Nrs: ' + escapar(ot.numeros) + '</li>';
+          });
+          htmlOradores += '</ul></div>';
+        }
+
+        html += '<div class="card" style="margin-bottom: 12px;">' +
+          '<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">' +
+          '<div style="flex: 1; word-break: break-word;">' +
+          '<h3 style="margin: 0 0 6px 0; color: #1f4e78;">' + escapar(item.nome) + '</h3>' +
+          '<div style="font-size: 14px;"><strong>Endereço:</strong> ' + escapar(item.endereco) + ' ' + linkMapa + '</div>' +
+          '<div style="font-size: 14px; margin-top: 4px;"><strong>Reunião:</strong> ' + escapar(item.diaReuniao) + ' | <strong>Agenda:</strong> ' + escapar(item.agenda) + '</div>' +
+          htmlOradores +
+          '</div>' +
+          '<div style="display: flex; gap: 4px; flex-shrink: 0;">' +
+          '<button class="btn-principal" style="padding: 8px 10px; font-size: 13px;" onclick="abrirFormularioEditarCongregacao(' + item.linha + ')">✏️</button>' +
+          '<button class="btn-perigo" style="padding: 8px 10px; font-size: 13px;" onclick="excluirCongregacaoTela(' + item.linha + ')">🗑️</button>' +
+          '</div>' +
+          '</div>' +
+          '</div>';
+      });
+      resultado.innerHTML = html;
+    })
+    .withFailureHandler(function(erro) {
+      resultado.innerHTML = '<div class="card mensagem">Erro ao carregar congregações.<br>' + escapar(erro.message || erro) + '</div>';
+    })
+    .consultarCongregacoes(termo);
+}
+
+function abrirFormularioNovaCongregacao() {
+  document.getElementById('congLinha').value = '';
+  document.getElementById('tituloFormCongregacao').textContent = 'Adicionar Congregação';
+  document.getElementById('congNome').value = '';
+  document.getElementById('congEndereco').value = '';
+  document.getElementById('congLocalizacao').value = '';
+  document.getElementById('congDia').value = '';
+  document.getElementById('congAgenda').value = '';
+  document.getElementById('listaOradoresForm').innerHTML = '';
+  adicionarCampoOradorTema();
+
+  const form = document.getElementById('formularioCongregacao');
+  form.style.display = 'block';
+  form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function abrirFormularioEditarCongregacao(linha) {
+  const item = congregaçõesCache.find(c => Number(c.linha) === Number(linha));
+  if (!item) { exibirAvisoApp('Aviso', 'Congregação não encontrada.'); return; }
+
+  document.getElementById('congLinha').value = item.linha;
+  document.getElementById('tituloFormCongregacao').textContent = 'Editar Congregação';
+  document.getElementById('congNome').value = item.nome || '';
+  document.getElementById('congEndereco').value = item.endereco || '';
+  document.getElementById('congLocalizacao').value = item.localizacao || '';
+  document.getElementById('congDia').value = item.diaReuniao || '';
+  document.getElementById('congAgenda').value = item.agenda || '';
+  
+  const containerOradores = document.getElementById('listaOradoresForm');
+  containerOradores.innerHTML = '';
+
+  if (item.oradoresTemas && item.oradoresTemas.length > 0) {
+    item.oradoresTemas.forEach(ot => { adicionarCampoOradorTema(ot.orador, ot.numeros); });
+  } else {
+    adicionarCampoOradorTema();
+  }
+
+  const form = document.getElementById('formularioCongregacao');
+  form.style.display = 'block';
+  form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function adicionarCampoOradorTema(orador = '', numeros = '') {
+  const container = document.getElementById('listaOradoresForm');
+  const div = document.createElement('div');
+  div.className = 'form-grid';
+  div.style.marginBottom = '8px';
+  div.style.background = '#f9f9f9';
+  div.style.padding = '10px';
+  div.style.borderRadius = '8px';
+  div.innerHTML = `
+    <div class="form-campo">
+      <input type="text" class="input-orador" value="${escapar(orador)}" placeholder="Nome do orador">
+    </div>
+    <div class="form-campo" style="display: flex; gap: 6px;">
+      <input type="text" class="input-numeros" value="${escapar(numeros)}" placeholder="Números (ex: 12, 45, 78)" style="flex: 1;">
+      <button type="button" class="btn-perigo" style="padding: 0 12px;" onclick="this.parentElement.parentElement.remove()">🗑</button>
+    </div>
+  `;
+  container.appendChild(div);
+}
+
+function fecharFormularioCongregacao() {
+  document.getElementById('formularioCongregacao').style.display = 'none';
+}
+
+function salvarCongregacaoTela() {
+  const dados = {
+    linha: document.getElementById('congLinha').value,
+    nome: document.getElementById('congNome').value.trim(),
+    endereco: document.getElementById('congEndereco').value.trim(),
+    localizacao: document.getElementById('congLocalizacao').value.trim(),
+    diaReuniao: document.getElementById('congDia').value.trim(),
+    agenda: document.getElementById('congAgenda').value.trim(),
+    oradoresTemas: []
+  };
+
+  if (!dados.nome) {
+    exibirAvisoApp('Aviso', 'Informe o nome da congregação.');
+    return;
+  }
+
+  document.querySelectorAll('#listaOradoresForm > div').forEach(bloco => {
+    const orador = bloco.querySelector('.input-orador').value.trim();
+    const numeros = bloco.querySelector('.input-numeros').value.trim();
+    if (orador || numeros) {
+      dados.oradoresTemas.push({ orador: orador, numeros: numeros });
+    }
+  });
+
+  google.script.run
+    .withSuccessHandler(function() {
+      fecharFormularioCongregacao();
+      consultarCongregacoesTela();
+      carregarResumo();
+      exibirAvisoApp('Sucesso', 'Congregação salva com sucesso.');
+    })
+    .withFailureHandler(function(erro) {
+      exibirAvisoApp('Erro', 'Erro ao salvar: ' + (erro.message || erro));
+    })
+    .salvarCongregacao(dados);
+}
+
+function excluirCongregacaoTela(linha) {
+  exibirConfirmacaoApp('Excluir Congregação', 'Deseja realmente excluir esta congregação?', function() {
+    google.script.run
+      .withSuccessHandler(function() {
+        consultarCongregacoesTela();
+        carregarResumo();
+        exibirAvisoApp('Sucesso', 'Congregação excluída.');
+      })
+      .withFailureHandler(function(erro) {
+        exibirAvisoApp('Erro', 'Erro ao excluir: ' + (erro.message || erro));
+      })
+      .excluirCongregacao(linha);
+  });
+}
+
+/*************************************************
+ * TROCA DE TEMAS
+ *************************************************/
+function carregarMesesTrocaTemas() {
+  const select = document.getElementById('trocaMes');
+  if (!select) return;
+
+  select.innerHTML = '<option value="">Carregando meses...</option>';
+
+  google.script.run
+    .withSuccessHandler(function(meses) {
+      select.innerHTML = '<option value="">Selecione o mês</option>';
+      (meses || []).forEach(function(item) {
+        const option = document.createElement('option');
+        option.value = item.valor;
+        option.textContent = item.texto;
+        select.appendChild(option);
+      });
+    })
+    .withFailureHandler(function(erro) {
+      select.innerHTML = '<option value="">Erro ao carregar meses</option>';
+    })
+    .obterMeses();
+}
+
+function consultarTrocaTemasTela() {
+  const valorMes = document.getElementById('trocaMes').value;
+  const resultado = document.getElementById('resultadoTrocaTemas');
+
+  if (!valorMes) {
+    resultado.innerHTML = '';
+    return;
+  }
+
+  resultado.innerHTML = '<div class="card loading">Buscando a congregação agendada e os temas...</div>';
+
+  google.script.run
+    .withSuccessHandler(function(dados) {
+      if (!dados || !dados.length) {
+        resultado.innerHTML = '<div class="card mensagem">Nenhuma congregação foi encontrada com este mês na coluna Agenda.</div>';
+        return;
+      }
+
+      let html = '';
+
+      dados.forEach(function(cong, indiceCong) {
+        html += '<div class="card troca-congregacao" data-congregacao-index="' + indiceCong + '">' +
+          '<h3 style="margin-bottom:6px;">🏛️ ' + escapar(cong.congregacao) + '</h3>' +
+          (cong.endereco ? '<div style="font-size:14px;color:#555;"><strong>Endereço:</strong> ' + escapar(cong.endereco) + '</div>' : '') +
+          '<div style="margin-top:12px;"><strong>Selecione os temas para a troca:</strong></div>';
+
+        if (!cong.oradores || !cong.oradores.length) {
+          html += '<div class="mensagem">Nenhum orador cadastrado para esta agenda.</div>';
+        } else {
+          cong.oradores.forEach(function(orador, indiceOrador) {
+            html += '<div class="troca-orador">' +
+              '<div class="troca-orador-titulo">🎤 ' + escapar(orador.nome || 'Orador') + '</div>';
+
+            if (!orador.temas || !orador.temas.length) {
+              html += '<div style="color:#666;">Nenhum tema cadastrado para este orador.</div>';
+            } else {
+              orador.temas.forEach(function(tema, indiceTema) {
+                const id = 'trocaTema_' + indiceCong + '_' + indiceOrador + '_' + indiceTema;
+                
+                let badgeSituacao = '';
+                const sit = String(tema.situacao || '').trim();
+                if (sit.toLowerCase() === 'atualizado') {
+                  badgeSituacao = ' <span class="badge-situacao badge-atualizado">Atualizado</span>';
+                } else if (sit.toLowerCase() === 'descontinuado') {
+                  badgeSituacao = ' <span class="badge-situacao badge-descontinuado">Descontinuado</span>';
+                }
+
+                html += '<label class="troca-tema-item" for="' + id + '">' +
+                  '<input type="checkbox" id="' + id + '" class="troca-checkbox" ' +
+                  'data-congregacao="' + indiceCong + '" data-orador="' + indiceOrador + '" data-tema="' + indiceTema + '">' +
+                  '<div class="troca-tema-info">' +
+                  '<div class="troca-tema-nome">' + escapar(tema.numero) + ' — ' + escapar(tema.tema) + '</div>' +
+                  '<div class="troca-tema-data">Última realização: ' + escapar(tema.ultimaData || 'não encontrada') + badgeSituacao + '</div>' +
+                  '</div>' +
+                  '</label>';
+              });
+            }
+
+            html += '</div>';
+          });
+        }
+
+        html += '<div class="troca-acoes">' +
+          '<button class="btn-sucesso" onclick="criarArranjoTrocaTemas(' + indiceCong + ')">📅 Criar Arranjo</button>' +
+          '<button class="btn-principal" onclick="enviarTrocaTemasWhatsApp(' + indiceCong + ')">📲 Enviar por WhatsApp</button>' +
+          '<button class="btn-secundario" onclick="marcarNenhumTemaTroca(' + indiceCong + ')">Limpar seleção</button>' +
+          '</div>' +
+          '</div>';
+      });
+
+      resultado.innerHTML = html;
+      window.dadosTrocaTemasAtual = dados;
+    })
+    .withFailureHandler(function(erro) {
+      resultado.innerHTML = '<div class="card mensagem">Erro ao buscar a troca de temas.<br>' + escapar(erro.message || erro) + '</div>';
+    })
+    .consultarTrocaTemasPorMes(valorMes);
+}
+
+function criarArranjoTrocaTemas(indiceCong) {
+  const dados = window.dadosTrocaTemasAtual || [];
+  const congregacao = dados[indiceCong];
+  if (!congregacao) return;
+
+  const checkboxes = document.querySelectorAll('.troca-checkbox[data-congregacao="' + indiceCong + '"]:checked');
+  if (!checkboxes.length) {
+    exibirAvisoApp('Atenção', 'Selecione pelo menos um tema para criar o arranjo.');
+    return;
+  }
+
+  const valorMes = document.getElementById('trocaMes').value;
+  if (!valorMes) {
+    exibirAvisoApp('Atenção', 'Selecione um mês válido.');
+    return;
+  }
+
+  const itensSelecionados = [];
+
+  checkboxes.forEach(function(cb) {
+    const indiceOrador = Number(cb.dataset.orador);
+    const indiceTema = Number(cb.dataset.tema);
+    const orador = congregacao.oradores[indiceOrador];
+    const tema = orador && orador.temas ? orador.temas[indiceTema] : null;
+
+    if (orador && tema) {
+      itensSelecionados.push({
+        orador: orador.nome,
+        numero: tema.numero,
+        tema: tema.tema
+      });
+    }
+  });
+
+  exibirConfirmacaoApp(
+    'Criar Arranjo',
+    'Deseja criar o arranjo com ' + itensSelecionados.length + ' discurso(s) selecionado(s) e salvar em "Tema do Mês"?',
+    function() {
+      const dadosArranjo = {
+        valorMes: valorMes,
+        congregacaoVisitante: congregacao.congregacao,
+        itens: itensSelecionados
+      };
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          exibirAvisoApp('Sucesso', 'Arranjo criado com sucesso! ' + res.quantidade + ' discurso(s) adicionado(s) na página Tema do Mês.');
+        })
+        .withFailureHandler(function(erro) {
+          exibirAvisoApp('Erro', 'Erro ao criar arranjo: ' + (erro.message || erro));
+        })
+        .salvarArranjoTrocaTemas(dadosArranjo);
+    }
+  );
+}
+
+function marcarNenhumTemaTroca(indiceCong) {
+  document.querySelectorAll('.troca-checkbox[data-congregacao="' + indiceCong + '"]').forEach(cb => cb.checked = false);
+}
+
+function enviarTrocaTemasWhatsApp(indiceCong) {
+  const dados = window.dadosTrocaTemasAtual || [];
+  const congregacao = dados[indiceCong];
+  if (!congregacao) return;
+
+  const checkboxes = document.querySelectorAll('.troca-checkbox[data-congregacao="' + indiceCong + '"]:checked');
+  if (!checkboxes.length) {
+    exibirAvisoApp('Atenção', 'Selecione pelo menos um tema para enviar.');
+    return;
+  }
+
+  const selecionados = {};
+
+  checkboxes.forEach(function(cb) {
+    const indiceOrador = Number(cb.dataset.orador);
+    const indiceTema = Number(cb.dataset.tema);
+    const orador = congregacao.oradores[indiceOrador];
+    const tema = orador && orador.temas ? orador.temas[indiceTema] : null;
+    if (!orador || !tema) return;
+
+    if (!selecionados[indiceOrador]) {
+      selecionados[indiceOrador] = { nome: orador.nome, temas: [] };
+    }
+    selecionados[indiceOrador].temas.push(tema);
+  });
+
+  const select = document.getElementById('trocaMes');
+  const mesTexto = select && select.selectedOptions.length ? select.selectedOptions[0].textContent : '';
+
+  let mensagem = 'Troca de Temas — ' + mesTexto + '\n';
+  mensagem += 'Congregação: ' + congregacao.congregacao + '\n\n';
+
+  Object.keys(selecionados).forEach(function(chave) {
+    const item = selecionados[chave];
+    mensagem += item.nome + '\n';
+    item.temas.forEach(function(tema) {
+      mensagem += '• ' + tema.numero + ' — ' + tema.tema + '\n';
     });
     mensagem += '\n';
   });
 
-  mensagem += '📦 *Total de volumes pendentes: ' + total + '*';
-  window.open('https://wa.me/?text=' + encodeURIComponent(mensagem), '_blank');
+  const url = 'https://wa.me/?text=' + encodeURIComponent(mensagem.trim());
+  window.open(url, '_blank');
 }
 
-function escapeHtml(texto){
-  return String(texto||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+/*************************************************
+ * TEMA DO MÊS (INTEGRADO COM OS ARRANJOS)
+ *************************************************/
+let temasDoMesCache = { recebendo: [], enviando: [] };
+
+function carregarMesesTemasDoMes() {
+  const select = document.getElementById('selectMesTemasDoMes');
+  if (!select) return;
+
+  select.innerHTML = '<option value="">Carregando meses...</option>';
+
+  google.script.run
+    .withSuccessHandler(function(meses) {
+      select.innerHTML = '<option value="">Selecione o mês</option>';
+      (meses || []).forEach(function(item) {
+        const option = document.createElement('option');
+        option.value = item.valor;
+        option.textContent = item.texto;
+        select.appendChild(option);
+      });
+    })
+    .withFailureHandler(function(erro) {
+      select.innerHTML = '<option value="">Erro ao carregar meses</option>';
+    })
+    .obterMeses();
 }
 
-function escapeAttr(texto){
-  return String(texto||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+function consultarTemasDoMesTela() {
+  const valorMes = document.getElementById('selectMesTemasDoMes').value;
+  const resultado = document.getElementById('resultadoTemasDoMes');
+
+  if (!valorMes) {
+    resultado.innerHTML = '<div class="card mensagem">Selecione um mês para consultar.</div>';
+    return;
+  }
+
+  resultado.innerHTML = '<div class="card loading">Carregando programação do mês...</div>';
+
+  google.script.run
+    .withSuccessHandler(function(dados) {
+      temasDoMesCache = dados || { recebendo: [], enviando: [] };
+      const recebendo = dados.recebendo || [];
+      const enviando = dados.enviando || [];
+
+      if (!recebendo.length && !enviando.length) {
+        resultado.innerHTML = '<div class="card mensagem">Nenhum discurso agendado para este mês.</div>';
+        return;
+      }
+
+      let html = '';
+
+      if (recebendo.length) {
+        html += '<div class="card"><h3 style="color:#2e7d32; margin-bottom:12px;">📥 Recebendo Oradores (Na nossa congregação)</h3>';
+        recebendo.forEach(item => { html += renderizarItemTemaDoMes(item); });
+        html += '</div>';
+      }
+
+      if (enviando.length) {
+        html += '<div class="card"><h3 style="color:#1f4e78; margin-bottom:12px;">📤 Enviando Oradores (Para outras congregações)</h3>';
+        enviando.forEach(item => { html += renderizarItemTemaDoMes(item); });
+        html += '</div>';
+      }
+
+      resultado.innerHTML = html;
+    })
+    .withFailureHandler(function(erro) {
+      resultado.innerHTML = '<div class="card mensagem">Erro ao carregar a programação.<br>' + escapar(erro.message || erro) + '</div>';
+    })
+    .consultarTemasDoMes(valorMes);
 }
 
-function mostrarToast(mensagem){
-  const toast = document.getElementById('toast');
-  toast.textContent = mensagem;
-  toast.classList.add('show');
-  clearTimeout(window.toastTimer);
-  window.toastTimer = setTimeout(()=>{
-    toast.classList.remove('show');
-  }, 3000);
+function renderizarItemTemaDoMes(item) {
+  const partesData = (item.data || '').split('-');
+  let dataBR = item.data;
+  if (partesData.length === 3) {
+    dataBR = partesData[2] + '/' + partesData[1] + '/' + partesData[0];
+  }
+
+  const numTema = (item.numero || '').toString().replace(/'/g, "\\'");
+  const dtTema = (item.data || '').toString().replace(/'/g, "\\'");
+
+  return '<div style="background:#f8f9fa; border:1px solid #e0e0e0; border-radius:8px; padding:12px; margin-bottom:10px;">' +
+    '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">' +
+      '<strong style="color:#1f4e78; font-size:15px;">📅 ' + dataBR + '</strong>' +
+      '<div>' +
+        '<button class="btn-sucesso" style="padding:4px 8px; font-size:12px; margin-right:4px;" onclick="salvarRealizacaoNaAbaTemasTela(\'' + numTema + '\', \'' + dtTema + '\')" title="Registrar realização na aba Temas">💾 Salvar na Aba Temas</button>' +
+        '<button class="btn-principal" style="padding:4px 8px; font-size:12px; margin-right:4px;" onclick="abrirFormularioEditarTemaDoMes(' + item.linha + ', \'' + (item.status ? item.status.toLowerCase() : 'recebendo') + '\')">✏</button>' +
+        '<button class="btn-perigo" style="padding:4px 8px; font-size:12px;" onclick="excluirTemaDoMesTela(' + item.linha + ')">🗑️</button>' +
+      '</div>' +
+    '</div>' +
+    '<div style="font-weight:bold; font-size:16px; margin-top:6px;">' + (item.numero ? 'Nº ' + escapar(item.numero) + ' — ' : '') + escapar(item.tema) + '</div>' +
+    '<div style="font-size:14px; color:#444; margin-top:4px;"><strong>Orador:</strong> ' + escapar(item.orador || 'Não informado') + '</div>' +
+    '<div style="font-size:14px; color:#444; margin-top:2px;"><strong>Congregação:</strong> ' + escapar(item.congregacao || 'Não informada') + '</div>' +
+  '</div>';
 }
-</script>
-<script>
-/* PWA: registra o Service Worker da casca para permitir a instalação como aplicativo. */
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function(){
-    navigator.serviceWorker.register('./sw.js', {scope:'./'})
-      .then(function(reg){ console.log('PWA ativa:', reg.scope); })
-      .catch(function(err){ console.warn('PWA: Service Worker não registrado.', err); });
+
+function abrirFormularioNovoTemaDoMes() {
+  document.getElementById('tmLinha').value = '';
+  document.getElementById('tituloFormTemaDoMes').textContent = 'Novo Registro (Tema do Mês)';
+  document.getElementById('tmData').value = '';
+  document.getElementById('tmStatus').value = 'Recebendo';
+  document.getElementById('tmNumero').value = '';
+  document.getElementById('tmTema').value = '';
+  document.getElementById('tmOrador').value = '';
+  document.getElementById('tmCongregacao').value = '';
+
+  const form = document.getElementById('formularioTemasDoMes');
+  form.style.display = 'block';
+  form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function abrirFormularioEditarTemaDoMes(linha, tipo) {
+  const lista = tipo === 'recebendo' ? temasDoMesCache.recebendo : temasDoMesCache.enviando;
+  const item = (lista || []).find(i => Number(i.linha) === Number(linha));
+  if (!item) return;
+
+  document.getElementById('tmLinha').value = item.linha;
+  document.getElementById('tituloFormTemaDoMes').textContent = 'Editar Registro';
+  document.getElementById('tmData').value = item.data || '';
+  document.getElementById('tmStatus').value = item.status || 'Recebendo';
+  document.getElementById('tmNumero').value = item.numero || '';
+  document.getElementById('tmTema').value = item.tema || '';
+  document.getElementById('tmOrador').value = item.orador || '';
+  document.getElementById('tmCongregacao').value = item.congregacao || '';
+
+  const form = document.getElementById('formularioTemasDoMes');
+  form.style.display = 'block';
+  form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function fecharFormularioTemaDoMes() {
+  document.getElementById('formularioTemasDoMes').style.display = 'none';
+}
+
+function salvarTemaDoMesTela() {
+  const dados = {
+    linha: document.getElementById('tmLinha').value,
+    data: document.getElementById('tmData').value,
+    status: document.getElementById('tmStatus').value,
+    numero: document.getElementById('tmNumero').value.trim(),
+    tema: document.getElementById('tmTema').value.trim(),
+    orador: document.getElementById('tmOrador').value.trim(),
+    congregacao: document.getElementById('tmCongregacao').value.trim()
+  };
+
+  if (!dados.data) { exibirAvisoApp('Aviso', 'Informe a data do discurso.'); return; }
+
+  const funcaoChamada = dados.linha ? 'editarTemaDoMes' : 'adicionarTemaDoMes';
+
+  google.script.run
+    .withSuccessHandler(function() {
+      fecharFormularioTemaDoMes();
+      consultarTemasDoMesTela();
+      exibirAvisoApp('Sucesso', 'Registro salvo com sucesso.');
+    })
+    .withFailureHandler(function(erro) {
+      exibirAvisoApp('Erro', 'Erro ao salvar: ' + (erro.message || erro));
+    })
+    [funcaoChamada](dados);
+}
+
+function excluirTemaDoMesTela(linha) {
+  exibirConfirmacaoApp('Excluir Registro', 'Deseja realmente excluir este discurso da programação do mês?', function() {
+    google.script.run
+      .withSuccessHandler(function() {
+        consultarTemasDoMesTela();
+        exibirAvisoApp('Sucesso', 'Registro excluído.');
+      })
+      .withFailureHandler(function(erro) {
+        exibirAvisoApp('Erro', 'Erro ao excluir: ' + (erro.message || erro));
+      })
+      .excluirTemaDoMes(linha);
   });
 }
+
+function enviarProgramacaoWhatsAppTela() {
+  const select = document.getElementById('selectMesTemasDoMes');
+  const valorMes = select ? select.value : '';
+
+  if (!valorMes) {
+    exibirAvisoApp('Atenção', 'Selecione um mês para enviar a programação.');
+    return;
+  }
+
+  google.script.run
+    .withSuccessHandler(function(textoMensagem) {
+      if (!textoMensagem) {
+        exibirAvisoApp('Aviso', 'Nenhuma mensagem foi gerada.');
+        return;
+      }
+      const url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(textoMensagem);
+      window.open(url, '_blank');
+    })
+    .withFailureHandler(function(erro) {
+      exibirAvisoApp('Atenção', erro.message || erro);
+    })
+    .obterTextoWhatsAppTemaDoMes(valorMes);
+}
+
+function salvarRealizacaoNaAbaTemasTela(numeroTema, dataRealizacao) {
+  if (!numeroTema) {
+    exibirAvisoApp('Atenção', 'Este registro não possui um número de tema definido para registrar.');
+    return;
+  }
+
+  // Ajusta a exibição da data para o formato BR na mensagem de confirmação
+  const partesData = (dataRealizacao || '').split('-');
+  const dataBR = partesData.length === 3 ? partesData[2] + '/' + partesData[1] + '/' + partesData[0] : dataRealizacao;
+
+  exibirConfirmacaoApp(
+    'Registrar Realização',
+    'Deseja salvar a data (' + dataBR + ') do Tema nº ' + numeroTema + ' na aba Temas?',
+    function() {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          exibirAvisoApp('Sucesso', (res && res.mensagem) ? res.mensagem : 'Data registrada com sucesso!');
+        })
+        .withFailureHandler(function(erro) {
+          exibirAvisoApp('Erro', 'Erro ao salvar: ' + (erro.message || erro));
+        })
+        .salvarDataRealizacaoNaAbaTemas({ numero: numeroTema, data: dataRealizacao });
+    }
+  );
+}
+
+let listaOradoresLocaisCache = [];
+
+function carregarTemasLocaisTela() {
+  const valorMes = document.getElementById('selectMesTemasLocais').value;
+  const container = document.getElementById('containerOradoresLocais');
+  const selectOrador = document.getElementById('selectOradorLocalIndividual');
+  const painelArranjo = document.getElementById('painelArranjoMes');
+
+  if (!valorMes) painelArranjo.style.display = 'none';
+
+  selectOrador.innerHTML = '<option value="">Carregando oradores...</option>';
+
+  google.script.run
+    .withSuccessHandler(function(dados) {
+      document.getElementById('lblCongregacaoArranjo').textContent = dados.arranjo ? dados.arranjo.congregacao : 'Não definida';
+      document.getElementById('lblEnderecoArranjo').textContent = dados.arranjo ? dados.arranjo.endereco : 'Endereço não informado';
+      painelArranjo.style.display = valorMes ? 'block' : 'none';
+
+      const oradores = dados.oradores || [];
+      listaOradoresLocaisCache = oradores;
+      renderizarSelecaoOradoresLocais(oradores);
+      if (container.style.display !== 'none') renderizarOradoresCadastrados();
+    })
+    .withFailureHandler(function(erro) {
+      selectOrador.innerHTML = '<option value="">Erro ao carregar oradores</option>';
+    })
+    .consultarTemasLocaisTelaBackend(valorMes);
+}
+
+function renderizarSelecaoOradoresLocais(oradores) {
+  const select = document.getElementById('selectOradorLocalIndividual');
+  select.innerHTML = '<option value="">Selecione o orador</option>';
+  (oradores || []).forEach(function(orador, indice) {
+    const option = document.createElement('option');
+    option.value = indice;
+    option.textContent = orador.nome;
+    select.appendChild(option);
+  });
+}
+
+function selecionarOradorLocalIndividual() {
+  const select = document.getElementById('selectOradorLocalIndividual');
+  const numero = document.getElementById('numTemaLocalIndividual');
+  const tema = document.getElementById('titTemaLocalIndividual');
+  if (!select.value) {
+    numero.value = '';
+    tema.value = '';
+    return;
+  }
+  const selecionado = listaOradoresLocaisCache[Number(select.value)];
+  numero.value = selecionado ? selecionado.numeroTema || '' : '';
+  tema.value = selecionado ? selecionado.temaDefinido || '' : '';
+  if (numero.value) buscarTemaLocalIndividual();
+}
+
+function limparTemaLocalIndividual() {
+  const tema = document.getElementById('titTemaLocalIndividual');
+  if (tema) tema.value = '';
+}
+
+function buscarTemaLocalIndividual() {
+  const numero = document.getElementById('numTemaLocalIndividual').value.trim();
+  const campoTema = document.getElementById('titTemaLocalIndividual');
+  if (!numero) { campoTema.value = ''; return; }
+  campoTema.value = 'Buscando tema...';
+  google.script.run
+    .withSuccessHandler(function(dados) {
+      campoTema.value = dados && dados.tema ? dados.tema : 'Tema não encontrado';
+    })
+    .withFailureHandler(function() {
+      campoTema.value = 'Não foi possível buscar o tema';
+    })
+    .buscarDadosTema(numero);
+}
+
+function alternarOradoresCadastrados(botao) {
+  const container = document.getElementById('containerOradoresLocais');
+  const mostrar = container.style.display === 'none';
+  container.style.display = mostrar ? 'block' : 'none';
+  botao.textContent = mostrar ? 'Ocultar cadastrados' : 'Mostrar cadastrados';
+  if (mostrar) renderizarOradoresCadastrados();
+}
+
+function renderizarOradoresCadastrados() {
+  const container = document.getElementById('containerOradoresLocais');
+  if (!listaOradoresLocaisCache.length) {
+    container.innerHTML = '<div class="card mensagem">Nenhum orador local cadastrado.</div>';
+    return;
+  }
+  let html = '<div class="card troca-congregacao"><h3 style="margin-top:0;color:#1f4e78;">Oradores cadastrados</h3>';
+  listaOradoresLocaisCache.forEach(function(orador) {
+    html += '<div class="troca-orador" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">' +
+      '<div><strong>🎤 ' + escapar(orador.nome) + '</strong>' +
+      (orador.telefone ? '<div style="color:#666;font-size:13px;">' + escapar(orador.telefone) + '</div>' : '') +
+      (orador.observacao ? '<div style="color:#666;font-size:13px;">' + escapar(orador.observacao) + '</div>' : '') + '</div>' +
+      '<div class="troca-acoes" style="margin-top:0;">' +
+      '<button class="btn-secundario" onclick="abrirFormularioOradorLocal(' + orador.linha + ')">✏ Editar</button>' +
+      '<button class="btn-perigo" onclick="excluirOradorLocalTela(' + orador.linha + ')">🗑 Excluir</button>' +
+      '</div></div>';
+  });
+  container.innerHTML = html + '</div>';
+}
+
+function enviarOradorLocalWhatsApp() {
+  const selectMes = document.getElementById('selectMesTemasLocais');
+  const select = document.getElementById('selectOradorLocalIndividual');
+  if (!selectMes.value) { exibirAvisoApp('Atenção', 'Selecione o mês antes de enviar.'); return; }
+  if (!select.value) { exibirAvisoApp('Atenção', 'Escolha um orador local.'); return; }
+  const orador = listaOradoresLocaisCache[Number(select.value)];
+  const numero = document.getElementById('numTemaLocalIndividual').value.trim();
+  const tema = document.getElementById('titTemaLocalIndividual').value.trim();
+  if (!tema || tema.indexOf('Buscando') === 0 || tema === 'Tema não encontrado' || tema.indexOf('Não foi possível') === 0) {
+    exibirAvisoApp('Atenção', 'Informe um número válido e aguarde a busca do tema.');
+    return;
+  }
+  const mesTexto = selectMes.selectedOptions.length ? selectMes.selectedOptions[0].textContent : '';
+  const congregacao = document.getElementById('lblCongregacaoArranjo').textContent;
+  const endereco = document.getElementById('lblEnderecoArranjo').textContent;
+  let mensagem = 'Olá, irmão ' + orador.nome + '!\n\nDesignação de discurso — ' + mesTexto + '\n';
+  mensagem += '📖 Tema: ' + (numero ? 'Nº ' + numero + ' — ' : '') + tema + '\n';
+  if (congregacao && congregacao !== 'Não definida') mensagem += '🏛️ Congregação: ' + congregacao + '\n📍 Endereço: ' + endereco;
+  window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(mensagem.trim()), '_blank');
+}
+
+function abrirEscolhaOradoresWhatsApp() {
+  const lista = document.getElementById('listaEscolhaOradores');
+  lista.innerHTML = '<div class="loading">Buscando os cadastros na planilha...</div>';
+  document.getElementById('modalEscolherOradores').style.display = 'flex';
+  google.script.run
+    .withSuccessHandler(function(dados) {
+      const selectAtual = document.getElementById('selectOradorLocalIndividual');
+      const linhaSelecionada = selectAtual.value && listaOradoresLocaisCache[Number(selectAtual.value)]
+        ? listaOradoresLocaisCache[Number(selectAtual.value)].linha : null;
+      listaOradoresLocaisCache = dados.oradores || [];
+      renderizarSelecaoOradoresLocais(listaOradoresLocaisCache);
+      if (linhaSelecionada) {
+        const novoIndice = listaOradoresLocaisCache.findIndex(function(o) { return Number(o.linha) === Number(linhaSelecionada); });
+        if (novoIndice >= 0) {
+          selectAtual.value = String(novoIndice);
+          selecionarOradorLocalIndividual();
+        }
+      }
+      if (!listaOradoresLocaisCache.length) {
+        lista.innerHTML = '<div class="mensagem">Nenhum orador local cadastrado na aba Temas Locais.</div>';
+        return;
+      }
+      let html = '';
+      listaOradoresLocaisCache.forEach(function(orador, idx) {
+        const id = 'checkEscolherOrador_' + idx;
+        const infoTema = orador.temaDefinido || (orador.numeroTema ? 'Nº ' + escapar(orador.numeroTema) + ' — tema será consultado' : 'Tema ainda não definido');
+        html += '<label class="troca-tema-item" for="' + id + '">' +
+          '<input type="checkbox" id="' + id + '" value="' + idx + '">' +
+          '<div class="troca-tema-info"><div class="troca-tema-nome">' + escapar(orador.nome) + '</div>' +
+          '<div class="troca-tema-data">' + infoTema + '</div></div></label>';
+      });
+      lista.innerHTML = html;
+      const cadastrados = document.getElementById('containerOradoresLocais');
+      if (cadastrados.style.display !== 'none') renderizarOradoresCadastrados();
+    })
+    .withFailureHandler(function(erro) {
+      lista.innerHTML = '<div class="mensagem">Erro ao consultar a planilha.<br>' + escapar(erro.message || erro) + '</div>';
+    })
+    .consultarTemasLocaisTelaBackend(document.getElementById('selectMesTemasLocais').value);
+}
+
+function fecharEscolhaOradores() {
+  document.getElementById('modalEscolherOradores').style.display = 'none';
+}
+
+function enviarOradoresEscolhidosWhatsApp() {
+  const selectMes = document.getElementById('selectMesTemasLocais');
+  if (!selectMes.value) { exibirAvisoApp('Atenção', 'Selecione o mês antes de enviar.'); return; }
+  const indices = Array.from(document.querySelectorAll('#listaEscolhaOradores input[type="checkbox"]:checked'))
+    .map(function(cb) { return Number(cb.value); });
+  if (!indices.length) { exibirAvisoApp('Atenção', 'Marque pelo menos um orador.'); return; }
+
+  const linhas = indices.map(function(idx) { return listaOradoresLocaisCache[idx].linha; });
+  const popup = window.open('about:blank', '_blank');
+  if (!popup) { exibirAvisoApp('Atenção', 'Permita a abertura de janelas para continuar para o WhatsApp.'); return; }
+
+  google.script.run
+    .withSuccessHandler(function(oradores) {
+      const semTema = (oradores || []).filter(function(o) { return !o.tema; });
+      if (semTema.length) {
+        popup.close();
+        exibirAvisoApp('Atenção', 'Falta cadastrar o número ou o tema para: ' + semTema.map(function(o) { return o.nome; }).join(', '));
+        return;
+      }
+      const mesTexto = selectMes.selectedOptions.length ? selectMes.selectedOptions[0].textContent : '';
+      const congregacao = document.getElementById('lblCongregacaoArranjo').textContent;
+      const endereco = document.getElementById('lblEnderecoArranjo').textContent;
+      let mensagem = 'Designações de oradores locais — ' + mesTexto + '\n';
+      if (congregacao && congregacao !== 'Não definida') mensagem += 'Congregação: ' + congregacao + '\nEndereço: ' + endereco + '\n';
+      mensagem += '\n';
+      (oradores || []).forEach(function(orador) {
+        mensagem += '🎤 ' + orador.nome + '\n';
+        mensagem += '📖 Tema: ' + (orador.numero ? 'Nº ' + orador.numero + ' — ' : '') + orador.tema + '\n\n';
+      });
+      fecharEscolhaOradores();
+      popup.location = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(mensagem.trim());
+    })
+    .withFailureHandler(function(erro) {
+      popup.close();
+      exibirAvisoApp('Erro', 'Não foi possível preparar a mensagem: ' + (erro.message || erro));
+    })
+    .obterDesignacoesOradoresLocais(linhas);
+}
+
+function abrirFormularioOradorLocal(linha) {
+  const item = linha ? listaOradoresLocaisCache.find(o => Number(o.linha) === Number(linha)) : null;
+  document.getElementById('oradorLocalLinha').value = item ? item.linha : '';
+  document.getElementById('tituloFormularioOradorLocal').textContent = item ? 'Editar orador local' : 'Cadastrar orador local';
+  document.getElementById('oradorLocalNome').value = item ? item.nome : '';
+  document.getElementById('oradorLocalTelefone').value = item ? item.telefone : '';
+  document.getElementById('oradorLocalObservacao').value = item ? item.observacao : '';
+  const form = document.getElementById('formularioOradorLocal');
+  form.style.display = 'block';
+  form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function fecharFormularioOradorLocal() {
+  document.getElementById('formularioOradorLocal').style.display = 'none';
+}
+
+function salvarOradorLocalTela() {
+  const dados = {
+    linha: document.getElementById('oradorLocalLinha').value,
+    nome: document.getElementById('oradorLocalNome').value.trim(),
+    telefone: document.getElementById('oradorLocalTelefone').value.trim(),
+    observacao: document.getElementById('oradorLocalObservacao').value.trim()
+  };
+  if (!dados.nome) {
+    exibirAvisoApp('Atenção', 'Informe o nome do orador local.');
+    return;
+  }
+  google.script.run
+    .withSuccessHandler(function() {
+      fecharFormularioOradorLocal();
+      carregarTemasLocaisTela();
+      exibirAvisoApp('Sucesso', 'Cadastro do orador local salvo.');
+    })
+    .withFailureHandler(function(erro) {
+      exibirAvisoApp('Erro', 'Não foi possível salvar o cadastro: ' + (erro.message || erro));
+    })
+    .salvarOradorLocal(dados);
+}
+
+function excluirOradorLocalTela(linha) {
+  const item = listaOradoresLocaisCache.find(o => Number(o.linha) === Number(linha));
+  exibirConfirmacaoApp('Excluir orador local', 'Deseja excluir o cadastro de ' + (item ? item.nome : 'este orador') + '?', function() {
+    google.script.run
+      .withSuccessHandler(function() {
+        carregarTemasLocaisTela();
+        exibirAvisoApp('Sucesso', 'Cadastro do orador local excluído.');
+      })
+      .withFailureHandler(function(erro) {
+        exibirAvisoApp('Erro', 'Não foi possível excluir o cadastro: ' + (erro.message || erro));
+      })
+      .excluirOradorLocal(linha);
+  });
+}
+
+function salvarDataOradorLocalTela(linha) {
+  const dataVal = document.getElementById('dtLocal_' + linha).value;
+  if (!dataVal) {
+    exibirAvisoApp('Atenção', 'Informe uma data válida.');
+    return;
+  }
+
+  google.script.run
+    .withSuccessHandler(function(res) {
+      exibirAvisoApp('Sucesso', res.mensagem);
+    })
+    .withFailureHandler(function(erro) {
+      exibirAvisoApp('Erro', 'Erro ao salvar data: ' + (erro.message || erro));
+    })
+    .salvarDataOradorLocal({ linha: linha, data: dataVal });
+}
+
+function renderizarListaOradoresLocais(lista) {
+  const container = document.getElementById('containerOradoresLocais');
+  if (!lista || lista.length === 0) {
+    container.innerHTML = '<div class="card"><p>Nenhum orador local encontrado na aba Temas Locais.</p></div>';
+    return;
+  }
+
+  let html = '';
+  lista.forEach(function(orador, idx) {
+    html += '<div class="card" style="margin-bottom:15px; padding:15px; border:1px solid #ddd; border-radius:8px; background:#fff;">' +
+      '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:10px;">' +
+        '<h3 style="margin:0; color:#1f4e78;">👤 ' + escapar(orador.nome) + '</h3>' +
+        '<div>' +
+          '<button class="btn-principal" style="padding:5px 10px; font-size:12px; margin-right:5px;" onclick="salvarEdicaoOradorLocal(' + idx + ')">✏️ Salvar Alterações</button>' +
+        '</div>' +
+      '</div>' +
+
+      '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-bottom:10px;">' +
+        '<div>' +
+          '<label style="font-size:12px; font-weight:bold;">Nº do Tema:</label>' +
+          '<input type="text" id="numTemaLoc_' + idx + '" value="' + escapar(orador.numeroTema) + '" class="input-padrao" style="width:100%;" placeholder="Ex: 45">' +
+        '</div>' +
+        '<div>' +
+          '<label style="font-size:12px; font-weight:bold;">Título do Tema:</label>' +
+          '<input type="text" id="titTemaLoc_' + idx + '" value="' + escapar(orador.temaDefinido) + '" class="input-padrao" style="width:100%;" placeholder="Tema da palestra">' +
+        '</div>' +
+        '<div>' +
+          '<label style="font-size:12px; font-weight:bold;">Data de Realização:</label>' +
+          '<input type="date" id="dataRealizacaoLoc_' + idx + '" value="' + orador.dataRealizacao + '" class="input-padrao" style="width:100%;">' +
+        '</div>' +
+      '</div>' +
+
+      '<div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px; pt-10; border-top:1px solid #eee;">' +
+        '<button class="btn-sucesso" style="padding:6px 12px; font-size:13px;" onclick="salvarDataRealizacaoLocalTela(' + idx + ')">💾 Salvar Data na Planilha</button>' +
+        '<button class="btn-principal" style="background-color:#25d366; color:white; padding:6px 12px; font-size:13px;" onclick="enviarDesignacaoWhatsAppLocal(' + idx + ')">📲 Enviar Designação</button>' +
+      '</div>' +
+    '</div>';
+  });
+
+  container.innerHTML = html;
+}
+
+function salvarDataRealizacaoLocalTela(idx) {
+  const orador = listaOradoresLocaisCache[idx];
+  const novaData = document.getElementById('dataRealizacaoLoc_' + idx).value;
+
+  if (!novaData) {
+    exibirAvisoApp('Atenção', 'Selecione a data de realização antes de salvar.');
+    return;
+  }
+
+  const partes = novaData.split('-');
+  const dataBR = partes.length === 3 ? partes[2] + '/' + partes[1] + '/' + partes[0] : novaData;
+
+  exibirConfirmacaoApp(
+    'Salvar Data',
+    'Deseja salvar a data (' + dataBR + ') para o orador ' + orador.nome + ' na planilha?',
+    function() {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          exibirAvisoApp('Sucesso', res.mensagem);
+          orador.dataRealizacao = novaData;
+        })
+        .withFailureHandler(function(erro) {
+          exibirAvisoApp('Erro', 'Erro ao salvar: ' + (erro.message || erro));
+        })
+        .salvarDataOradorLocal({ linha: orador.linha, data: novaData });
+    }
+  );
+}
+
+function salvarEdicaoOradorLocal(idx) {
+  const orador = listaOradoresLocaisCache[idx];
+  const dadosAtualizados = {
+    linha: orador.linha,
+    nome: orador.nome,
+    numero: document.getElementById('numTemaLoc_' + idx).value.trim(),
+    tema: document.getElementById('titTemaLoc_' + idx).value.trim()
+  };
+
+  google.script.run
+    .withSuccessHandler(function(res) {
+      exibirAvisoApp('Sucesso', res.mensagem);
+      orador.numeroTema = dadosAtualizados.numero;
+      orador.temaDefinido = dadosAtualizados.tema;
+    })
+    .withFailureHandler(function(erro) {
+      exibirAvisoApp('Erro', 'Erro ao salvar alterações: ' + (erro.message || erro));
+    })
+    .salvarDadosOradorLocal(dadosAtualizados);
+}
+
+function enviarDesignacaoWhatsAppLocal(idx) {
+  const orador = listaOradoresLocaisCache[idx];
+  const selecionado = document.getElementById('temaLocalSelecionado_' + idx);
+  if (!selecionado || !selecionado.checked) {
+    exibirAvisoApp('Atenção', 'Marque a caixa ao lado do orador antes de enviar a designação.');
+    return;
+  }
+  const numTema = document.getElementById('numTemaLoc_' + idx).value.trim();
+  const titTema = document.getElementById('titTemaLoc_' + idx).value.trim();
+  if (!numTema || !titTema || titTema.indexOf('Buscando') === 0 || titTema === 'Tema não encontrado' || titTema.indexOf('Não foi possível') === 0) {
+    exibirAvisoApp('Atenção', 'Informe um número de discurso válido e aguarde a busca do tema.');
+    return;
+  }
+  const congregacao = document.getElementById('lblCongregacaoArranjo').textContent;
+  const endereco = document.getElementById('lblEnderecoArranjo').textContent;
+  const selectMes = document.getElementById('selectMesTemasLocais');
+  const mesTexto = selectMes && selectMes.selectedOptions.length ? selectMes.selectedOptions[0].textContent : '';
+
+  let texto = 'Olá, irmão ' + orador.nome + '!\n\n';
+  texto += 'Segue a sua designação de discurso:\n';
+  texto += '📅 Mês: ' + mesTexto + '\n';
+  texto += '📖 Tema: Nº ' + numTema + ' — ' + titTema + '\n';
+  if (congregacao && congregacao !== 'Não definida') {
+    texto += '🏛️ Congregação: ' + congregacao + '\n';
+    texto += '📍 Endereço: ' + endereco + '\n';
+  }
+
+  const url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(texto);
+  window.open(url, '_blank');
+}
+
+function carregarOpcoesTemasLocais() {}
+function consultarTemasLocaisTela() {}
+function salvarTemasLocaisTela() {}
+function enviarTemasLocaisTela() {}
 </script>
 </body>
 </html>
