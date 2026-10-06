@@ -1,0 +1,2006 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+<title>Palestras</title>
+<style>
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body { 
+  margin: 0 !important; 
+  padding: 0 !important; 
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+  background: #f4f6f8; 
+  color: #222; 
+  width: 100vw;
+  height: 100dvh;
+  overflow: hidden; 
+}
+
+.app-wrapper {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100%;
+  margin: 0 !important;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  overflow-y: auto; 
+}
+
+.page { display: none; flex: 1; flex-direction: column; }
+.page.active { display: flex; }
+
+header { 
+  background: #1f4e78; 
+  color: white; 
+  padding: 16px 20px; 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+  width: 100%;
+  font-size: 22px;
+  font-weight: bold;
+}
+.header-titulo { display: flex; align-items: center; gap: 12px; }
+.header-menu-icon { font-size: 24px; cursor: pointer; }
+
+.card { 
+  background: white; 
+  border-radius: 10px; 
+  padding: 18px; 
+  margin-bottom: 12px; 
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08); 
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.cards-resumo { 
+  display: grid; 
+  grid-template-columns: repeat(3, minmax(0, 1fr)); 
+  gap: 12px; 
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+.resumo { display: flex; align-items: center; gap: 14px; margin-bottom: 0 !important; min-width: 0; }
+.resumo-icone { width: 52px; height: 52px; flex: 0 0 52px; border-radius: 50%; display: grid; place-items: center; background: #e8f0f7; font-size: 27px; }
+.resumo-conteudo { min-width: 0; }
+.resumo-numero { font-size: 34px; font-weight: bold; color: #1f4e78; line-height: 1.1; }
+.resumo-texto { font-size: 22px; font-weight: bold; color: #1f4e78; line-height: 1.2; overflow-wrap: anywhere; }
+.resumo-label { font-size: 14px; margin-top: 5px; color: #555; }
+
+.menu-botoes { 
+  display: grid; 
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 10px; 
+  flex-shrink: 0;
+  width: 100%;
+}
+.home-menu-button { display: flex; align-items: center; gap: 14px; min-height: 78px; padding: 14px 16px; border: 0; border-radius: 10px; background: #1f4e78; color: #fff; text-align: left; }
+.home-menu-icone { width: 48px; height: 48px; flex: 0 0 48px; display: grid; place-items: center; border-radius: 50%; background: rgba(255,255,255,.14); font-size: 26px; }
+.home-menu-copy { flex: 1; min-width: 0; }
+.home-menu-copy strong { display: block; font-size: 17px; line-height: 1.25; }
+.home-menu-copy small { display: block; margin-top: 5px; color: #dce9f4; font-size: 13px; font-weight: 400; line-height: 1.3; }
+.home-menu-seta { color: #dce9f4; font-size: 28px; }
+.home-congregacao-card { margin: 0 0 12px; }
+.home-acesso-titulo { margin: 18px 4px 10px; }
+.mobile-nav { display: none; }
+.btn-principal, .btn-secundario, .btn-sucesso, .btn-perigo { 
+  border: none; 
+  border-radius: 8px; 
+  padding: 14px 16px; 
+  font-size: 15px; 
+  font-weight: bold; 
+  cursor: pointer; 
+}
+.btn-principal { background: #1f4e78; color: white; }
+.btn-secundario { background: #6c757d; color: white; }
+.btn-sucesso { background: #2e7d32; color: white; }
+.btn-perigo { background: #b3261e; color: white; }
+.btn-link { background: #e0e0e0; color: #333; padding: 6px 12px; font-size: 13px; text-decoration: none; border-radius: 6px; display: inline-block; }
+button:active { transform: scale(0.97); }
+
+h2, h3 { color: #1f4e78; margin-top: 0; }
+input, select, textarea { 
+  width: 100%; 
+  padding: 12px; 
+  font-size: 16px !important; 
+  border: 1px solid #ccc; 
+  border-radius: 8px; 
+  background: white; 
+}
+
+.campo-pesquisa { display: flex; gap: 10px; flex-wrap: wrap; }
+.campo-pesquisa input, .campo-pesquisa select { flex: 1; min-width: 180px; }
+
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.form-campo { display: flex; flex-direction: column; gap: 6px; }
+.form-campo-completo { grid-column: 1 / -1; }
+.form-campo label { font-weight: bold; color: #444; font-size: 14px; }
+.acoes-formulario { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; }
+
+.mensagem, .loading { text-align: center; color: #666; padding: 25px 10px; }
+.chip { display: inline-block; background: #e8f0f7; color: #1f4e78; padding: 6px 10px; border-radius: 20px; margin: 4px 4px 4px 0; font-size: 13px; font-weight: bold; }
+
+.badge-situacao {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: bold;
+  color: white;
+}
+.badge-atualizado { background-color: #2e7d32; }
+.badge-descontinuado { background-color: #b3261e; }
+
+/* Troca de Temas */
+.troca-orador { background: #f8f9fa; border-radius: 8px; padding: 12px; margin-top: 10px; }
+.troca-orador-titulo { font-size: 17px; font-weight: bold; color: #1f4e78; margin-bottom: 8px; }
+.troca-tema-item { display: flex; align-items: flex-start; gap: 10px; background: white; border: 1px solid #ddd; border-radius: 8px; padding: 10px; margin-top: 7px; }
+.troca-tema-item input[type="checkbox"] { width: 22px; height: 22px; flex: 0 0 auto; margin-top: 2px; }
+.troca-tema-info { flex: 1; min-width: 0; }
+.troca-tema-nome { font-weight: bold; font-size: 16px; }
+.troca-tema-data { color: #666; font-size: 13px; margin-top: 4px; }
+.troca-acoes { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.local-orador-slot { display: grid; grid-template-columns: minmax(180px, 1fr) minmax(110px, 150px) minmax(180px, 2fr) auto; gap: 10px; align-items: end; }
+
+/* Estilo para Modais de Diálogo Personalizados */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 15px;
+}
+.modal-caixa {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+.modal-titulo { font-size: 18px; font-weight: bold; color: #1f4e78; margin-bottom: 10px; }
+.modal-mensagem { font-size: 15px; color: #444; margin-bottom: 20px; line-height: 1.4; }
+.modal-acoes { display: flex; justify-content: flex-end; gap: 10px; }
+
+@media (max-width: 600px) {
+  html, body { width: 100%; height: 100%; min-height: 100dvh; font-size: 18px; }
+  .app-wrapper { padding: max(12px, env(safe-area-inset-top)) 14px calc(104px + env(safe-area-inset-bottom)); }
+  .page { min-height: 100%; }
+  header { min-height: 78px; padding: 18px 20px; border-radius: 18px; margin-bottom: 14px; font-size: 25px; }
+  .header-titulo { gap: 12px; }
+  .header-menu-icon { font-size: 29px; padding: 4px; }
+  .card { padding: 22px; border-radius: 18px; margin-bottom: 14px; }
+  .home-congregacao-card { padding: 24px; }
+  .home-congregacao-card h3 { font-size: 23px; }
+  .home-congregacao-card #dispNomeLocal { font-size: 20px !important; }
+  .home-congregacao-card #dispDiaHorarioLocal,
+  .home-congregacao-card #dispEnderecoLocal { font-size: 17px !important; line-height: 1.45; }
+  .cards-resumo { grid-template-columns: 1fr; gap: 10px; margin-bottom: 16px; }
+  .resumo { min-height: 106px; gap: 18px; padding: 18px 22px; }
+  .resumo-icone { width: 58px; height: 58px; flex-basis: 58px; font-size: 30px; }
+  .resumo-numero { font-size: 36px; }
+  .resumo-texto { font-size: 22px; }
+  .resumo-label { font-size: 16px; }
+  .home-acesso-titulo { margin: 22px 4px 12px; font-size: 25px; }
+  .menu-botoes { grid-template-columns: 1fr; gap: 10px; padding: 0; background: transparent; box-shadow: none; }
+  .home-menu-button { width: 100%; min-height: 94px; padding: 18px; border: 1px solid #e5ebf0; border-radius: 18px; background: #fff; color: #173b5b; }
+  .home-menu-icone { background: #e8f0f7; }
+  .home-menu-copy strong { font-size: 19px; color: #173b5b; }
+  .home-menu-copy small { font-size: 15px; color: #647484; }
+  .home-menu-seta { color: #7890a4; }
+  .btn-principal, .btn-secundario, .btn-sucesso, .btn-perigo { min-height: 52px; padding: 15px 18px; border-radius: 12px; font-size: 17px; }
+  .campo-pesquisa { flex-direction: column; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-campo label { font-size: 16px; }
+  input, select, textarea { min-height: 52px; padding: 14px; font-size: 18px !important; }
+  .local-orador-slot { grid-template-columns: 1fr; }
+  .mobile-nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 900; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px; padding: 8px 8px calc(8px + env(safe-area-inset-bottom)); background: #fff; border-top: 1px solid #dfe6ec; box-shadow: 0 -4px 16px rgba(25, 51, 72, .08); }
+  .mobile-nav button { min-width: 0; min-height: 64px; padding: 5px 2px; border: 0; background: transparent; color: #647484; font-size: 12px; font-weight: 650; }
+  .mobile-nav button span { display: block; font-size: 22px; line-height: 1.2; margin-bottom: 3px; }
+  .mobile-nav button:active { color: #1f4e78; background: #e8f0f7; border-radius: 12px; }
+  .modal-overlay { padding: 12px; }
+  .modal-caixa { max-height: calc(100dvh - 24px); overflow-y: auto; padding: 22px; border-radius: 18px; }
+  .modal-titulo { font-size: 22px; }
+  .modal-mensagem { font-size: 17px; }
+}
+</style>
+</head>
+
+<body onload="carregarResumo(); carregarCongregacaoLocal();">
+
+<div class="app-wrapper">
+  
+  <!-- INÍCIO -->
+  <section id="paginaInicio" class="page active">
+    <header>
+      <div class="header-titulo">
+        <span>📚</span>
+        <span>Palestras</span>
+      </div>
+      <div class="header-menu-icon" onclick="carregarResumo(); carregarCongregacaoLocal();">🔄</div>
+    </header>
+
+    <!-- Bloco Congregação Local -->
+    <div class="card home-congregacao-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h3 style="margin: 0; color: #1f4e78;">🏛️ Congregação Local</h3>
+        <button id="btnEditarCongregacaoLocal" class="btn-principal" style="padding: 6px 12px; font-size: 13px;" onclick="alternarEdicaoCongregacaoLocal()">✏️ Editar</button>
+      </div>
+
+      <div id="visualizacaoCongregacaoLocal">
+        <div style="font-size: 16px; font-weight: bold; color: #333;" id="dispNomeLocal">Carregando...</div>
+        <div style="font-size: 14px; color: #555; margin-top: 4px;" id="dispDiaHorarioLocal">-</div>
+        <div style="font-size: 14px; color: #555; margin-top: 2px;" id="dispEnderecoLocal">-</div>
+      </div>
+
+      <div id="formularioCongregacaoLocal" style="display: none; margin-top: 10px;">
+        <div class="form-grid">
+          <div class="form-campo form-campo-completo">
+            <label for="inputNomeLocal">Nome da Congregação</label>
+            <input type="text" id="inputNomeLocal" placeholder="Ex.: Congregação Central">
+          </div>
+          <div class="form-campo">
+            <label for="inputDiaLocal">Dia da Reunião</label>
+            <input type="text" id="inputDiaLocal" placeholder="Ex.: Domingo">
+          </div>
+          <div class="form-campo">
+            <label for="inputHorarioLocal">Horário</label>
+            <input type="text" id="inputHorarioLocal" placeholder="Ex.: 18:00">
+          </div>
+          <div class="form-campo form-campo-completo">
+            <label for="inputEnderecoLocal">Endereço</label>
+            <input type="text" id="inputEnderecoLocal" placeholder="Rua, número, bairro">
+          </div>
+        </div>
+        <div class="acoes-formulario" style="margin-top: 12px;">
+          <button class="btn-secundario" onclick="alternarEdicaoCongregacaoLocal()">Cancelar</button>
+          <button class="btn-sucesso" onclick="salvarCongregacaoLocalTela()">💾 Salvar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cards-resumo">
+      <div class="card resumo">
+        <div class="resumo-icone">📖</div>
+        <div class="resumo-conteudo">
+          <div id="totalTemas" class="resumo-numero">-</div>
+          <div class="resumo-label">Temas cadastrados</div>
+        </div>
+      </div>
+      <div class="card resumo">
+        <div class="resumo-icone">📅</div>
+        <div class="resumo-conteudo">
+          <div id="arranjoMes" class="resumo-texto">Carregando...</div>
+          <div class="resumo-label">Arranjo do Mês</div>
+        </div>
+      </div>
+      <div class="card resumo">
+        <div class="resumo-icone">🔜</div>
+        <div class="resumo-conteudo">
+          <div id="proximoArranjo" class="resumo-texto">Carregando...</div>
+          <div class="resumo-label">Próximo Arranjo</div>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="home-acesso-titulo">Acesso rápido</h2>
+    <div class="card menu-botoes">
+      <button class="home-menu-button" onclick="abrirTemas()"><span class="home-menu-icone">📖</span><span class="home-menu-copy"><strong>Todos os Temas</strong><small>Encontre um tema pelo número ou título</small></span><span class="home-menu-seta">›</span></button>
+      <button class="home-menu-button" onclick="abrirTemasDoMes()"><span class="home-menu-icone">📅</span><span class="home-menu-copy"><strong>Arranjo Mensal</strong><small>Acompanhe a programação mensal</small></span><span class="home-menu-seta">›</span></button>
+      <button class="home-menu-button" onclick="abrirTrocaTemas()"><span class="home-menu-icone">🔄</span><span class="home-menu-copy"><strong>Oradores Visitantes</strong><small>Organize as designações entre congregações</small></span><span class="home-menu-seta">›</span></button>
+      <button class="home-menu-button" onclick="abrirTemasLocais()"><span class="home-menu-icone">📍</span><span class="home-menu-copy"><strong>Oradores Locais</strong><small>Escolha oradores e envie designações</small></span><span class="home-menu-seta">›</span></button>
+      <button class="home-menu-button" onclick="abrirCongregacoes()"><span class="home-menu-icone">🏛️</span><span class="home-menu-copy"><strong>Congregações</strong><small>Cadastre endereços e programações</small></span><span class="home-menu-seta">›</span></button>
+    </div>
+  </section>
+
+  <!-- CONSULTAR TEMAS -->
+  <section id="paginaTemas" class="page">
+    <header>
+      <div class="header-titulo">
+        <span>📖</span>
+        <span>Todos os Temas</span>
+      </div>
+      <div class="header-menu-icon" onclick="voltarInicio()">🏠</div>
+    </header>
+
+    <div class="card">
+      <div class="campo-pesquisa">
+        <input
+          id="campoTema"
+          type="text"
+          placeholder="Pesquisar por número, tema ou assunto..."
+          onkeydown="if(event.key==='Enter') consultarTemas();">
+        <button class="btn-principal" onclick="consultarTemas()">Pesquisar</button>
+        <button class="btn-sucesso" onclick="abrirFormularioNovoTema()">＋ Novo tema</button>
+        <button class="btn-secundario" onclick="voltarInicio()">Voltar</button>
+      </div>
+    </div>
+
+    <div id="resultadoTemas"></div>
+
+    <div id="formularioTema" class="card" style="display:none;">
+      <h3 class="form-titulo" id="tituloFormTema">Adicionar Tema</h3>
+      <input type="hidden" id="temaLinha">
+
+      <div class="form-grid">
+        <div class="form-campo">
+          <label for="formTemaNumero">Número do tema</label>
+          <input id="formTemaNumero" type="text" placeholder="Ex.: 1">
+        </div>
+        <div class="form-campo form-campo-completo">
+          <label for="formTemaTitulo">Título do tema</label>
+          <input id="formTemaTitulo" type="text" placeholder="Digite o título do tema">
+        </div>
+        <div class="form-campo form-campo-completo">
+          <label for="formTemaAssunto">Assunto</label>
+          <textarea id="formTemaAssunto" rows="3" placeholder="Digite o assunto (opcional)"></textarea>
+        </div>
+        <div class="form-campo">
+          <label for="formTemaSituacao">Situação</label>
+          <select id="formTemaSituacao">
+            <option value="">Sem situação definida</option>
+            <option value="Atualizado">Atualizado</option>
+            <option value="Descontinuado">Descontinuado</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="acoes-formulario">
+        <button class="btn-secundario" onclick="fecharFormularioTema()">Cancelar</button>
+        <button class="btn-sucesso" onclick="salvarTemaTela()">💾 Salvar tema</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONGREGAÇÕES -->
+  <section id="paginaCongregacoes" class="page">
+    <header>
+      <div class="header-titulo">
+        <span>🏛️</span>
+        <span>Congregações</span>
+      </div>
+      <div class="header-menu-icon" onclick="voltarInicio()">🏠</div>
+    </header>
+    <div class="card">
+      <div class="campo-pesquisa" style="margin-bottom: 10px;">
+        <input id="campoPesquisaCongregacao" type="text" placeholder="Pesquisar congregação..." onkeydown="if(event.key==='Enter') consultarCongregacoesTela();">
+        <button class="btn-principal" onclick="consultarCongregacoesTela()">Pesquisar</button>
+        <button class="btn-sucesso" onclick="abrirFormularioNovaCongregacao()">＋ Nova</button>
+        <button class="btn-secundario" onclick="voltarInicio()">Voltar</button>
+      </div>
+    </div>
+
+    <div id="resultadoCongregacoes"></div>
+
+    <div id="formularioCongregacao" style="display:none;" class="card">
+      <h3 class="form-titulo" id="tituloFormCongregacao">Adicionar Congregação</h3>
+      <input type="hidden" id="congLinha">
+
+      <div class="form-grid">
+        <div class="form-campo form-campo-completo">
+          <label for="congNome">Nome da congregação</label>
+          <input id="congNome" type="text" placeholder="Ex.: Congregação Central">
+        </div>
+        <div class="form-campo form-campo-completo">
+          <label for="congEndereco">Endereço</label>
+          <input id="congEndereco" type="text" placeholder="Endereço completo">
+        </div>
+        <div class="form-campo form-campo-completo">
+          <label for="congLocalizacao">Localização (Link do Google Maps)</label>
+          <input id="congLocalizacao" type="url" placeholder="Cole o link do Google Maps">
+        </div>
+        <div class="form-campo">
+          <label for="congDia">Dia da reunião</label>
+          <input id="congDia" type="text" placeholder="Ex.: Sábado às 19:30">
+        </div>
+        <div class="form-campo">
+          <label for="congAgenda">Agenda (Mês da troca)</label>
+          <input id="congAgenda" type="text" placeholder="Ex.: Novembro de 2026">
+        </div>
+      </div>
+
+      <div style="margin-top: 15px;">
+        <h3>Oradores e Números dos Discursos</h3>
+        <div id="listaOradoresForm" style="margin-bottom: 10px;"></div>
+        <button type="button" class="btn-secundario" onclick="adicionarCampoOradorTema()">＋ Adicionar Orador</button>
+      </div>
+
+      <div class="acoes-formulario" style="margin-top: 15px;">
+        <button class="btn-secundario" onclick="fecharFormularioCongregacao()">Cancelar</button>
+        <button class="btn-sucesso" onclick="salvarCongregacaoTela()">Salvar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TROCA DE TEMAS -->
+  <section id="paginaTrocaTemas" class="page">
+    <header>
+      <div class="header-titulo">
+        <span>🔄</span>
+        <span>Oradores Visitantes</span>
+      </div>
+      <div class="header-menu-icon" onclick="voltarInicio()">🏠</div>
+    </header>
+
+    <div class="card">
+      <div class="form-grid">
+        <div class="form-campo form-campo-completo">
+          <label for="trocaMes">Mês da troca</label>
+          <select id="trocaMes" onchange="consultarTrocaTemasTela()">
+            <option value="">Selecione o mês</option>
+          </select>
+        </div>
+      </div>
+      <div class="acoes-formulario">
+        <button class="btn-secundario" onclick="voltarInicio()">Voltar</button>
+      </div>
+    </div>
+
+    <div id="resultadoTrocaTemas"></div>
+  </section>
+
+  <!-- TEMAS LOCAIS -->
+  <section id="paginaTemasLocais" class="page">
+    <header>
+      <div class="header-titulo"><span>📍</span><span>Oradores Locais</span></div>
+      <div class="header-menu-icon" onclick="voltarInicio()">🏠</div>
+    </header>
+    <div class="card">
+      <div class="form-grid">
+        <div class="form-campo form-campo-completo">
+          <label for="selectMesTemasLocais">Mês</label>
+          <select id="selectMesTemasLocais" onchange="carregarTemasLocaisTela()">
+            <option value="">Selecione o mês</option>
+          </select>
+        </div>
+      </div>
+      <div class="acoes-formulario">
+        <button class="btn-sucesso" onclick="abrirFormularioOradorLocal()">＋ Cadastrar orador local</button>
+        <button class="btn-principal" onclick="abrirEscolhaOradoresWhatsApp()">Escolher Oradores</button>
+        <button class="btn-secundario" onclick="voltarInicio()">Voltar</button>
+      </div>
+    </div>
+    <div id="formularioOradorLocal" class="card" style="display:none;">
+      <h3 class="form-titulo" id="tituloFormularioOradorLocal">Cadastrar orador local</h3>
+      <input type="hidden" id="oradorLocalLinha">
+      <div class="form-grid">
+        <div class="form-campo form-campo-completo">
+          <label for="oradorLocalNome">Nome do Orador:</label>
+          <input id="oradorLocalNome" type="text" placeholder="Nome completo">
+        </div>
+        <div class="form-campo form-campo-completo">
+          <label>Temas já cadastrados</label>
+          <div id="temasAtuaisOradorLocal" class="mensagem">Nenhum tema cadastrado.</div>
+        </div>
+        <div class="form-campo form-campo-completo">
+          <label for="temasNovosOradorLocal">Temas:</label>
+          <select id="temasNovosOradorLocal" multiple size="7"></select>
+          <small>Os temas escolhidos serão adicionados ao cadastro; temas existentes serão mantidos.</small>
+        </div>
+      </div>
+      <div class="acoes-formulario">
+        <button class="btn-secundario" onclick="fecharFormularioOradorLocal()">Cancelar</button>
+        <button class="btn-sucesso" onclick="salvarOradorLocalTela()">💾 Salvar cadastro</button>
+      </div>
+    </div>
+    <div id="painelArranjoMes" class="card" style="display:none; background:#e8f4f8; border-left:5px solid #1f4e78;">
+      <h3 style="margin-top:0; color:#1f4e78;">🤝 Congregação programada</h3>
+      <p style="margin:4px 0;"><strong>Congregação:</strong> <span id="lblCongregacaoArranjo">-</span></p>
+      <p style="margin:4px 0;"><strong>Endereço:</strong> <span id="lblEnderecoArranjo">-</span></p>
+      <p style="margin:4px 0;"><strong>Dia e horário:</strong> <span id="lblDiaHorarioArranjo">-</span></p>
+      <p style="margin:4px 0;"><strong>Google Maps:</strong> <a id="linkLocalizacaoArranjo" href="#" target="_blank" rel="noopener">Abrir mapa</a></p>
+    </div>
+    <div class="card">
+      <div class="form-campo">
+        <label for="selectDataHoraReuniao">Data da reunião no mês selecionado</label>
+        <select id="selectDataHoraReuniao"><option value="">Selecione o mês para carregar as datas</option></select>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0; color:#1f4e78;">🎤 Oradores locais</h3>
+      <div class="local-orador-slot">
+        <div class="form-campo">
+          <label for="selectOradorLocalIndividual">Orador</label>
+          <select id="selectOradorLocalIndividual" onchange="selecionarOradorLocalIndividual()">
+            <option value="">Selecione o orador</option>
+          </select>
+        </div>
+        <div class="form-campo">
+          <label for="selectTemaLocalIndividual">Nº do discurso</label>
+          <select id="selectTemaLocalIndividual" onchange="selecionarTemaLocalIndividual()" disabled>
+            <option value="">Selecione o orador primeiro</option>
+          </select>
+        </div>
+        <div class="form-campo">
+          <label for="titTemaLocalIndividual">Tema</label>
+          <input id="titTemaLocalIndividual" type="text" placeholder="Preenchido pelo número" readonly>
+        </div>
+        <button class="btn-principal" style="background:#25d366;color:white;" onclick="enviarOradorLocalWhatsApp()">📲 WhatsApp</button>
+      </div>
+      <div class="acoes-formulario">
+        <button class="btn-secundario" onclick="alternarOradoresCadastrados(this)">Mostrar cadastrados</button>
+      </div>
+    </div>
+    <div id="containerOradoresLocais" style="display:none;"></div>
+    <div id="modalEscolherOradores" class="modal-overlay" style="display:none;">
+      <div class="modal-caixa" style="max-width:600px; max-height:85vh; overflow:auto;">
+        <div class="modal-titulo">Escolher oradores locais</div>
+        <div class="modal-mensagem">Marque os oradores que deseja incluir na mensagem.</div>
+        <div id="listaEscolhaOradores"></div>
+        <div class="modal-acoes" style="margin-top:16px;">
+          <button class="btn-secundario" onclick="fecharEscolhaOradores()">Cancelar</button>
+          <button class="btn-sucesso" onclick="enviarOradoresEscolhidosWhatsApp()">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEMA DO MÊS (ATUALIZADO) -->
+  <section id="paginaTemasDoMes" class="page">
+    <header>
+      <div class="header-titulo">
+        <span>📅</span>
+        <span>Arranjo Mensal</span>
+      </div>
+      <div class="header-menu-icon" onclick="voltarInicio()">🏠</div>
+    </header>
+
+    <div class="card">
+      <div class="campo-pesquisa">
+        <select id="selectMesTemasDoMes" onchange="consultarTemasDoMesTela()">
+          <option value="">Selecione o mês</option>
+        </select>
+        <button class="btn-principal" onclick="consultarTemasDoMesTela()">Consultar</button>
+        <button class="btn-sucesso" onclick="abrirFormularioNovoTemaDoMes()">＋ Novo</button>
+        <button class="btn-principal" style="background-color: #25d366; color: white;" onclick="enviarProgramacaoWhatsAppTela()">📲 Enviar WhatsApp</button>
+        <button class="btn-secundario" onclick="voltarInicio()">Voltar</button>
+      </div>
+    </div>
+
+    <!-- Formulário Modal de Edição/Adição Tema do Mês -->
+    <div id="formularioTemasDoMes" class="card" style="display:none;">
+      <h3 id="tituloFormTemaDoMes">Novo Registro (Tema do Mês)</h3>
+      <input type="hidden" id="tmLinha">
+
+      <div class="form-grid">
+        <div class="form-campo">
+          <label for="tmData">Data</label>
+          <input type="date" id="tmData">
+        </div>
+        <div class="form-campo">
+          <label for="tmStatus">Status</label>
+          <select id="tmStatus">
+            <option value="Recebendo">Recebendo</option>
+            <option value="Enviando">Enviando</option>
+          </select>
+        </div>
+        <div class="form-campo">
+          <label for="tmNumero">Nº Discurso</label>
+          <input type="text" id="tmNumero" placeholder="Ex.: 12">
+        </div>
+        <div class="form-campo form-campo-completo">
+          <label for="tmTema">Tema do Discurso</label>
+          <input type="text" id="tmTema" placeholder="Título do tema">
+        </div>
+        <div class="form-campo form-campo-completo">
+          <label for="tmOrador">Nome do Orador</label>
+          <input type="text" id="tmOrador" placeholder="Nome do orador">
+        </div>
+        <div class="form-campo form-campo-completo">
+          <label for="tmCongregacao">Congregação</label>
+          <input type="text" id="tmCongregacao" placeholder="Nome da congregação">
+        </div>
+      </div>
+
+      <div class="acoes-formulario" style="margin-top: 15px;">
+        <button class="btn-secundario" onclick="fecharFormularioTemaDoMes()">Cancelar</button>
+        <button class="btn-sucesso" onclick="salvarTemaDoMesTela()">Salvar</button>
+      </div>
+    </div>
+
+    <div id="resultadoTemasDoMes"></div>
+  </section>
+
+  <nav class="mobile-nav" aria-label="Navegação principal">
+    <button onclick="voltarInicio()"><span>⌂</span>Início</button>
+    <button onclick="abrirTemas()"><span>📖</span>Temas</button>
+    <button onclick="abrirTemasDoMes()"><span>📅</span>Arranjo</button>
+    <button onclick="abrirTrocaTemas()"><span>🔄</span>Visitantes</button>
+    <button onclick="abrirTemasLocais()"><span>📍</span>Locais</button>
+  </nav>
+
+</div>
+
+<!-- COMPONENTES DE MODAL CUSTOMIZADOS -->
+<div id="modalAppOverlay" class="modal-overlay" style="display:none;">
+  <div class="modal-caixa">
+    <div class="modal-titulo" id="modalAppTitulo">Aviso</div>
+    <div class="modal-mensagem" id="modalAppMensagem">Mensagem</div>
+    <div class="modal-acoes" id="modalAppAcoes">
+      <button class="btn-principal" onclick="fecharModalApp()">OK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/*************************************************
+ * MODAIS CUSTOMIZADOS (DESIGN DO APP)
+ *************************************************/
+let modalConfirmCallback = null;
+
+function exibirAvisoApp(titulo, mensagem) {
+  document.getElementById('modalAppTitulo').textContent = titulo || 'Aviso';
+  document.getElementById('modalAppMensagem').textContent = mensagem || '';
+  document.getElementById('modalAppAcoes').innerHTML = 
+    '<button class="btn-principal" onclick="fecharModalApp()">OK</button>';
+  document.getElementById('modalAppOverlay').style.display = 'flex';
+}
+
+function exibirConfirmacaoApp(titulo, mensagem, callback) {
+  modalConfirmCallback = callback;
+  document.getElementById('modalAppTitulo').textContent = titulo || 'Confirmação';
+  document.getElementById('modalAppMensagem').textContent = mensagem || '';
+  document.getElementById('modalAppAcoes').innerHTML = 
+    '<button class="btn-secundario" onclick="fecharModalApp(false)">Cancelar</button>' +
+    '<button class="btn-sucesso" onclick="fecharModalApp(true)">Confirmar</button>';
+  document.getElementById('modalAppOverlay').style.display = 'flex';
+}
+
+function fecharModalApp(resposta) {
+  document.getElementById('modalAppOverlay').style.display = 'none';
+  if (typeof modalConfirmCallback === 'function' && resposta !== undefined) {
+    const fn = modalConfirmCallback;
+    modalConfirmCallback = null;
+    if (resposta) fn();
+  }
+}
+
+/*************************************************
+ * NAVEGAÇÃO
+ *************************************************/
+function mostrarPagina(id) {
+  document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+  const p = document.getElementById(id);
+  if (p) p.classList.add('active');
+  const wrapper = document.querySelector('.app-wrapper');
+  if (wrapper) wrapper.scrollTop = 0;
+}
+
+function voltarInicio() { mostrarPagina('paginaInicio'); carregarResumo(); carregarCongregacaoLocal(); }
+
+function abrirTemas() { 
+  mostrarPagina('paginaTemas'); 
+  
+  const campo = document.getElementById('campoTemas');
+  if (campo) {
+    campo.focus();
+  }
+}
+function abrirTemasDoMes() { mostrarPagina('paginaTemasDoMes'); carregarMesesTemasDoMes(); }
+function abrirTrocaTemas() { mostrarPagina('paginaTrocaTemas'); carregarMesesTrocaTemas(); }
+function abrirTemasLocais() {
+  mostrarPagina('paginaTemasLocais');
+  carregarMesesTemasLocais();
+}
+function carregarMesesTemasLocais() {
+  const select = document.getElementById('selectMesTemasLocais');
+  if (!select) return;
+  select.innerHTML = '<option value="">Carregando meses...</option>';
+
+  google.script.run
+    .withSuccessHandler(function(meses) {
+      select.innerHTML = '<option value="">Selecione o mês</option>';
+      (meses || []).forEach(function(item) {
+        const option = document.createElement('option');
+        option.value = item.valor;
+        option.textContent = item.texto;
+        select.appendChild(option);
+      });
+      carregarTemasLocaisTela();
+    })
+    .withFailureHandler(function(erro) {
+      select.innerHTML = '<option value="">Erro ao carregar meses</option>';
+    })
+    .obterMeses();
+}
+function abrirCongregacoes() { mostrarPagina('paginaCongregacoes'); consultarCongregacoesTela(); }
+
+function escapar(texto) {
+  if (!texto) return '';
+  return String(texto).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/*************************************************
+ * INÍCIO E CONGREGAÇÃO LOCAL
+ *************************************************/
+function carregarResumo() {
+  google.script.run
+    .withSuccessHandler(function(dados) {
+      if(dados) {
+        document.getElementById('totalTemas').textContent = dados.totalTemas || 0;
+        document.getElementById('arranjoMes').textContent = dados.arranjoMes || 'Não programado';
+        document.getElementById('proximoArranjo').textContent = dados.proximoArranjo || 'Não programado';
+      }
+    })
+    .withFailureHandler(function(erro) { console.error(erro); })
+    .obterResumoInicial();
+}
+
+function carregarCongregacaoLocal() {
+  google.script.run
+    .withSuccessHandler(function(dados) {
+      if (dados && dados.nome) {
+        document.getElementById('dispNomeLocal').textContent = dados.nome;
+        document.getElementById('dispDiaHorarioLocal').textContent = (dados.dia || 'Dia não definido') + ' às ' + (dados.horario || '--:--');
+        document.getElementById('dispEnderecoLocal').textContent = dados.endereco || 'Endereço não definido';
+        
+        document.getElementById('inputNomeLocal').value = dados.nome || '';
+        document.getElementById('inputDiaLocal').value = dados.dia || '';
+        document.getElementById('inputHorarioLocal').value = dados.horario || '';
+        document.getElementById('inputEnderecoLocal').value = dados.endereco || '';
+      } else {
+        document.getElementById('dispNomeLocal').textContent = 'Nenhuma congregação cadastrada';
+        document.getElementById('dispDiaHorarioLocal').textContent = 'Clique em Editar para preencher os dados.';
+        document.getElementById('dispEnderecoLocal').textContent = '';
+      }
+    })
+    .obterCongregacaoLocal();
+}
+
+function alternarEdicaoCongregacaoLocal() {
+  const visualizacao = document.getElementById('visualizacaoCongregacaoLocal');
+  const formulario = document.getElementById('formularioCongregacaoLocal');
+  const btnEditar = document.getElementById('btnEditarCongregacaoLocal');
+
+  if (formulario.style.display === 'none') {
+    formulario.style.display = 'block';
+    visualizacao.style.display = 'none';
+    btnEditar.style.display = 'none';
+  } else {
+    formulario.style.display = 'none';
+    visualizacao.style.display = 'block';
+    btnEditar.style.display = 'block';
+  }
+}
+
+function salvarCongregacaoLocalTela() {
+  const dados = {
+    nome: document.getElementById('inputNomeLocal').value.trim(),
+    dia: document.getElementById('inputDiaLocal').value.trim(),
+    horario: document.getElementById('inputHorarioLocal').value.trim(),
+    endereco: document.getElementById('inputEnderecoLocal').value.trim()
+  };
+
+  if (!dados.nome) {
+    exibirAvisoApp('Atenção', 'Informe o nome da congregação.');
+    return;
+  }
+
+  google.script.run
+    .withSuccessHandler(function() {
+      alternarEdicaoCongregacaoLocal();
+      carregarCongregacaoLocal();
+      exibirAvisoApp('Sucesso', 'Informações da congregação local salvas.');
+    })
+    .withFailureHandler(function(erro) {
+      exibirAvisoApp('Erro', 'Erro ao salvar congregação local: ' + (erro.message || erro));
+    })
+    .salvarCongregacaoLocal(dados);
+}
+
+/*************************************************
+ * CONSULTAR TEMAS
+ *************************************************/
+let temasCache = [];
+
+function consultarTemas() {
+  const termo = document.getElementById('campoTema').value.trim();
+  const resultado = document.getElementById('resultadoTemas');
+  resultado.innerHTML = '<div class="card loading">Consultando...</div>';
+
+  google.script.run
+    .withSuccessHandler(function(dados) {
+      temasCache = dados || [];
+      if (!dados || dados.length === 0) {
+        resultado.innerHTML = '<div class="card mensagem">Nenhum tema encontrado.</div>';
+        return;
+      }
+      let html = '';
+      dados.forEach(function(item) {
+        let badgeSituacao = '';
+        const sit = String(item.situacao || '').trim();
+        if (sit.toLowerCase() === 'atualizado') {
+          badgeSituacao = '<span class="badge-situacao badge-atualizado">Atualizado</span>';
+        } else if (sit.toLowerCase() === 'descontinuado') {
+          badgeSituacao = '<span class="badge-situacao badge-descontinuado">Descontinuado</span>';
+        }
+
+        html += '<div class="card">' +
+          '<div style="display: flex; justify-content: space-between; align-items: flex-start;">' +
+            '<div style="color: #1f4e78; font-weight: bold;">Tema nº ' + escapar(item.numero) + '</div>' +
+            '<button class="btn-principal" style="padding: 6px 12px; font-size: 13px;" onclick="abrirFormularioEditarTema(' + item.linha + ')">✏️ Editar</button>' +
+          '</div>' +
+          '<div style="font-size: 18px; font-weight: bold; margin: 6px 0;">' + escapar(item.tema) + '</div>';
+
+        if (item.assunto) {
+          html += '<div style="color: #555;"><strong>Assunto:</strong> ' + escapar(item.assunto) + '</div>';
+        }
+
+        if (badgeSituacao) {
+          html += '<div style="margin-top: 6px;"><strong>Situação:</strong> ' + badgeSituacao + '</div>';
+        }
+
+        if (item.apresentacoes && item.apresentacoes.length) {
+          html += '<div style="margin-top: 10px;"><strong>Últimas apresentações:</strong><br>';
+          item.apresentacoes.forEach(ap => { html += '<span class="chip">' + ap.ano + ' — ' + ap.data + '</span>'; });
+          html += '</div>';
+        }
+        html += '</div>';
+      });
+      resultado.innerHTML = html;
+    })
+    .withFailureHandler(function(erro) {
+      resultado.innerHTML = '<div class="card mensagem">Erro ao consultar os temas.<br>' + escapar(erro.message || erro) + '</div>';
+    })
+    .consultarTemas(termo);
+}
+
+function abrirFormularioNovoTema() {
+  document.getElementById('temaLinha').value = '';
+  document.getElementById('tituloFormTema').textContent = 'Adicionar Tema';
+  document.getElementById('formTemaNumero').value = '';
+  document.getElementById('formTemaTitulo').value = '';
+  document.getElementById('formTemaAssunto').value = '';
+  document.getElementById('formTemaSituacao').value = '';
+
+  const form = document.getElementById('formularioTema');
+  form.style.display = 'block';
+  form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function abrirFormularioEditarTema(linha) {
+  const item = temasCache.find(t => Number(t.linha) === Number(linha));
+  if (!item) { exibirAvisoApp('Aviso', 'Tema não encontrado.'); return; }
+
+  document.getElementById('temaLinha').value = item.linha;
+  document.getElementById('tituloFormTema').textContent = 'Editar Tema';
+  document.getElementById('formTemaNumero').value = item.numero || '';
+  document.getElementById('formTemaTitulo').value = item.tema || '';
+  document.getElementById('formTemaAssunto').value = item.assunto || '';
+  document.getElementById('formTemaSituacao').value = item.situacao || '';
+
+  const form = document.getElementById('formularioTema');
+  form.style.display = 'block';
+  form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function fecharFormularioTema() {
+  document.getElementById('formularioTema').style.display = 'none';
+}
+
+function salvarTemaTela() {
+  const dados = {
+    linha: document.getElementById('temaLinha').value,
+    numero: document.getElementById('formTemaNumero').value.trim(),
+    tema: document.getElementById('formTemaTitulo').value.trim(),
+    assunto: document.getElementById('formTemaAssunto').value.trim(),
+    situacao: document.getElementById('formTemaSituacao').value
+  };
+
+  if (!dados.numero) { exibirAvisoApp('Aviso', 'Informe o número do tema.'); return; }
+  if (!dados.tema) { exibirAvisoApp('Aviso', 'Informe o título do tema.'); return; }
+
+  google.script.run
+    .withSuccessHandler(function() {
+      fecharFormularioTema();
+      consultarTemas();
+      carregarResumo();
+      exibirAvisoApp('Sucesso', 'Tema salvo com sucesso.');
+    })
+    .withFailureHandler(function(erro) {
+      exibirAvisoApp('Erro', 'Erro ao salvar tema: ' + (erro.message || erro));
+    })
+    .salvarTema(dados);
+}
+
+/*************************************************
+ * CONGREGAÇÕES
+ *************************************************/
+let congregaçõesCache = [];
+
+function consultarCongregacoesTela() {
+  const termo = document.getElementById('campoPesquisaCongregacao').value.trim();
+  const resultado = document.getElementById('resultadoCongregacoes');
+  resultado.innerHTML = '<div class="card loading">Carregando congregações...</div>';
+
+  google.script.run
+    .withSuccessHandler(function(dados) {
+      congregaçõesCache = dados || [];
+      if (!dados || dados.length === 0) {
+        resultado.innerHTML = '<div class="card mensagem">Nenhuma congregação encontrada.</div>';
+        return;
+      }
+
+      let html = '';
+      dados.forEach(function(item) {
+        let linkMapa = item.localizacao ? '<a href="' + escapar(item.localizacao) + '" target="_blank" class="btn-link">🗺️ Mapa</a>' : '';
+        let htmlOradores = '';
+        if (item.oradoresTemas && item.oradoresTemas.length > 0) {
+          htmlOradores = '<div style="margin-top: 10px; font-size: 14px; background: #f8f9fa; padding: 10px; border-radius: 6px;"><strong>Oradores e Discursos:</strong><ul style="margin: 6px 0 0 18px; padding: 0;">';
+          item.oradoresTemas.forEach(ot => {
+            htmlOradores += '<li style="margin-bottom: 4px;"><strong>' + escapar(ot.orador) + '</strong> — Nrs: ' + escapar(ot.numeros) + '</li>';
+          });
+          htmlOradores += '</ul></div>';
+        }
+
+        html += '<div class="card" style="margin-bottom: 12px;">' +
+          '<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">' +
+          '<div style="flex: 1; word-break: break-word;">' +
+          '<h3 style="margin: 0 0 6px 0; color: #1f4e78;">' + escapar(item.nome) + '</h3>' +
+          '<div style="font-size: 14px;"><strong>Endereço:</strong> ' + escapar(item.endereco) + ' ' + linkMapa + '</div>' +
+          '<div style="font-size: 14px; margin-top: 4px;"><strong>Reunião:</strong> ' + escapar(item.diaReuniao) + ' | <strong>Agenda:</strong> ' + escapar(item.agenda) + '</div>' +
+          htmlOradores +
+          '</div>' +
+          '<div style="display: flex; gap: 4px; flex-shrink: 0;">' +
+          '<button class="btn-principal" style="padding: 8px 10px; font-size: 13px;" onclick="abrirFormularioEditarCongregacao(' + item.linha + ')">✏️</button>' +
+          '<button class="btn-perigo" style="padding: 8px 10px; font-size: 13px;" onclick="excluirCongregacaoTela(' + item.linha + ')">🗑️</button>' +
+          '</div>' +
+          '</div>' +
+          '</div>';
+      });
+      resultado.innerHTML = html;
+    })
+    .withFailureHandler(function(erro) {
+      resultado.innerHTML = '<div class="card mensagem">Erro ao carregar congregações.<br>' + escapar(erro.message || erro) + '</div>';
+    })
+    .consultarCongregacoes(termo);
+}
+
+function abrirFormularioNovaCongregacao() {
+  document.getElementById('congLinha').value = '';
+  document.getElementById('tituloFormCongregacao').textContent = 'Adicionar Congregação';
+  document.getElementById('congNome').value = '';
+  document.getElementById('congEndereco').value = '';
+  document.getElementById('congLocalizacao').value = '';
+  document.getElementById('congDia').value = '';
+  document.getElementById('congAgenda').value = '';
+  document.getElementById('listaOradoresForm').innerHTML = '';
+  adicionarCampoOradorTema();
+
+  const form = document.getElementById('formularioCongregacao');
+  form.style.display = 'block';
+  form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function abrirFormularioEditarCongregacao(linha) {
+  const item = congregaçõesCache.find(c => Number(c.linha) === Number(linha));
+  if (!item) { exibirAvisoApp('Aviso', 'Congregação não encontrada.'); return; }
+
+  document.getElementById('congLinha').value = item.linha;
+  document.getElementById('tituloFormCongregacao').textContent = 'Editar Congregação';
+  document.getElementById('congNome').value = item.nome || '';
+  document.getElementById('congEndereco').value = item.endereco || '';
+  document.getElementById('congLocalizacao').value = item.localizacao || '';
+  document.getElementById('congDia').value = item.diaReuniao || '';
+  document.getElementById('congAgenda').value = item.agenda || '';
+  
+  const containerOradores = document.getElementById('listaOradoresForm');
+  containerOradores.innerHTML = '';
+
+  if (item.oradoresTemas && item.oradoresTemas.length > 0) {
+    item.oradoresTemas.forEach(ot => { adicionarCampoOradorTema(ot.orador, ot.numeros); });
+  } else {
+    adicionarCampoOradorTema();
+  }
+
+  const form = document.getElementById('formularioCongregacao');
+  form.style.display = 'block';
+  form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function adicionarCampoOradorTema(orador = '', numeros = '') {
+  const container = document.getElementById('listaOradoresForm');
+  const div = document.createElement('div');
+  div.className = 'form-grid';
+  div.style.marginBottom = '8px';
+  div.style.background = '#f9f9f9';
+  div.style.padding = '10px';
+  div.style.borderRadius = '8px';
+  div.innerHTML = `
+    <div class="form-campo">
+      <input type="text" class="input-orador" value="${escapar(orador)}" placeholder="Nome do orador">
+    </div>
+    <div class="form-campo" style="display: flex; gap: 6px;">
+      <input type="text" class="input-numeros" value="${escapar(numeros)}" placeholder="Números (ex: 12, 45, 78)" style="flex: 1;">
+      <button type="button" class="btn-perigo" style="padding: 0 12px;" onclick="this.parentElement.parentElement.remove()">🗑</button>
+    </div>
+  `;
+  container.appendChild(div);
+}
+
+function fecharFormularioCongregacao() {
+  document.getElementById('formularioCongregacao').style.display = 'none';
+}
+
+function salvarCongregacaoTela() {
+  const dados = {
+    linha: document.getElementById('congLinha').value,
+    nome: document.getElementById('congNome').value.trim(),
+    endereco: document.getElementById('congEndereco').value.trim(),
+    localizacao: document.getElementById('congLocalizacao').value.trim(),
+    diaReuniao: document.getElementById('congDia').value.trim(),
+    agenda: document.getElementById('congAgenda').value.trim(),
+    oradoresTemas: []
+  };
+
+  if (!dados.nome) {
+    exibirAvisoApp('Aviso', 'Informe o nome da congregação.');
+    return;
+  }
+
+  document.querySelectorAll('#listaOradoresForm > div').forEach(bloco => {
+    const orador = bloco.querySelector('.input-orador').value.trim();
+    const numeros = bloco.querySelector('.input-numeros').value.trim();
+    if (orador || numeros) {
+      dados.oradoresTemas.push({ orador: orador, numeros: numeros });
+    }
+  });
+
+  google.script.run
+    .withSuccessHandler(function() {
+      fecharFormularioCongregacao();
+      consultarCongregacoesTela();
+      carregarResumo();
+      exibirAvisoApp('Sucesso', 'Congregação salva com sucesso.');
+    })
+    .withFailureHandler(function(erro) {
+      exibirAvisoApp('Erro', 'Erro ao salvar: ' + (erro.message || erro));
+    })
+    .salvarCongregacao(dados);
+}
+
+function excluirCongregacaoTela(linha) {
+  exibirConfirmacaoApp('Excluir Congregação', 'Deseja realmente excluir esta congregação?', function() {
+    google.script.run
+      .withSuccessHandler(function() {
+        consultarCongregacoesTela();
+        carregarResumo();
+        exibirAvisoApp('Sucesso', 'Congregação excluída.');
+      })
+      .withFailureHandler(function(erro) {
+        exibirAvisoApp('Erro', 'Erro ao excluir: ' + (erro.message || erro));
+      })
+      .excluirCongregacao(linha);
+  });
+}
+
+/*************************************************
+ * TROCA DE TEMAS
+ *************************************************/
+function carregarMesesTrocaTemas() {
+  const select = document.getElementById('trocaMes');
+  if (!select) return;
+
+  select.innerHTML = '<option value="">Carregando meses...</option>';
+
+  google.script.run
+    .withSuccessHandler(function(meses) {
+      select.innerHTML = '<option value="">Selecione o mês</option>';
+      (meses || []).forEach(function(item) {
+        const option = document.createElement('option');
+        option.value = item.valor;
+        option.textContent = item.texto;
+        select.appendChild(option);
+      });
+    })
+    .withFailureHandler(function(erro) {
+      select.innerHTML = '<option value="">Erro ao carregar meses</option>';
+    })
+    .obterMeses();
+}
+
+function consultarTrocaTemasTela() {
+  const valorMes = document.getElementById('trocaMes').value;
+  const resultado = document.getElementById('resultadoTrocaTemas');
+
+  if (!valorMes) {
+    resultado.innerHTML = '';
+    return;
+  }
+
+  resultado.innerHTML = '<div class="card loading">Buscando a congregação agendada e os temas...</div>';
+
+  google.script.run
+    .withSuccessHandler(function(dados) {
+      if (!dados || !dados.length) {
+        resultado.innerHTML = '<div class="card mensagem">Nenhuma congregação foi encontrada com este mês na coluna Agenda.</div>';
+        return;
+      }
+
+      let html = '';
+
+      dados.forEach(function(cong, indiceCong) {
+        html += '<div class="card troca-congregacao" data-congregacao-index="' + indiceCong + '">' +
+          '<h3 style="margin-bottom:6px;">🏛️ ' + escapar(cong.congregacao) + '</h3>' +
+          (cong.endereco ? '<div style="font-size:14px;color:#555;"><strong>Endereço:</strong> ' + escapar(cong.endereco) + '</div>' : '') +
+          '<div style="margin-top:12px;"><strong>Selecione os temas para a troca:</strong></div>';
+
+        if (!cong.oradores || !cong.oradores.length) {
+          html += '<div class="mensagem">Nenhum orador cadastrado para esta agenda.</div>';
+        } else {
+          cong.oradores.forEach(function(orador, indiceOrador) {
+            html += '<div class="troca-orador">' +
+              '<div class="troca-orador-titulo">🎤 ' + escapar(orador.nome || 'Orador') + '</div>';
+
+            if (!orador.temas || !orador.temas.length) {
+              html += '<div style="color:#666;">Nenhum tema cadastrado para este orador.</div>';
+            } else {
+              orador.temas.forEach(function(tema, indiceTema) {
+                const id = 'trocaTema_' + indiceCong + '_' + indiceOrador + '_' + indiceTema;
+                
+                let badgeSituacao = '';
+                const sit = String(tema.situacao || '').trim();
+                if (sit.toLowerCase() === 'atualizado') {
+                  badgeSituacao = ' <span class="badge-situacao badge-atualizado">Atualizado</span>';
+                } else if (sit.toLowerCase() === 'descontinuado') {
+                  badgeSituacao = ' <span class="badge-situacao badge-descontinuado">Descontinuado</span>';
+                }
+
+                html += '<label class="troca-tema-item" for="' + id + '">' +
+                  '<input type="checkbox" id="' + id + '" class="troca-checkbox" ' +
+                  'data-congregacao="' + indiceCong + '" data-orador="' + indiceOrador + '" data-tema="' + indiceTema + '">' +
+                  '<div class="troca-tema-info">' +
+                  '<div class="troca-tema-nome">' + escapar(tema.numero) + ' — ' + escapar(tema.tema) + '</div>' +
+                  '<div class="troca-tema-data">Última realização: ' + escapar(tema.ultimaData || 'não encontrada') + badgeSituacao + '</div>' +
+                  '</div>' +
+                  '</label>';
+              });
+            }
+
+            html += '</div>';
+          });
+        }
+
+        html += '<div class="troca-acoes">' +
+          '<button class="btn-sucesso" onclick="criarArranjoTrocaTemas(' + indiceCong + ')">📅 Criar Arranjo</button>' +
+          '<button class="btn-principal" onclick="enviarTrocaTemasWhatsApp(' + indiceCong + ')">📲 Enviar por WhatsApp</button>' +
+          '<button class="btn-secundario" onclick="marcarNenhumTemaTroca(' + indiceCong + ')">Limpar seleção</button>' +
+          '</div>' +
+          '</div>';
+      });
+
+      resultado.innerHTML = html;
+      window.dadosTrocaTemasAtual = dados;
+    })
+    .withFailureHandler(function(erro) {
+      resultado.innerHTML = '<div class="card mensagem">Erro ao buscar a troca de temas.<br>' + escapar(erro.message || erro) + '</div>';
+    })
+    .consultarTrocaTemasPorMes(valorMes);
+}
+
+function criarArranjoTrocaTemas(indiceCong) {
+  const dados = window.dadosTrocaTemasAtual || [];
+  const congregacao = dados[indiceCong];
+  if (!congregacao) return;
+
+  const checkboxes = document.querySelectorAll('.troca-checkbox[data-congregacao="' + indiceCong + '"]:checked');
+  if (!checkboxes.length) {
+    exibirAvisoApp('Atenção', 'Selecione pelo menos um tema para criar o arranjo.');
+    return;
+  }
+
+  const valorMes = document.getElementById('trocaMes').value;
+  if (!valorMes) {
+    exibirAvisoApp('Atenção', 'Selecione um mês válido.');
+    return;
+  }
+
+  const itensSelecionados = [];
+
+  checkboxes.forEach(function(cb) {
+    const indiceOrador = Number(cb.dataset.orador);
+    const indiceTema = Number(cb.dataset.tema);
+    const orador = congregacao.oradores[indiceOrador];
+    const tema = orador && orador.temas ? orador.temas[indiceTema] : null;
+
+    if (orador && tema) {
+      itensSelecionados.push({
+        orador: orador.nome,
+        numero: tema.numero,
+        tema: tema.tema
+      });
+    }
+  });
+
+  exibirConfirmacaoApp(
+    'Criar Arranjo',
+    'Deseja criar o arranjo com ' + itensSelecionados.length + ' discurso(s) selecionado(s) e salvar em "Tema do Mês"?',
+    function() {
+      const dadosArranjo = {
+        valorMes: valorMes,
+        congregacaoVisitante: congregacao.congregacao,
+        itens: itensSelecionados
+      };
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          exibirAvisoApp('Sucesso', 'Arranjo criado com sucesso! ' + res.quantidade + ' discurso(s) adicionado(s) na página Tema do Mês.');
+        })
+        .withFailureHandler(function(erro) {
+          exibirAvisoApp('Erro', 'Erro ao criar arranjo: ' + (erro.message || erro));
+        })
+        .salvarArranjoTrocaTemas(dadosArranjo);
+    }
+  );
+}
+
+function marcarNenhumTemaTroca(indiceCong) {
+  document.querySelectorAll('.troca-checkbox[data-congregacao="' + indiceCong + '"]').forEach(cb => cb.checked = false);
+}
+
+function enviarTrocaTemasWhatsApp(indiceCong) {
+  const dados = window.dadosTrocaTemasAtual || [];
+  const congregacao = dados[indiceCong];
+  if (!congregacao) return;
+
+  const checkboxes = document.querySelectorAll('.troca-checkbox[data-congregacao="' + indiceCong + '"]:checked');
+  if (!checkboxes.length) {
+    exibirAvisoApp('Atenção', 'Selecione pelo menos um tema para enviar.');
+    return;
+  }
+
+  const selecionados = {};
+
+  checkboxes.forEach(function(cb) {
+    const indiceOrador = Number(cb.dataset.orador);
+    const indiceTema = Number(cb.dataset.tema);
+    const orador = congregacao.oradores[indiceOrador];
+    const tema = orador && orador.temas ? orador.temas[indiceTema] : null;
+    if (!orador || !tema) return;
+
+    if (!selecionados[indiceOrador]) {
+      selecionados[indiceOrador] = { nome: orador.nome, temas: [] };
+    }
+    selecionados[indiceOrador].temas.push(tema);
+  });
+
+  const select = document.getElementById('trocaMes');
+  const mesTexto = select && select.selectedOptions.length ? select.selectedOptions[0].textContent : '';
+
+  let mensagem = 'Troca de Temas — ' + mesTexto + '\n';
+  mensagem += 'Congregação: ' + congregacao.congregacao + '\n\n';
+
+  Object.keys(selecionados).forEach(function(chave) {
+    const item = selecionados[chave];
+    mensagem += item.nome + '\n';
+    item.temas.forEach(function(tema) {
+      mensagem += '• ' + tema.numero + ' — ' + tema.tema + '\n';
+    });
+    mensagem += '\n';
+  });
+
+  const url = 'https://wa.me/?text=' + encodeURIComponent(mensagem.trim());
+  window.open(url, '_blank');
+}
+
+/*************************************************
+ * TEMA DO MÊS (INTEGRADO COM OS ARRANJOS)
+ *************************************************/
+let temasDoMesCache = { recebendo: [], enviando: [] };
+
+function carregarMesesTemasDoMes() {
+  const select = document.getElementById('selectMesTemasDoMes');
+  if (!select) return;
+
+  select.innerHTML = '<option value="">Carregando meses...</option>';
+
+  google.script.run
+    .withSuccessHandler(function(meses) {
+      select.innerHTML = '<option value="">Selecione o mês</option>';
+      (meses || []).forEach(function(item) {
+        const option = document.createElement('option');
+        option.value = item.valor;
+        option.textContent = item.texto;
+        select.appendChild(option);
+      });
+    })
+    .withFailureHandler(function(erro) {
+      select.innerHTML = '<option value="">Erro ao carregar meses</option>';
+    })
+    .obterMeses();
+}
+
+function consultarTemasDoMesTela() {
+  const valorMes = document.getElementById('selectMesTemasDoMes').value;
+  const resultado = document.getElementById('resultadoTemasDoMes');
+
+  if (!valorMes) {
+    resultado.innerHTML = '<div class="card mensagem">Selecione um mês para consultar.</div>';
+    return;
+  }
+
+  resultado.innerHTML = '<div class="card loading">Carregando programação do mês...</div>';
+
+  google.script.run
+    .withSuccessHandler(function(dados) {
+      temasDoMesCache = dados || { recebendo: [], enviando: [] };
+      const recebendo = dados.recebendo || [];
+      const enviando = dados.enviando || [];
+
+      if (!recebendo.length && !enviando.length) {
+        resultado.innerHTML = '<div class="card mensagem">Nenhum discurso agendado para este mês.</div>';
+        return;
+      }
+
+      let html = '';
+
+      if (recebendo.length) {
+        html += '<div class="card"><h3 style="color:#2e7d32; margin-bottom:12px;">📥 Recebendo Oradores (Na nossa congregação)</h3>';
+        recebendo.forEach(item => { html += renderizarItemTemaDoMes(item); });
+        html += '</div>';
+      }
+
+      if (enviando.length) {
+        html += '<div class="card"><h3 style="color:#1f4e78; margin-bottom:12px;">📤 Enviando Oradores (Para outras congregações)</h3>';
+        enviando.forEach(item => { html += renderizarItemTemaDoMes(item); });
+        html += '</div>';
+      }
+
+      resultado.innerHTML = html;
+    })
+    .withFailureHandler(function(erro) {
+      resultado.innerHTML = '<div class="card mensagem">Erro ao carregar a programação.<br>' + escapar(erro.message || erro) + '</div>';
+    })
+    .consultarTemasDoMes(valorMes);
+}
+
+function renderizarItemTemaDoMes(item) {
+  const partesData = (item.data || '').split('-');
+  let dataBR = item.data;
+  if (partesData.length === 3) {
+    dataBR = partesData[2] + '/' + partesData[1] + '/' + partesData[0];
+  }
+
+  const numTema = (item.numero || '').toString().replace(/'/g, "\\'");
+  const dtTema = (item.data || '').toString().replace(/'/g, "\\'");
+
+  return '<div style="background:#f8f9fa; border:1px solid #e0e0e0; border-radius:8px; padding:12px; margin-bottom:10px;">' +
+    '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">' +
+      '<strong style="color:#1f4e78; font-size:15px;">📅 ' + dataBR + '</strong>' +
+      '<div>' +
+        '<button class="btn-sucesso" style="padding:4px 8px; font-size:12px; margin-right:4px;" onclick="salvarRealizacaoNaAbaTemasTela(\'' + numTema + '\', \'' + dtTema + '\')" title="Registrar realização na aba Temas">💾 Salvar na Aba Temas</button>' +
+        '<button class="btn-principal" style="padding:4px 8px; font-size:12px; margin-right:4px;" onclick="abrirFormularioEditarTemaDoMes(' + item.linha + ', \'' + (item.status ? item.status.toLowerCase() : 'recebendo') + '\')">✏</button>' +
+        '<button class="btn-perigo" style="padding:4px 8px; font-size:12px;" onclick="excluirTemaDoMesTela(' + item.linha + ')">🗑️</button>' +
+      '</div>' +
+    '</div>' +
+    '<div style="font-weight:bold; font-size:16px; margin-top:6px;">' + (item.numero ? 'Nº ' + escapar(item.numero) + ' — ' : '') + escapar(item.tema) + '</div>' +
+    '<div style="font-size:14px; color:#444; margin-top:4px;"><strong>Orador:</strong> ' + escapar(item.orador || 'Não informado') + '</div>' +
+    '<div style="font-size:14px; color:#444; margin-top:2px;"><strong>Congregação:</strong> ' + escapar(item.congregacao || 'Não informada') + '</div>' +
+  '</div>';
+}
+
+function abrirFormularioNovoTemaDoMes() {
+  document.getElementById('tmLinha').value = '';
+  document.getElementById('tituloFormTemaDoMes').textContent = 'Novo Registro (Tema do Mês)';
+  document.getElementById('tmData').value = '';
+  document.getElementById('tmStatus').value = 'Recebendo';
+  document.getElementById('tmNumero').value = '';
+  document.getElementById('tmTema').value = '';
+  document.getElementById('tmOrador').value = '';
+  document.getElementById('tmCongregacao').value = '';
+
+  const form = document.getElementById('formularioTemasDoMes');
+  form.style.display = 'block';
+  form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function abrirFormularioEditarTemaDoMes(linha, tipo) {
+  const lista = tipo === 'recebendo' ? temasDoMesCache.recebendo : temasDoMesCache.enviando;
+  const item = (lista || []).find(i => Number(i.linha) === Number(linha));
+  if (!item) return;
+
+  document.getElementById('tmLinha').value = item.linha;
+  document.getElementById('tituloFormTemaDoMes').textContent = 'Editar Registro';
+  document.getElementById('tmData').value = item.data || '';
+  document.getElementById('tmStatus').value = item.status || 'Recebendo';
+  document.getElementById('tmNumero').value = item.numero || '';
+  document.getElementById('tmTema').value = item.tema || '';
+  document.getElementById('tmOrador').value = item.orador || '';
+  document.getElementById('tmCongregacao').value = item.congregacao || '';
+
+  const form = document.getElementById('formularioTemasDoMes');
+  form.style.display = 'block';
+  form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function fecharFormularioTemaDoMes() {
+  document.getElementById('formularioTemasDoMes').style.display = 'none';
+}
+
+function salvarTemaDoMesTela() {
+  const dados = {
+    linha: document.getElementById('tmLinha').value,
+    data: document.getElementById('tmData').value,
+    status: document.getElementById('tmStatus').value,
+    numero: document.getElementById('tmNumero').value.trim(),
+    tema: document.getElementById('tmTema').value.trim(),
+    orador: document.getElementById('tmOrador').value.trim(),
+    congregacao: document.getElementById('tmCongregacao').value.trim()
+  };
+
+  if (!dados.data) { exibirAvisoApp('Aviso', 'Informe a data do discurso.'); return; }
+
+  const funcaoChamada = dados.linha ? 'editarTemaDoMes' : 'adicionarTemaDoMes';
+
+  google.script.run
+    .withSuccessHandler(function() {
+      fecharFormularioTemaDoMes();
+      consultarTemasDoMesTela();
+      exibirAvisoApp('Sucesso', 'Registro salvo com sucesso.');
+    })
+    .withFailureHandler(function(erro) {
+      exibirAvisoApp('Erro', 'Erro ao salvar: ' + (erro.message || erro));
+    })
+    [funcaoChamada](dados);
+}
+
+function excluirTemaDoMesTela(linha) {
+  exibirConfirmacaoApp('Excluir Registro', 'Deseja realmente excluir este discurso da programação do mês?', function() {
+    google.script.run
+      .withSuccessHandler(function() {
+        consultarTemasDoMesTela();
+        exibirAvisoApp('Sucesso', 'Registro excluído.');
+      })
+      .withFailureHandler(function(erro) {
+        exibirAvisoApp('Erro', 'Erro ao excluir: ' + (erro.message || erro));
+      })
+      .excluirTemaDoMes(linha);
+  });
+}
+
+function enviarProgramacaoWhatsAppTela() {
+  const select = document.getElementById('selectMesTemasDoMes');
+  const valorMes = select ? select.value : '';
+
+  if (!valorMes) {
+    exibirAvisoApp('Atenção', 'Selecione um mês para enviar a programação.');
+    return;
+  }
+
+  google.script.run
+    .withSuccessHandler(function(textoMensagem) {
+      if (!textoMensagem) {
+        exibirAvisoApp('Aviso', 'Nenhuma mensagem foi gerada.');
+        return;
+      }
+      const url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(textoMensagem);
+      window.open(url, '_blank');
+    })
+    .withFailureHandler(function(erro) {
+      exibirAvisoApp('Atenção', erro.message || erro);
+    })
+    .obterTextoWhatsAppTemaDoMes(valorMes);
+}
+
+function salvarRealizacaoNaAbaTemasTela(numeroTema, dataRealizacao) {
+  if (!numeroTema) {
+    exibirAvisoApp('Atenção', 'Este registro não possui um número de tema definido para registrar.');
+    return;
+  }
+
+  // Ajusta a exibição da data para o formato BR na mensagem de confirmação
+  const partesData = (dataRealizacao || '').split('-');
+  const dataBR = partesData.length === 3 ? partesData[2] + '/' + partesData[1] + '/' + partesData[0] : dataRealizacao;
+
+  exibirConfirmacaoApp(
+    'Registrar Realização',
+    'Deseja salvar a data (' + dataBR + ') do Tema nº ' + numeroTema + ' na aba Temas?',
+    function() {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          exibirAvisoApp('Sucesso', (res && res.mensagem) ? res.mensagem : 'Data registrada com sucesso!');
+        })
+        .withFailureHandler(function(erro) {
+          exibirAvisoApp('Erro', 'Erro ao salvar: ' + (erro.message || erro));
+        })
+        .salvarDataRealizacaoNaAbaTemas({ numero: numeroTema, data: dataRealizacao });
+    }
+  );
+}
+
+let listaOradoresLocaisCache = [];
+let listaTemasLocaisDisponiveisCache = [];
+let catalogoTemasLocaisCarregado = false;
+
+function carregarTemasLocaisTela() {
+  const valorMes = document.getElementById('selectMesTemasLocais').value;
+  const container = document.getElementById('containerOradoresLocais');
+  const selectOrador = document.getElementById('selectOradorLocalIndividual');
+  const painelArranjo = document.getElementById('painelArranjoMes');
+
+  if (!valorMes) painelArranjo.style.display = 'none';
+
+  selectOrador.innerHTML = '<option value="">Carregando oradores...</option>';
+
+  google.script.run
+    .withSuccessHandler(function(dados) {
+      document.getElementById('lblCongregacaoArranjo').textContent = dados.arranjo ? dados.arranjo.congregacao : 'Não definida';
+      document.getElementById('lblEnderecoArranjo').textContent = dados.arranjo ? dados.arranjo.endereco : 'Endereço não informado';
+      document.getElementById('lblDiaHorarioArranjo').textContent = dados.arranjo && dados.arranjo.diaReuniao ? dados.arranjo.diaReuniao : 'Não informado';
+      const linkMapa = document.getElementById('linkLocalizacaoArranjo');
+      linkMapa.dataset.url = dados.arranjo && dados.arranjo.localizacao ? dados.arranjo.localizacao : '';
+      linkMapa.href = linkMapa.dataset.url || '#';
+      linkMapa.textContent = linkMapa.dataset.url ? 'Abrir mapa' : 'Não informado';
+      preencherDatasReuniao(valorMes, dados.arranjo ? dados.arranjo.diaReuniao : '');
+      painelArranjo.style.display = valorMes ? 'block' : 'none';
+
+      const oradores = dados.oradores || [];
+      listaOradoresLocaisCache = oradores;
+      listaTemasLocaisDisponiveisCache = dados.temasDisponiveis || [];
+      catalogoTemasLocaisCarregado = true;
+      renderizarSelecaoOradoresLocais(oradores);
+      if (container.style.display !== 'none') renderizarOradoresCadastrados();
+    })
+    .withFailureHandler(function(erro) {
+      selectOrador.innerHTML = '<option value="">Erro ao carregar oradores</option>';
+    })
+    .consultarTemasLocaisTelaBackend(valorMes);
+}
+
+function renderizarSelecaoOradoresLocais(oradores) {
+  const select = document.getElementById('selectOradorLocalIndividual');
+  select.innerHTML = '<option value="">Selecione o orador</option>';
+  (oradores || []).forEach(function(orador, indice) {
+    const option = document.createElement('option');
+    option.value = indice;
+    option.textContent = orador.nome;
+    select.appendChild(option);
+  });
+}
+
+function selecionarOradorLocalIndividual() {
+  const select = document.getElementById('selectOradorLocalIndividual');
+  const selectTema = document.getElementById('selectTemaLocalIndividual');
+  const tema = document.getElementById('titTemaLocalIndividual');
+  selectTema.innerHTML = '<option value="">Selecione o número do discurso</option>';
+  selectTema.disabled = true;
+  tema.value = '';
+  if (!select.value) {
+    return;
+  }
+  const selecionado = listaOradoresLocaisCache[Number(select.value)];
+  if (!selecionado || !selecionado.temas) return;
+  selecionado.temas.forEach(function(item, indice) {
+    const option = document.createElement('option');
+    option.value = indice;
+    option.textContent = item.numero ? 'Nº ' + item.numero : 'Sem número cadastrado';
+    selectTema.appendChild(option);
+  });
+  selectTema.disabled = selecionado.temas.length === 0;
+}
+
+function selecionarTemaLocalIndividual() {
+  const idxOrador = document.getElementById('selectOradorLocalIndividual').value;
+  const idxTema = document.getElementById('selectTemaLocalIndividual').value;
+  const campoTema = document.getElementById('titTemaLocalIndividual');
+  if (idxOrador === '' || idxTema === '') { campoTema.value = ''; return; }
+  const item = listaOradoresLocaisCache[Number(idxOrador)].temas[Number(idxTema)];
+  campoTema.value = item ? item.tema || '' : '';
+}
+
+function preencherDatasReuniao(valorMes, diaReuniao) {
+  const select = document.getElementById('selectDataHoraReuniao');
+  select.innerHTML = '<option value="">Selecione a data da reunião</option>';
+  if (!valorMes || !diaReuniao) return;
+
+  const normalizado = String(diaReuniao).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const dias = [
+    { nomes: ['domingo'], numero: 0 }, { nomes: ['segunda'], numero: 1 },
+    { nomes: ['terca'], numero: 2 }, { nomes: ['quarta'], numero: 3 },
+    { nomes: ['quinta'], numero: 4 }, { nomes: ['sexta'], numero: 5 },
+    { nomes: ['sabado'], numero: 6 }
+  ];
+  const diaSemana = dias.find(function(item) { return item.nomes.some(function(nome) { return normalizado.includes(nome); }); });
+  const textoHorario = String(diaReuniao);
+  const horarioEncontrado = textoHorario.match(/\b([01]?\d|2[0-3])\s*(?::|h)\s*([0-5]\d)\b/i);
+  const horario = horarioEncontrado ? String(Number(horarioEncontrado[1])).padStart(2, '0') + ':' + horarioEncontrado[2] : '';
+  if (!diaSemana) {
+    select.innerHTML = '<option value="">Dia da reunião não identificado no cadastro</option>';
+    return;
+  }
+
+  const partes = valorMes.split('-');
+  const ano = Number(partes[0]), mes = Number(partes[1]);
+  const totalDias = new Date(ano, mes, 0).getDate();
+  for (let dia = 1; dia <= totalDias; dia++) {
+    const data = new Date(ano, mes - 1, dia);
+    if (data.getDay() !== diaSemana.numero) continue;
+    const iso = ano + '-' + String(mes).padStart(2, '0') + '-' + String(dia).padStart(2, '0');
+    const label = String(dia).padStart(2, '0') + '/' + String(mes).padStart(2, '0') + '/' + ano + (horario ? ' às ' + horario : '');
+    const option = document.createElement('option');
+    option.value = iso;
+    option.textContent = label;
+    select.appendChild(option);
+  }
+}
+
+function alternarOradoresCadastrados(botao) {
+  const container = document.getElementById('containerOradoresLocais');
+  const mostrar = container.style.display === 'none';
+  container.style.display = mostrar ? 'block' : 'none';
+  botao.textContent = mostrar ? 'Ocultar cadastrados' : 'Mostrar cadastrados';
+  if (mostrar) renderizarOradoresCadastrados();
+}
+
+function renderizarOradoresCadastrados() {
+  const container = document.getElementById('containerOradoresLocais');
+  if (!listaOradoresLocaisCache.length) {
+    container.innerHTML = '<div class="card mensagem">Nenhum orador local cadastrado.</div>';
+    return;
+  }
+  let html = '<div class="card troca-congregacao"><h3 style="margin-top:0;color:#1f4e78;">Oradores cadastrados</h3>';
+  listaOradoresLocaisCache.forEach(function(orador) {
+    html += '<div class="troca-orador" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">' +
+      '<div><strong>🎤 ' + escapar(orador.nome) + '</strong>' +
+      (orador.telefone ? '<div style="color:#666;font-size:13px;">' + escapar(orador.telefone) + '</div>' : '') +
+      (orador.observacao ? '<div style="color:#666;font-size:13px;">' + escapar(orador.observacao) + '</div>' : '') + '</div>' +
+      '<div class="troca-acoes" style="margin-top:0;">' +
+      '<button class="btn-secundario" onclick="abrirFormularioOradorLocal(' + orador.linha + ')">✏ Editar</button>' +
+      '<button class="btn-perigo" onclick="excluirOradorLocalTela(' + orador.linha + ')">🗑 Excluir</button>' +
+      '</div></div>';
+  });
+  container.innerHTML = html + '</div>';
+}
+
+function enviarOradorLocalWhatsApp() {
+  const selectMes = document.getElementById('selectMesTemasLocais');
+  const select = document.getElementById('selectOradorLocalIndividual');
+  if (!selectMes.value) { exibirAvisoApp('Atenção', 'Selecione o mês antes de enviar.'); return; }
+  if (!select.value) { exibirAvisoApp('Atenção', 'Escolha um orador local.'); return; }
+  const orador = listaOradoresLocaisCache[Number(select.value)];
+  const selectTema = document.getElementById('selectTemaLocalIndividual');
+  if (!selectTema.value) { exibirAvisoApp('Atenção', 'Escolha o número do discurso.'); return; }
+  const itemTema = orador.temas[Number(selectTema.value)];
+  const tema = document.getElementById('titTemaLocalIndividual').value.trim();
+  const dataHora = document.getElementById('selectDataHoraReuniao').selectedOptions[0];
+  if (!dataHora || !dataHora.value) { exibirAvisoApp('Atenção', 'Escolha uma data de reunião válida.'); return; }
+  const congregacao = document.getElementById('lblCongregacaoArranjo').textContent;
+  const endereco = document.getElementById('lblEnderecoArranjo').textContent;
+  if (!tema || !congregacao || congregacao === 'Não definida') { exibirAvisoApp('Atenção', 'Não há uma congregação programada para este mês.'); return; }
+  const localizacao = document.getElementById('linkLocalizacaoArranjo').dataset.url || '';
+  const mensagem = montarMensagemDesignacaoLocal({
+    nome: orador.nome, dataHora: dataHora.textContent, numero: itemTema.numero, tema: tema,
+    congregacao: congregacao, endereco: endereco, localizacao: localizacao
+  });
+  window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(mensagem.trim()), '_blank');
+}
+
+function montarMensagemDesignacaoLocal(dados) {
+  let mensagem = 'Olá! Segue a sua próxima designação de discurso público:\n\n';
+  if (dados.incluirOrador && dados.nome) mensagem += 'Orador: ' + dados.nome + '\n';
+  mensagem += 'Data e hora: ' + dados.dataHora + '\n';
+  mensagem += 'Tema: ' + (dados.numero ? 'Nº ' + dados.numero + ' — ' : '') + dados.tema + '\n\n';
+  mensagem += 'Congregação: ' + dados.congregacao + '\n';
+  mensagem += 'Endereço: ' + dados.endereco + '\n\n';
+  mensagem += 'Link do google: ' + (dados.localizacao || 'Não informado') + '\n\n';
+  mensagem += 'Atenciosamente, Arranjo de Oradores Congr. Vila Emil.';
+  return mensagem;
+}
+
+function abrirEscolhaOradoresWhatsApp() {
+  const lista = document.getElementById('listaEscolhaOradores');
+  lista.innerHTML = '<div class="loading">Buscando os cadastros na planilha...</div>';
+  document.getElementById('modalEscolherOradores').style.display = 'flex';
+  google.script.run
+    .withSuccessHandler(function(dados) {
+      const selectAtual = document.getElementById('selectOradorLocalIndividual');
+      const linhaSelecionada = selectAtual.value && listaOradoresLocaisCache[Number(selectAtual.value)]
+        ? listaOradoresLocaisCache[Number(selectAtual.value)].linha : null;
+      listaOradoresLocaisCache = dados.oradores || [];
+      listaTemasLocaisDisponiveisCache = dados.temasDisponiveis || listaTemasLocaisDisponiveisCache;
+      catalogoTemasLocaisCarregado = true;
+      renderizarSelecaoOradoresLocais(listaOradoresLocaisCache);
+      if (linhaSelecionada) {
+        const novoIndice = listaOradoresLocaisCache.findIndex(function(o) { return Number(o.linha) === Number(linhaSelecionada); });
+        if (novoIndice >= 0) {
+          selectAtual.value = String(novoIndice);
+          selecionarOradorLocalIndividual();
+        }
+      }
+      if (!listaOradoresLocaisCache.length) {
+        lista.innerHTML = '<div class="mensagem">Nenhum orador local cadastrado na aba Temas Locais.</div>';
+        return;
+      }
+      let html = '';
+      listaOradoresLocaisCache.forEach(function(orador, idx) {
+        const id = 'checkEscolherOrador_' + idx;
+        const numeros = (orador.temas || []).map(function(item) { return String(item.numero || '').trim(); }).filter(function(numero) { return numero; });
+        const numerosUnicos = Array.from(new Set(numeros));
+        const textoTemas = numerosUnicos.length ? numerosUnicos.map(escapar).join(', ') : 'Nenhum número de tema cadastrado';
+        html += '<div class="troca-tema-item">' +
+          '<input type="checkbox" id="' + id + '" value="' + idx + '">' +
+          '<div class="troca-tema-info"><label class="troca-tema-nome" for="' + id + '">' + escapar(orador.nome) + '</label>' +
+          '<div><strong>Temas:</strong> ' + textoTemas + '</div></div></div>';
+      });
+      lista.innerHTML = html;
+      const cadastrados = document.getElementById('containerOradoresLocais');
+      if (cadastrados.style.display !== 'none') renderizarOradoresCadastrados();
+    })
+    .withFailureHandler(function(erro) {
+      lista.innerHTML = '<div class="mensagem">Erro ao consultar a planilha.<br>' + escapar(erro.message || erro) + '</div>';
+    })
+    .consultarTemasLocaisTelaBackend('');
+}
+
+function fecharEscolhaOradores() {
+  document.getElementById('modalEscolherOradores').style.display = 'none';
+}
+
+function enviarOradoresEscolhidosWhatsApp() {
+  const indices = Array.from(document.querySelectorAll('#listaEscolhaOradores input[type="checkbox"]:checked'))
+    .map(function(cb) { return Number(cb.value); });
+  if (!indices.length) { exibirAvisoApp('Atenção', 'Marque pelo menos um orador.'); return; }
+
+  const selecionados = indices.map(function(idx) { return listaOradoresLocaisCache[idx]; }).filter(function(orador) { return !!orador; });
+  const mensagem = 'Olá! Segue a lista de oradores e temas da congregação Vila Emil para nosso próximo arranjo:\n\n' +
+    selecionados.map(function(orador) {
+      const numeros = Array.from(new Set((orador.temas || []).map(function(item) { return String(item.numero || '').trim(); }).filter(function(numero) { return numero; })));
+      return orador.nome + '\nTemas: ' + (numeros.length ? numeros.join(', ') : 'Nenhum número de tema cadastrado');
+    }).join('\n\n');
+  const popup = window.open('about:blank', '_blank');
+  if (!popup) { exibirAvisoApp('Atenção', 'Permita a abertura de janelas para continuar para o WhatsApp.'); return; }
+  fecharEscolhaOradores();
+  popup.location = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(mensagem);
+}
+
+function abrirFormularioOradorLocal(linha) {
+  if (!catalogoTemasLocaisCarregado) {
+    google.script.run
+      .withSuccessHandler(function(dados) {
+        listaTemasLocaisDisponiveisCache = dados.temasDisponiveis || [];
+        listaOradoresLocaisCache = dados.oradores || listaOradoresLocaisCache;
+        catalogoTemasLocaisCarregado = true;
+        abrirFormularioOradorLocal(linha);
+      })
+      .withFailureHandler(function(erro) {
+        exibirAvisoApp('Erro', 'Não foi possível carregar os temas: ' + (erro.message || erro));
+      })
+      .consultarTemasLocaisTelaBackend(document.getElementById('selectMesTemasLocais').value);
+    return;
+  }
+  const item = linha ? listaOradoresLocaisCache.find(o => Number(o.linha) === Number(linha)) : null;
+  document.getElementById('oradorLocalLinha').value = item ? item.linha : '';
+  document.getElementById('tituloFormularioOradorLocal').textContent = item ? 'Editar orador local' : 'Cadastrar orador local';
+  document.getElementById('oradorLocalNome').value = item ? item.nome : '';
+  const atuais = document.getElementById('temasAtuaisOradorLocal');
+  atuais.innerHTML = item && item.temas && item.temas.length
+    ? item.temas.map(function(tema) { return '<span class="tag-tema">Nº ' + escapar(tema.numero || '—') + ': ' + escapar(tema.tema || 'Tema sem título') + '</span>'; }).join(' ')
+    : 'Nenhum tema cadastrado.';
+  const seletor = document.getElementById('temasNovosOradorLocal');
+  seletor.innerHTML = '';
+  const numerosAtuais = new Set((item && item.temas || []).map(function(tema) { return String(tema.numero || '').trim().toLowerCase(); }));
+  listaTemasLocaisDisponiveisCache.forEach(function(tema) {
+    if (numerosAtuais.has(String(tema.numero || '').trim().toLowerCase())) return;
+    const option = document.createElement('option');
+    option.value = tema.numero;
+    option.textContent = 'Nº ' + tema.numero + ' — ' + tema.tema;
+    seletor.appendChild(option);
+  });
+  if (!listaTemasLocaisDisponiveisCache.length) {
+    const option = document.createElement('option');
+    option.value = '';
+    option.textContent = 'Nenhum tema disponível na aba Temas';
+    option.disabled = true;
+    seletor.appendChild(option);
+  }
+  const form = document.getElementById('formularioOradorLocal');
+  form.style.display = 'block';
+  form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function fecharFormularioOradorLocal() {
+  document.getElementById('formularioOradorLocal').style.display = 'none';
+}
+
+function salvarOradorLocalTela() {
+  const temasSelecionados = Array.from(document.getElementById('temasNovosOradorLocal').selectedOptions)
+    .filter(function(option) { return option.value; })
+    .map(function(option) { return option.value; });
+  const dados = {
+    linha: document.getElementById('oradorLocalLinha').value,
+    nome: document.getElementById('oradorLocalNome').value.trim(),
+    temas: temasSelecionados
+  };
+  if (!dados.nome) {
+    exibirAvisoApp('Atenção', 'Informe o nome do orador local.');
+    return;
+  }
+  if (!dados.linha && !dados.temas.length) {
+    exibirAvisoApp('Atenção', 'Selecione pelo menos um tema para cadastrar o orador.');
+    return;
+  }
+  google.script.run
+    .withSuccessHandler(function() {
+      fecharFormularioOradorLocal();
+      carregarTemasLocaisTela();
+      exibirAvisoApp('Sucesso', 'Cadastro do orador local salvo.');
+    })
+    .withFailureHandler(function(erro) {
+      exibirAvisoApp('Erro', 'Não foi possível salvar o cadastro: ' + (erro.message || erro));
+    })
+    .salvarOradorLocal(dados);
+}
+
+function excluirOradorLocalTela(linha) {
+  const item = listaOradoresLocaisCache.find(o => Number(o.linha) === Number(linha));
+  exibirConfirmacaoApp('Excluir orador local', 'Deseja excluir o cadastro de ' + (item ? item.nome : 'este orador') + '?', function() {
+    google.script.run
+      .withSuccessHandler(function() {
+        carregarTemasLocaisTela();
+        exibirAvisoApp('Sucesso', 'Cadastro do orador local excluído.');
+      })
+      .withFailureHandler(function(erro) {
+        exibirAvisoApp('Erro', 'Não foi possível excluir o cadastro: ' + (erro.message || erro));
+      })
+      .excluirOradorLocal(linha);
+  });
+}
+
+function salvarDataOradorLocalTela(linha) {
+  const dataVal = document.getElementById('dtLocal_' + linha).value;
+  if (!dataVal) {
+    exibirAvisoApp('Atenção', 'Informe uma data válida.');
+    return;
+  }
+
+  google.script.run
+    .withSuccessHandler(function(res) {
+      exibirAvisoApp('Sucesso', res.mensagem);
+    })
+    .withFailureHandler(function(erro) {
+      exibirAvisoApp('Erro', 'Erro ao salvar data: ' + (erro.message || erro));
+    })
+    .salvarDataOradorLocal({ linha: linha, data: dataVal });
+}
+
+function renderizarListaOradoresLocais(lista) {
+  const container = document.getElementById('containerOradoresLocais');
+  if (!lista || lista.length === 0) {
+    container.innerHTML = '<div class="card"><p>Nenhum orador local encontrado na aba Temas Locais.</p></div>';
+    return;
+  }
+
+  let html = '';
+  lista.forEach(function(orador, idx) {
+    html += '<div class="card" style="margin-bottom:15px; padding:15px; border:1px solid #ddd; border-radius:8px; background:#fff;">' +
+      '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:10px;">' +
+        '<h3 style="margin:0; color:#1f4e78;">👤 ' + escapar(orador.nome) + '</h3>' +
+        '<div>' +
+          '<button class="btn-principal" style="padding:5px 10px; font-size:12px; margin-right:5px;" onclick="salvarEdicaoOradorLocal(' + idx + ')">✏️ Salvar Alterações</button>' +
+        '</div>' +
+      '</div>' +
+
+      '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-bottom:10px;">' +
+        '<div>' +
+          '<label style="font-size:12px; font-weight:bold;">Nº do Tema:</label>' +
+          '<input type="text" id="numTemaLoc_' + idx + '" value="' + escapar(orador.numeroTema) + '" class="input-padrao" style="width:100%;" placeholder="Ex: 45">' +
+        '</div>' +
+        '<div>' +
+          '<label style="font-size:12px; font-weight:bold;">Título do Tema:</label>' +
+          '<input type="text" id="titTemaLoc_' + idx + '" value="' + escapar(orador.temaDefinido) + '" class="input-padrao" style="width:100%;" placeholder="Tema da palestra">' +
+        '</div>' +
+        '<div>' +
+          '<label style="font-size:12px; font-weight:bold;">Data de Realização:</label>' +
+          '<input type="date" id="dataRealizacaoLoc_' + idx + '" value="' + orador.dataRealizacao + '" class="input-padrao" style="width:100%;">' +
+        '</div>' +
+      '</div>' +
+
+      '<div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px; pt-10; border-top:1px solid #eee;">' +
+        '<button class="btn-sucesso" style="padding:6px 12px; font-size:13px;" onclick="salvarDataRealizacaoLocalTela(' + idx + ')">💾 Salvar Data na Planilha</button>' +
+        '<button class="btn-principal" style="background-color:#25d366; color:white; padding:6px 12px; font-size:13px;" onclick="enviarDesignacaoWhatsAppLocal(' + idx + ')">📲 Enviar Designação</button>' +
+      '</div>' +
+    '</div>';
+  });
+
+  container.innerHTML = html;
+}
+
+function salvarDataRealizacaoLocalTela(idx) {
+  const orador = listaOradoresLocaisCache[idx];
+  const novaData = document.getElementById('dataRealizacaoLoc_' + idx).value;
+
+  if (!novaData) {
+    exibirAvisoApp('Atenção', 'Selecione a data de realização antes de salvar.');
+    return;
+  }
+
+  const partes = novaData.split('-');
+  const dataBR = partes.length === 3 ? partes[2] + '/' + partes[1] + '/' + partes[0] : novaData;
+
+  exibirConfirmacaoApp(
+    'Salvar Data',
+    'Deseja salvar a data (' + dataBR + ') para o orador ' + orador.nome + ' na planilha?',
+    function() {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          exibirAvisoApp('Sucesso', res.mensagem);
+          orador.dataRealizacao = novaData;
+        })
+        .withFailureHandler(function(erro) {
+          exibirAvisoApp('Erro', 'Erro ao salvar: ' + (erro.message || erro));
+        })
+        .salvarDataOradorLocal({ linha: orador.linha, data: novaData });
+    }
+  );
+}
+
+function salvarEdicaoOradorLocal(idx) {
+  const orador = listaOradoresLocaisCache[idx];
+  const dadosAtualizados = {
+    linha: orador.linha,
+    nome: orador.nome,
+    numero: document.getElementById('numTemaLoc_' + idx).value.trim(),
+    tema: document.getElementById('titTemaLoc_' + idx).value.trim()
+  };
+
+  google.script.run
+    .withSuccessHandler(function(res) {
+      exibirAvisoApp('Sucesso', res.mensagem);
+      orador.numeroTema = dadosAtualizados.numero;
+      orador.temaDefinido = dadosAtualizados.tema;
+    })
+    .withFailureHandler(function(erro) {
+      exibirAvisoApp('Erro', 'Erro ao salvar alterações: ' + (erro.message || erro));
+    })
+    .salvarDadosOradorLocal(dadosAtualizados);
+}
+
+function enviarDesignacaoWhatsAppLocal(idx) {
+  const orador = listaOradoresLocaisCache[idx];
+  const selecionado = document.getElementById('temaLocalSelecionado_' + idx);
+  if (!selecionado || !selecionado.checked) {
+    exibirAvisoApp('Atenção', 'Marque a caixa ao lado do orador antes de enviar a designação.');
+    return;
+  }
+  const numTema = document.getElementById('numTemaLoc_' + idx).value.trim();
+  const titTema = document.getElementById('titTemaLoc_' + idx).value.trim();
+  if (!numTema || !titTema || titTema.indexOf('Buscando') === 0 || titTema === 'Tema não encontrado' || titTema.indexOf('Não foi possível') === 0) {
+    exibirAvisoApp('Atenção', 'Informe um número de discurso válido e aguarde a busca do tema.');
+    return;
+  }
+  const congregacao = document.getElementById('lblCongregacaoArranjo').textContent;
+  const endereco = document.getElementById('lblEnderecoArranjo').textContent;
+  const selectMes = document.getElementById('selectMesTemasLocais');
+  const mesTexto = selectMes && selectMes.selectedOptions.length ? selectMes.selectedOptions[0].textContent : '';
+
+  let texto = 'Olá, irmão ' + orador.nome + '!\n\n';
+  texto += 'Segue a sua designação de discurso:\n';
+  texto += '📅 Mês: ' + mesTexto + '\n';
+  texto += '📖 Tema: Nº ' + numTema + ' — ' + titTema + '\n';
+  if (congregacao && congregacao !== 'Não definida') {
+    texto += '🏛️ Congregação: ' + congregacao + '\n';
+    texto += '📍 Endereço: ' + endereco + '\n';
+  }
+
+  const url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(texto);
+  window.open(url, '_blank');
+}
+
+function carregarOpcoesTemasLocais() {}
+function consultarTemasLocaisTela() {}
+function salvarTemasLocaisTela() {}
+function enviarTemasLocaisTela() {}
+</script>
+</body>
+</html>
